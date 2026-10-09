@@ -1,0 +1,29 @@
+{
+  "name": "ai-practicum",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Независимый русскоязычный тренажёр по программе экзамена «Основы работы с ИИ»: 180 вопросов, 6 доменов, 3 уровня.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "npm run validate && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "validate": "node scripts/validate-bank.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run validate && npm test && vite build"
+  },
+  "dependencies": {
+    "htm": "3.1.1",
+    "preact": "11.0.1"
+  },
+  "devDependencies": {
+    "happy-dom": "20.14.6",
+    "vite": "8.3.4"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
+  }
+}
