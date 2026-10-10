@@ -29,7 +29,7 @@ export function validateState(value, questions) {
   const bank = new Map(questions.map((q) => [q.id, q]));
   const usedIds = new Set();
   const validateAttempt = (input, completed) => {
-    const a = copy(input);
+    const a = input;
     if (!record(a) || typeof a.id !== 'string' || !/^[A-Za-z0-9_-]{1,100}$/.test(a.id) || usedIds.has(a.id))
       throw new Error('Некорректный идентификатор попытки.');
     usedIds.add(a.id);
@@ -66,6 +66,7 @@ export function validateState(value, questions) {
       throw new Error('Некорректное состояние ответа.');
     if (new Set(a.bookmarks).size !== a.bookmarks.length || a.bookmarks.some((id) => !a.questionIds.includes(id)))
       throw new Error('Некорректные закладки.');
+    const answers = {};
     for (const [id, answer] of Object.entries(a.answers)) {
       if (
         !a.questionIds.includes(id) ||
@@ -75,14 +76,34 @@ export function validateState(value, questions) {
       )
         throw new Error('Некорректный сохранённый ответ.');
       // Балл всегда пересчитывается из ответа, а не берётся на веру из импортированного файла.
-      answer.correct = evaluate(bank.get(id), answer.response);
+      answers[id] = {
+        response: copy(answer.response),
+        submittedAt: new Date(answer.submittedAt).toISOString(),
+        correct: evaluate(bank.get(id), answer.response),
+      };
     }
+    const drafts = {};
     for (const [id, response] of Object.entries(a.drafts)) {
       if (!a.questionIds.includes(id) || a.answers[id] || !isValidResponse(bank.get(id), response))
         throw new Error('Некорректный черновик.');
+      drafts[id] = copy(response);
     }
     if (completed && Object.keys(a.drafts).length) throw new Error('В завершённой попытке не может быть черновиков.');
-    return a;
+    // Импорт сохраняет только поля приложения, а не произвольную нагрузку из файла.
+    return {
+      id: a.id,
+      bankVersion: BANK_VERSION,
+      level: a.level,
+      mode: a.mode,
+      questionIds: [...a.questionIds],
+      startedAt: new Date(a.startedAt).toISOString(),
+      updatedAt: new Date(a.updatedAt).toISOString(),
+      completedAt: completed ? new Date(a.completedAt).toISOString() : null,
+      cursor: a.cursor,
+      answers,
+      drafts,
+      bookmarks: [...a.bookmarks],
+    };
   };
   const sessions = {};
   for (const [key, a] of Object.entries(value.sessions)) {
@@ -108,7 +129,7 @@ export function readState(storage, key, questions) {
       return {
         state: freshState(),
         warning:
-          'Вопросы обновлены. Старые сохранения оставлены без изменений и не загружены. Скачай исходную копию перед очисткой данных; после очистки новый прогресс будет сохраняться.',
+          'Найдены сохранения с предыдущей версией вопросов. Они не загружены и останутся без изменений. Скачай исходные данные и выбери «Очистить все результаты» в управлении данными. До очистки новые попытки не сохраняются на устройстве.',
         protected: true,
         raw,
       };
@@ -186,5 +207,6 @@ export function parseBackup(text, questions) {
   }
   if (!['ai-basics-exam-trainer', 'ai-practicum'].includes(parsed?.application))
     throw new Error(`Это не резервная копия приложения ${APP_NAME}.`);
-  return validateState(parsed.state, questions);
+  // Revision относится к хранилищу устройства, а не к переносимым результатам.
+  return { ...validateState(parsed.state, questions), revision: 0 };
 }

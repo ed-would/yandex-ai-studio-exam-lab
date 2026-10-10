@@ -23,13 +23,15 @@ export function Results({
   const coaching = useMemo(() => resultCoaching(attempt, questions), [attempt, questions]);
   const { score, outcome, domains, priorities, strong, skipped, isPractice, needed, formatFocus } = coaching;
   const level = levelById(attempt.level);
-  const entries = attempt.questionIds.map((id, i) => ({
-    question: bank.get(id),
-    answer: attempt.answers[id],
-    number: i + 1,
-  }));
+  const reviewScore = domain === 'all' ? score : score.byDomain.find((row) => row.domain === Number(domain));
+  const entries = attempt.questionIds
+    .map((id, i) => ({
+      question: bank.get(id),
+      answer: attempt.answers[id],
+      number: i + 1,
+    }))
+    .filter(({ question }) => domain === 'all' || question.domain === Number(domain));
   const filtered = entries.filter(({ question, answer }) => {
-    if (domain !== 'all' && question.domain !== Number(domain)) return false;
     if (filter === 'correct') return Boolean(answer) && evaluate(question, answer.response);
     if (filter === 'incorrect') return Boolean(answer) && !evaluate(question, answer.response);
     if (filter === 'unanswered') return !answer;
@@ -126,7 +128,7 @@ export function Results({
           return html`<div class=${`competency-row competency-${status}`}><span class="competency-icon"><${Icon} name=${row.icon} size=${22}/></span><div><div class="competency-caption"><a href=${`#/study/${row.id}`}>${row.short}</a><strong>${row.correct}<small> / ${row.total}</small></strong></div><${ProgressBar} value=${row.correct} max=${row.total} label=${`${row.short}: ${row.correct} верно из ${row.total}, ошибок ${row.wrong}, пропущено ${row.skipped}`}/><div class="competency-meta"><span>${label}</span><span>${row.wrong ? plural(row.wrong, ['ошибка', 'ошибки', 'ошибок']) : 'Ошибок нет'}${row.skipped ? ` · ${row.skipped} пропущено` : ''}</span></div></div></div>`;
         })}</div>
       </div>
-      <aside class="preparation-plan" aria-labelledby="preparation-title"><span class="plan-icon"><${Icon} name="nodes" size=${28}/></span><h2 id="preparation-title">Твой следующий шаг</h2><p class="plan-intro">${!score.answered ? 'Начни с практики, чтобы рекомендации стали персональными.' : isPractice ? 'Закрепи подборку, затем проверь весь уровень.' : needed ? `Для учебной цели в следующей попытке нужно минимум ${Math.ceil((score.total * TRAINING_TARGET) / 100)} верных ответов. Сейчас не хватает ещё ${plural(needed, ['ответа', 'ответов', 'ответов'])}.` : score.unanswered ? 'Учебная цель по баллам достигнута. Сначала проверь пропущенные задания, чтобы оценить подготовку по всему уровню.' : 'Цель достигнута. Сохрани качество и попробуй новую сложность.'}</p>
+      <aside class="preparation-plan" aria-labelledby="preparation-title"><div class="preparation-heading"><span class="plan-icon"><${Icon} name="nodes" size=${28}/></span><h2 id="preparation-title">Твой следующий шаг</h2></div><p class="plan-intro">${!score.answered ? 'Начни с практики, чтобы рекомендации стали персональными.' : isPractice ? 'Закрепи подборку, затем проверь весь уровень.' : needed ? `Для учебной цели в следующей попытке нужно минимум ${Math.ceil((score.total * TRAINING_TARGET) / 100)} верных ответов. Сейчас не хватает ещё ${plural(needed, ['ответа', 'ответов', 'ответов'])}.` : score.unanswered ? 'Учебная цель по баллам достигнута. Сначала проверь пропущенные задания, чтобы оценить подготовку по всему уровню.' : 'Цель достигнута. Сохрани качество и попробуй новую сложность.'}</p>
         <ol class="preparation-steps">
           <li><h3>${!score.answered ? 'Пройди первый раунд' : priorities.length ? 'Вернись к основам слабых тем' : score.unanswered ? 'Проверь пропущенные задания' : 'Усложни задачу'}</h3><p>${
             !score.answered
@@ -152,15 +154,15 @@ export function Results({
       </aside>
     </section>
 
-    <div class="result-actions"><button class="button secondary" onClick=${() => onRestart(attempt.level)}>Повторить уровень<${Icon} name="refresh" size=${18}/></button>${score.incorrect > 0 && html`<button class="button secondary" onClick=${() => onMistakes(attempt)}>Повторить ошибки (${score.incorrect})<${Icon} name="arrow" size=${17}/></button>`}${canAdvance && html`<button class="button secondary" onClick=${() => onRestart(attempt.level + 1, true)}>К уровню ${attempt.level + 1}<${Icon} name="arrow" size=${17}/></button>`}<button class="text-button export-report" onClick=${() => onExportReport(attempt)}><${Icon} name="download" size=${17}/>Скачать разбор</button></div>
-    <details class="scoring-info"><summary><${Icon} name="info" size=${17}/>Как считается результат<${Icon} name="chevron" size=${16}/></summary><p>Каждое задание даёт 1 балл только за полностью правильный ответ. Для мультивыбора должен совпасть весь набор, для сопоставления — все пары. Частичных баллов нет. Процент = правильные ответы ÷ ${score.total} × 100. Пропущенные задания дают 0 баллов.</p>${score.weighted !== null && html`<p>Дополнительный ориентир по весам доменов программы: <strong>${formatPercent(score.weighted)}%</strong>. Формула: сумма долей правильных ответов в домене, умноженных на его вес (14, 18, 12, 16, 12, 28%). Основной балл выше сохраняет равный вес всех 60 заданий. Это не прогноз официального экзамена и не его шкала оценки.</p>`}<p>Цель ${TRAINING_TARGET}% выбрана для самостоятельной тренировки и не является официальным проходным баллом.</p></details>
+    <div class="result-actions"><button class="button secondary" onClick=${() => onRestart(attempt.level)}>Повторить уровень<${Icon} name="refresh" size=${18}/></button>${score.incorrect > 0 && html`<button class="button secondary" onClick=${() => onMistakes(attempt)}>${score.unanswered ? 'Повторить ошибки и пропуски' : 'Повторить ошибки'} (${score.incorrect})<${Icon} name="arrow" size=${17}/></button>`}${canAdvance && html`<button class="button secondary" onClick=${() => onRestart(attempt.level + 1, true)}>К уровню ${attempt.level + 1}<${Icon} name="arrow" size=${17}/></button>`}<button class="text-button export-report" onClick=${() => onExportReport(attempt)}><${Icon} name="download" size=${17}/>Скачать разбор</button></div>
+    <details class="accordion accordion--surface accordion--score scoring-info"><summary><${Icon} name="info" size=${17}/>Как считается результат<${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="scoring-copy"><p>Каждое задание даёт 1 балл только за полностью правильный ответ. Для мультивыбора должен совпасть весь набор, для сопоставления — все пары. Частичных баллов нет. Процент = правильные ответы ÷ ${score.total} × 100. Пропущенные задания дают 0 баллов.</p>${score.weighted !== null && html`<p>Дополнительный ориентир по весам доменов программы: <strong>${formatPercent(score.weighted)}%</strong>. Формула: сумма долей правильных ответов в домене, умноженных на его вес (14, 18, 12, 16, 12, 28%). Основной балл выше сохраняет равный вес всех 60 заданий. Это не прогноз официального экзамена и не его шкала оценки.</p>`}<p>Цель ${TRAINING_TARGET}% выбрана для самостоятельной тренировки и не является официальным проходным баллом.</p></div></div></div></details>
 
     <section class="review-section"><div class="section-heading"><div><span class="eyebrow">Закрепить знания</span><h2 id="results-review-title" tabindex="-1">Разбор каждого ответа</h2></div><a class="text-button" href="#/study"><${Icon} name="book" size=${17}/>Перейти к материалам</a></div><div class="review-controls"><div class="filter-pills" aria-label="Фильтр результатов">${[
-      ['all', `Все ${score.total}`],
-      ['incorrect', `Ошибки ${score.wrong}`],
-      ['unanswered', `Пропущено ${score.unanswered}`],
-      ['correct', `Верно ${score.correct}`],
-      ['bookmarks', `Закладки ${attempt.bookmarks.length}`],
+      ['all', `Все ${reviewScore.total}`],
+      ['incorrect', `Ошибки ${reviewScore.answered - reviewScore.correct}`],
+      ['unanswered', `Пропущено ${reviewScore.total - reviewScore.answered}`],
+      ['correct', `Верно ${reviewScore.correct}`],
+      ['bookmarks', `Закладки ${entries.filter(({ question }) => attempt.bookmarks.includes(question.id)).length}`],
     ].map(
       ([value, label]) =>
         html`<button class=${filter === value ? 'active' : ''} onClick=${() => setFilter(value)} aria-pressed=${filter === value}>${label}</button>`,

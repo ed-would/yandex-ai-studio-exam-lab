@@ -5,5 +5,5 @@ export default defineConfig({
   base: './',
   server: { port: 5173 },
   preview: { port: 4173 },
-  build: { target: 'es2022', sourcemap: false, chunkSizeWarningLimit: 1000 },
+  build: { target: 'baseline-widely-available', sourcemap: false, chunkSizeWarningLimit: 1000 },
 });

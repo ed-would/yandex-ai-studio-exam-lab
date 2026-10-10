@@ -627,7 +627,7 @@ test('резервная копия восстанавливает истори�
     restored,
     'Резервные копии до переименования остаются совместимыми.',
   );
-  assert.equal(restored.revision, 7);
+  assert.equal(restored.revision, 0);
   assert.equal(restored.sessions['exam:1'].answers[q.id].correct, false);
   assert.equal(restored.history[0].answers[at('single', 2).id].correct, true);
   assert.deepEqual(restored.sessions['exam:1'].drafts, active.drafts);
@@ -927,7 +927,8 @@ test('HTML-отчёт содержит исходные ответы, поясн
   const q = at('single');
   const a = finishAttempt(submitAnswer(attempt(), q, wrongResponse(q), checked), ended);
   const html = createHtmlReport(a, questions);
-  assert.match(html, /<html lang="ru">/u);
+  assert.match(html, /<html lang="ru" data-theme="light">/u);
+  assert.match(createHtmlReport(a, questions, 'dark'), /<html lang="ru" data-theme="dark">/u);
   assert.match(html, /0 \/ 60/u);
   assert.match(html, /Ошибки: 1\. Пропущено: 59/u);
   assert.match(html, /твой выбор/u);
@@ -978,4 +979,35 @@ test('copy и сохранение ответа не создают общих �
   const cloned = copy(saved);
   cloned.answers[q.id].response[q.left[0].id] = 'missing';
   assert.equal(evaluate(q, saved.answers[q.id].response), true);
+});
+
+test('импорт не переносит счётчик устройства и очищает посторонние поля без мутации источника', () => {
+  const q = at('single');
+  const a = submitAnswer(attempt(), q, rightResponse(q), checked);
+  a.unusedPayload = { nested: 'unused'.repeat(1000) };
+  a.answers[q.id].unusedPayload = 'ignored';
+  a.answers[q.id].correct = false;
+  const state = withSession(a, Number.MAX_SAFE_INTEGER);
+  const original = JSON.stringify(state);
+  const result = parseBackup(JSON.stringify(makeBackup(state)), questions);
+  assert.equal(result.revision, 0);
+  assert.equal(result.sessions['exam:1'].unusedPayload, undefined);
+  assert.equal(result.sessions['exam:1'].answers[q.id].unusedPayload, undefined);
+  assert.equal(result.sessions['exam:1'].answers[q.id].correct, true);
+  assert.equal(JSON.stringify(state), original);
+  assert.deepEqual(validateState(result, questions), result);
+});
+
+test('responsive-изображения имеют реальные размеры и существующие локальные файлы', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'));
+  for (const [source, image] of Object.entries(manifest)) {
+    assert.ok(image.width > 0 && image.height > 0, source);
+    let previous = 0;
+    for (const [width, path] of image.variants) {
+      assert.ok(width > previous && width <= image.width, path);
+      previous = width;
+      assert.ok((await readFile(new URL(`../public/images/${path}`, import.meta.url))).length > 0, path);
+    }
+    assert.equal(previous, image.width, source);
+  }
 });

@@ -31,7 +31,17 @@ export function ChoiceQuestion({ question, response, locked, onChange }) {
             ? 'Лишний вариант'
             : '';
       return html`<label class=${classes} key=${option.id}>
-        <input type=${multi ? 'checkbox' : 'radio'} name=${question.id} value=${option.id} checked=${selected} disabled=${locked} onChange=${() => onChange(multi ? (selected ? response.filter((id) => id !== option.id) : [...response, option.id]) : [option.id])} />
+        <input type=${multi ? 'checkbox' : 'radio'} name=${question.id} value=${option.id} checked=${selected} disabled=${locked} onChange=${(
+          event,
+        ) => {
+          const checked = event.currentTarget.checked;
+          onChange(
+            multi
+              ? (current) =>
+                  checked ? [...new Set([...current, option.id])] : current.filter((id) => id !== option.id)
+              : [option.id],
+          );
+        }} />
         <span class=${`choice-indicator ${multi ? 'square' : ''}`}>${selected && (multi ? html`<${Icon} name="check" size=${14}/>` : html`<span/>`)}</span>
         <span class="choice-letter">${LETTERS[index]}</span><span class="choice-text">${option.text}</span>
         ${label && html`<span class=${`choice-status ${wrong ? 'wrong' : 'correct'}`}><${Icon} name=${wrong ? 'close' : 'check'} size=${14}/>${label}</span>`}
@@ -93,7 +103,7 @@ export function MatchQuestion({ question, response, locked, onChange }) {
       const left = side === 'left' ? id : armed.id;
       const right = side === 'right' ? id : armed.id;
       const next = connectPair(question, response, left, right);
-      onChange(next);
+      onChange((current) => connectPair(question, current, left, right));
       setArmed(null);
       const leftText = question.left.find((item) => item.id === left)?.text;
       const rightText = question.right.find((item) => item.id === right)?.text;
@@ -114,7 +124,11 @@ export function MatchQuestion({ question, response, locked, onChange }) {
     if (locked) return;
     const next = { ...response };
     delete next[left];
-    onChange(next);
+    onChange((current) => {
+      const remaining = { ...current };
+      delete remaining[left];
+      return remaining;
+    });
     setArmed(null);
     setMessage(
       `Удалена связь для элемента: ${question.left.find((item) => item.id === left)?.text}. Осталось ${Object.keys(next).length} связей.`,
@@ -160,7 +174,7 @@ export function ExplanationDetails({ question, response }) {
   return html`<div class="option-explanations">${question.options.map((option, index) => {
     const correct = question.correct.includes(option.id);
     const selected = response?.includes(option.id);
-    return html`<div class=${`option-explanation ${selected && !correct ? 'extra-answer' : ''}`}><span class=${`rationale-symbol ${correct ? 'correct' : 'neutral'}`}>${LETTERS[index]}</span><div><strong>${option.text}</strong><span class="rationale-meta">${correct ? 'Верный вариант' : 'Неверный вариант'}${selected ? ' · твой выбор' : correct ? ' · не выбран' : ''}</span><p>${option.explanation}</p></div></div>`;
+    return html`<div class=${`option-explanation ${selected && !correct ? 'extra-answer' : ''}`}><span class=${`rationale-symbol ${correct ? 'correct' : 'wrong'}`}>${LETTERS[index]}</span><div><strong>${option.text}</strong><span class=${`rationale-meta ${correct ? 'correct' : 'wrong'}`}>${correct ? 'Верный вариант' : 'Неверный вариант'}${selected ? ' · твой выбор' : correct ? ' · не выбран' : ''}</span><p>${option.explanation}</p></div></div>`;
   })}</div>`;
 }
 
@@ -180,12 +194,12 @@ export function Feedback({ question, answer, review = false }) {
     <div class="feedback-heading" role=${review ? undefined : 'status'}><span class="feedback-icon"><${Icon} name=${correct ? 'check' : missing ? 'info' : 'close'} size=${23}/></span><div><h3>${correct ? 'Верно. Хорошая работа.' : missing ? 'Ответ не был проверен' : 'Есть что разобрать'}</h3><p>${correct ? '1 балл за задание.' : missing ? '0 баллов. Непроверенное задание считается пропущенным.' : '0 баллов. Первый ответ сохранён и уже не изменится.'}</p></div><span class="feedback-points">${correct ? '+1' : '0'}</span></div>
     <p class="main-explanation">${question.explanation}</p>
     <div class="takeaway"><${Icon} name="spark" size=${19}/><div><span>Запомнить</span><p>${question.takeaway}</p></div></div>
-    <details class="reasoning-details" open=${!correct || review}><summary>Почему варианты верны или неверны<${Icon} name="chevron" size=${16}/></summary><${ExplanationDetails} question=${question} response=${answer?.response}/></details>
+    <details class="accordion accordion--inline reasoning-details" open=${!correct || review}><summary>Почему варианты верны или неверны<${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="reasoning-copy"><${ExplanationDetails} question=${question} response=${answer?.response}/></div></div></div></details>
     <div class="feedback-sources"><span class="eyebrow">Разобраться глубже</span><${SourceLinks} sources=${question.sources}/></div>
   </section>`;
 }
 
 export function ReviewItem({ question, answer, number, bookmarked = false }) {
   const status = answer ? (evaluate(question, answer.response) ? 'correct' : 'incorrect') : 'unanswered';
-  return html`<details class=${`review-item status-${status}`}><summary><span class="review-number">${String(number).padStart(2, '0')}</span><span class="review-question"><span class="review-topic">${domainById(question.domain).short} · ${typeNames[question.type]}</span><strong>${question.prompt}</strong></span><span class=${`review-status ${status}`}><${Icon} name=${status === 'correct' ? 'check' : status === 'incorrect' ? 'close' : 'clock'} size=${16}/><span>${status === 'correct' ? 'Верно' : status === 'incorrect' ? 'Ошибка' : 'Пропущено'}</span></span>${bookmarked && html`<${Icon} name="bookmark" size=${16}/>`}<${Icon} name="chevron" size=${17}/></summary><${Feedback} question=${question} answer=${answer} review=${true}/></details>`;
+  return html`<details class=${`accordion accordion--surface accordion--review review-item status-${status}`}><summary><span class="review-number">${String(number).padStart(2, '0')}</span><span class="review-question"><span class="review-topic">${domainById(question.domain).short} · ${typeNames[question.type]}</span><strong>${question.prompt}</strong></span><span class=${`review-status ${status}`}><${Icon} name=${status === 'correct' ? 'check' : status === 'incorrect' ? 'close' : 'clock'} size=${16}/><span>${status === 'correct' ? 'Верно' : status === 'incorrect' ? 'Ошибка' : 'Пропущено'}</span></span>${bookmarked && html`<${Icon} name="bookmark" size=${16}/>`}<${Icon} name="chevron" size=${17}/></summary><div class="details-content"><div class="details-content-inner"><${Feedback} question=${question} answer=${answer} review=${true}/></div></div></details>`;
 }

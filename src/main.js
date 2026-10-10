@@ -3,6 +3,7 @@ import { App } from './app.js';
 import { html } from './components/ui.js';
 import { questions } from './data/bank.js';
 import './styles.css';
+import './theme.css';
 
 class ErrorBoundary extends Component {
   state = { error: false };

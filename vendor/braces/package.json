@@ -1,0 +1,13 @@
+{
+  "name": "braces",
+  "version": "3.0.3-patch.2",
+  "private": true,
+  "description": "Project-local braces 3.0.3 with bounded recursion from upstream PR #72.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "index.js",
+  "files": ["index.js", "lib", "LICENSE", "README.md"],
+  "dependencies": {
+    "fill-range": "7.1.1"
+  }
+}

@@ -1,0 +1,721 @@
+/* Палитра ночной практики: те же акценты, глубокие нейтральные поверхности. */
+picture.generative-art,
+picture.section-backdrop {
+  display: block;
+}
+:is(.generative-art, .section-backdrop) > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: inherit;
+  object-position: inherit;
+  border-radius: inherit;
+}
+.header-inner nav {
+  margin-inline: auto;
+}
+.competency-caption small,
+.outcome-facts small {
+  color: #68636f;
+}
+.rationale-symbol.correct {
+  color: var(--success-text);
+}
+.rationale-symbol.wrong {
+  color: var(--error-text);
+}
+@media screen {
+  html[data-theme='dark'] {
+    background: var(--page-bg);
+    color: var(--ink);
+  }
+  html[data-theme='dark'] body {
+    background: var(--page-bg);
+    color: var(--ink);
+  }
+  html[data-theme='dark']
+    :is(.skip-link, .empty-state, .study-nav, .competency-map, .review-item, .history-table-wrap) {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.badge, .how-step > span, .study-nav-icon, .competency-icon, .plan-icon) {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  html[data-theme='dark']
+    :is(
+      .overview-number small,
+      .question-counter small,
+      .question-topic,
+      .answer-instruction,
+      .answer-commit-note,
+      .after-feedback > span,
+      .choice-letter,
+      .map-domain-title strong,
+      .map-domain-title > span,
+      .map-domain-title small,
+      .map-note,
+      .breadcrumb > span,
+      .study-source-note,
+      .study-sources .section-heading > span,
+      .stats-value > span,
+      .stats-card-footer,
+      .history-table td,
+      .history-title small,
+      .history-fraction,
+      .review-topic,
+      .match-hint,
+      .node-number,
+      .column-heading,
+      .coaching-clear p,
+      .skipped-note p,
+      .competency-caption small,
+      .competency-map-caption,
+      .scoring-info p,
+      .filter-pills button,
+      .rationale-symbol.neutral,
+      .scoring-info summary
+    ) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.study-nav button.active strong, .guide-index) {
+    color: var(--accent);
+  }
+  html[data-theme='dark'] :is(.preparation-steps h3, .skipped-note strong, .history-title strong) {
+    color: var(--ink);
+  }
+  html[data-theme='dark'] :is(.format-coaching, .skipped-note) {
+    background: var(--surface-glass);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .competency-strong .competency-meta > span:first-child {
+    color: var(--success-text);
+  }
+  html[data-theme='dark'] .competency-weak .competency-meta > span:first-child {
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] .positive-text {
+    color: var(--success-text);
+  }
+  html[data-theme='dark'] .history-table th {
+    background: var(--surface-raised);
+  }
+  html[data-theme='dark'] .resume-practice {
+    background: var(--surface-raised);
+  }
+  html[data-theme='dark']
+    :is(.feedback.correct, .feedback.incorrect)
+    :is(.feedback-heading p, .rationale-meta, .pair-arrow, .eyebrow) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.rationale-symbol, .rationale-symbol.correct, .rationale-symbol.wrong) {
+    background: var(--surface-raised);
+  }
+  html[data-theme='dark'] .feedback.incorrect .feedback-icon {
+    border-color: var(--error-text);
+    border-color: color-mix(in srgb, var(--error-text) 42%, transparent);
+    background: var(--error-bg);
+    background: color-mix(in srgb, var(--error-text) 14%, var(--error-bg));
+  }
+  html[data-theme='dark'] .feedback.correct .feedback-icon {
+    border-color: var(--success-text);
+    border-color: color-mix(in srgb, var(--success-text) 42%, transparent);
+    background: var(--success-bg);
+    background: color-mix(in srgb, var(--success-text) 14%, var(--success-bg));
+  }
+  html[data-theme='dark'] .choice-indicator > span {
+    background: var(--control-ink);
+  }
+  html[data-theme='dark'] .theme-1:not(.results-page),
+  html[data-theme='dark'] .outcome-excellent {
+    --accent: #d3e38c;
+    --accent-soft: #343c27;
+    --accent-pale: #292e24;
+  }
+  html[data-theme='dark'] .theme-2:not(.results-page),
+  html[data-theme='dark'] .outcome-confident {
+    --accent: #93d7d0;
+    --accent-soft: #273f40;
+    --accent-pale: #242f33;
+  }
+  html[data-theme='dark'] .theme-3:not(.results-page),
+  html[data-theme='dark'] .outcome-close {
+    --accent: #c5a8f2;
+    --accent-soft: #3b304d;
+    --accent-pale: #2e273d;
+  }
+  html[data-theme='dark'] .outcome-starting {
+    --accent: #edb5c8;
+    --accent-soft: #402c3a;
+    --accent-pale: #30232e;
+  }
+  html[data-theme='dark'] .site-header {
+    background: var(--surface-glass);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.overview-strip, .data-panel) {
+    background: var(--surface-raised);
+  }
+  html[data-theme='dark'] :is(.hero-description, .hero-caption, .exam-brand > span) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.hero, .hero-visual) {
+    background: #25212f;
+  }
+  html[data-theme='dark'] .hero-visual::after {
+    background: linear-gradient(90deg, #25212f, transparent 28%);
+  }
+  html[data-theme='dark'] .hero-art-caption {
+    color: var(--ink);
+    background: var(--surface-glass);
+  }
+  html[data-theme='dark'] :is(.hero-copy h1, .overview-number, .level-card h3, .domain-row strong, .how-step h3) {
+    color: var(--ink);
+  }
+  html[data-theme='dark'] .how-panel h2 {
+    color: var(--ink);
+  }
+  html[data-theme='dark'] .practice-note > .icon {
+    color: var(--accent);
+  }
+  html[data-theme='dark'] :is(.overview-strip > div, .overview-personal, .level-metrics, .domain-row) {
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.level-card, .stats-card) {
+    background: var(--accent-pale);
+    border-color: var(--line);
+  }
+  html[data-theme='dark']
+    :is(.level-card .badge, .stats-card .badge, .domain-icon, .topic-tags > button, .empty-symbol, .modal-symbol) {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  html[data-theme='dark'] .topic-tags > button {
+    border-color: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  html[data-theme='dark'] .topic-tags > button:hover,
+  html[data-theme='dark'] .topic-tags > button[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  }
+  html[data-theme='dark']
+    :is(
+      .level-card-copy p,
+      .level-metrics,
+      .card-progress,
+      .domain-row small,
+      .domain-index,
+      .how-step p,
+      .lower-panel-caption
+    ) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] .home-lower .lower-panel {
+    background: var(--surface);
+  }
+  html[data-theme='dark'] .home-lower .how-panel {
+    background: #292336;
+  }
+  html[data-theme='dark']
+    :is(
+      .practice-note,
+      .heading-copy,
+      .levels-section > .section-heading,
+      .exam-topline > a,
+      .exam-topline > div,
+      .exam-topline > button
+    ) {
+    background: var(--surface-glass);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.has-art, .levels-section, .exam-topline) {
+    background: var(--surface);
+  }
+  html[data-theme='dark'] .page-heading.has-art {
+    background: var(--surface);
+  }
+  html[data-theme='dark'] .section-backdrop:not(.has-night-art) {
+    mix-blend-mode: soft-light;
+    opacity: 0.78;
+  }
+  html[data-theme='dark'] .levels-section > .section-backdrop,
+  html[data-theme='dark'] .site-footer > .section-backdrop {
+    opacity: 1;
+  }
+  html[data-theme='dark'] .site-footer {
+    --footer-bg: #203334;
+    --footer-surface: #1c2d2e;
+    --footer-tile: #294142;
+    --footer-line: #486061;
+    --footer-ink: #e4f1eb;
+    --footer-muted: #c0d3d2;
+  }
+  html[data-theme='dark'] .footer-platform .platform-mark img {
+    filter: none;
+    opacity: 0.8;
+  }
+  html[data-theme='dark']
+    :is(.question-card, .question-map, .study-content, .coaching-card, .competency-map, .modal, .history-table-wrap) {
+    color: var(--ink);
+    background: var(--surface);
+    border-color: var(--line);
+  }
+  html[data-theme='dark']
+    :is(
+      .question-meta,
+      .question-counter,
+      .question-domain,
+      .question-type,
+      .map-domain-title,
+      .map-legend,
+      .exam-progress,
+      .question-note,
+      .match-hint,
+      .matching-instructions,
+      .match-count
+    ) {
+    color: var(--muted);
+  }
+  html[data-theme='dark']
+    :is(
+      .map-domain,
+      .question-meta,
+      .question-actions,
+      .matching-status,
+      .reasoning-details,
+      .feedback-sources,
+      .topic-coverage,
+      .review-item,
+      .review-controls,
+      .history-table td,
+      .history-table th,
+      .lockup
+    ) {
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.question-dot, .bookmark-button, .choice, .match-node) {
+    color: var(--ink);
+    background: var(--surface-raised);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.choice.selected, .match-node.armed, .match-node.paired, .bookmark-button.active) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  html[data-theme='dark'] .bookmark-button.active {
+    color: var(--accent);
+  }
+  html[data-theme='dark'] .choice-indicator {
+    background: var(--surface);
+    border-color: var(--muted);
+  }
+  html[data-theme='dark'] .choice.selected .choice-indicator {
+    color: var(--control-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  html[data-theme='dark'] :is(.choice.is-correct, .question-dot.correct, .match-node.is-correct) {
+    background: var(--success-bg);
+    border-color: #6bba87;
+    color: var(--success-text);
+  }
+  html[data-theme='dark'] :is(.choice.is-wrong, .question-dot.incorrect, .match-node.is-wrong) {
+    background: var(--error-bg);
+    border-color: #d38c80;
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] .question-dot.draft {
+    background: #42392b;
+    color: #eed299;
+    border-color: #b89e65;
+  }
+  html[data-theme='dark'] .question-dot.current {
+    outline-color: var(--accent);
+  }
+  html[data-theme='dark'] .match-node:disabled {
+    color: var(--ink);
+    opacity: 1;
+  }
+  html[data-theme='dark'] .match-node.armed .node-number {
+    color: var(--ink);
+  }
+  html[data-theme='dark'] .choice.is-correct.selected .choice-indicator {
+    background: var(--success-text);
+    border-color: var(--success-text);
+    color: var(--control-ink);
+  }
+  html[data-theme='dark'] .choice.is-wrong.selected .choice-indicator {
+    background: var(--error-text);
+    border-color: var(--error-text);
+    color: var(--control-ink);
+  }
+  html[data-theme='dark'] .match-lines .line-correct {
+    stroke: var(--success-text);
+  }
+  html[data-theme='dark'] .match-lines .line-wrong {
+    stroke: var(--error-text);
+  }
+  html[data-theme='dark'] .disconnect {
+    background: var(--surface-raised);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.pair-label, .match-letter, .match-number) {
+    color: var(--accent);
+    background: var(--accent-pale);
+  }
+  html[data-theme='dark'] :is(.disconnect, .choice-status.wrong, .review-status.incorrect) {
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] :is(.feedback.correct, .feedback.correct .takeaway) {
+    background: var(--success-bg);
+    border-color: #52745e;
+  }
+  html[data-theme='dark'] :is(.feedback.incorrect, .feedback.incorrect .takeaway) {
+    background: var(--error-bg);
+    border-color: #75505b;
+  }
+  html[data-theme='dark']
+    .feedback.correct
+    :is(.feedback-icon, .feedback-heading, .feedback-points, .reasoning-details > summary) {
+    color: var(--success-text);
+  }
+  html[data-theme='dark']
+    .feedback.incorrect
+    :is(.feedback-icon, .feedback-heading, .feedback-points, .reasoning-details > summary) {
+    color: var(--error-text);
+  }
+  html[data-theme='dark']
+    :is(.feedback, .feedback.correct, .feedback.incorrect)
+    :is(.main-explanation, .takeaway, .option-explanation p, .pair-explanation p, .your-answer, .explanation-meta) {
+    color: var(--ink);
+  }
+  html[data-theme='dark']
+    :is(.rationale-symbol.correct, .review-status.correct, .choice-status.correct, .positive, .outcome-delta.improved) {
+    color: var(--success-text);
+  }
+  html[data-theme='dark'] .rationale-symbol.wrong {
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] .feedback .rationale-symbol.correct {
+    background: var(--success-bg);
+  }
+  html[data-theme='dark'] .feedback .rationale-symbol.wrong {
+    background: var(--error-bg);
+  }
+  html[data-theme='dark'] :is(.feedback.correct, .feedback.incorrect) .rationale-meta.correct {
+    color: var(--success-text);
+  }
+  html[data-theme='dark'] :is(.feedback.correct, .feedback.incorrect) .rationale-meta.wrong {
+    color: var(--error-text);
+  }
+  html[data-theme='dark']
+    :is(
+      .outcome-context,
+      .outcome-description,
+      .outcome-delta,
+      .outcome-facts > div > span,
+      .outcome-facts small,
+      .coaching-section > .section-heading p,
+      .coaching-card-top,
+      .coaching-topics,
+      .coaching-more,
+      .coaching-takeaway,
+      .competency-meta,
+      .preparation-plan p,
+      .format-coaching p,
+      .review-number,
+      .review-status.unanswered
+    ) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.achievement-label, .outcome-facts, .results-page .score-orbit > div, .format-coaching) {
+    background: var(--surface-glass);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .results-page .score-orbit {
+    background: conic-gradient(var(--accent) var(--score), #ffffff20 0);
+    box-shadow: none;
+  }
+  html[data-theme='dark']
+    :is(.score-number, .competency-caption a, .review-question, .history-score, .coaching-card h3) {
+    color: var(--ink);
+  }
+  html[data-theme='dark'] .results-page .score-orbit > div > span:last-child {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.preparation-plan, .coaching-clear, .coaching-takeaway, .scoring-info) {
+    background: var(--accent-pale);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.progress-track, .competency-row .progress-track) {
+    background: var(--surface-raised);
+  }
+  html[data-theme='dark'] .competency-strong .progress-track > span {
+    background: #81c9a8;
+  }
+  html[data-theme='dark'] .competency-weak .progress-track > span {
+    background: #d69bae;
+  }
+  html[data-theme='dark'] .competency-partial .progress-track > span {
+    background: #c5a8f2;
+  }
+  html[data-theme='dark']
+    :is(
+      .stats-card p,
+      .stats-card small,
+      .chart-column,
+      .stats-meta,
+      .history-table,
+      .history-table th,
+      .data-panel p,
+      .empty-state p,
+      .page-heading p,
+      .study-guide p,
+      .study-guide li,
+      .topic-coverage summary,
+      .study-domain-heading > p,
+      .study-source-note,
+      .modal-copy
+    ) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] :is(.mini-chart, .empty-chart-column) {
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .empty-chart-column {
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  html[data-theme='dark']
+    :is(.study-nav button, .official-grid > a, .source-search, select, .select-trigger, .select-menu) {
+    color: var(--ink);
+    background: var(--surface);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .adaptive-select .select-native {
+    color: var(--text);
+    background-color: var(--surface);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.study-nav small, .official-grid small, .source-search input::placeholder) {
+    color: var(--muted);
+  }
+  html[data-theme='dark'] .source-search input {
+    color: var(--ink);
+  }
+  html[data-theme='dark']
+    :is(
+      .study-nav button.active,
+      .filter-pills button.active,
+      .select-option[data-active='true'],
+      .select-trigger[aria-expanded='true']
+    ) {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  html[data-theme='dark'] :is(.review-item[open] > summary, .review-feedback) {
+    background: var(--surface-raised);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] :is(.button.primary, .level-button) {
+    color: var(--control-ink);
+    background: var(--accent);
+  }
+  html[data-theme='dark'] .button.secondary {
+    color: var(--ink);
+    background: var(--surface);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .button.danger {
+    color: #27191e;
+    background: #f1b3a4;
+  }
+  html[data-theme='dark'] :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a) {
+    color: var(--accent);
+  }
+  html[data-theme='dark'] :is(.text-button.danger-text, .stats-card-footer .text-button) {
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] :is(a[href], button, summary, select, input):focus-visible,
+  html[data-theme='dark'] :is(.choice, .import-button, .source-search):has(input:focus-visible) {
+    outline-color: var(--focus);
+  }
+  html[data-theme='dark'] .toast {
+    background: #3b3449;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html[data-theme='dark'] :is(.button.primary, .level-button):not(:disabled):hover {
+      background: color-mix(in srgb, var(--accent) 88%, white);
+      color: var(--control-ink);
+    }
+    html[data-theme='dark'] .button.secondary:not(:disabled):hover,
+    html[data-theme='dark']
+      :is(
+        .domain-row,
+        .official-grid > a,
+        .choice:not(.locked),
+        .study-nav button,
+        .filter-pills button,
+        .select-trigger,
+        .select-option,
+        .map-toggle
+      ):hover {
+      color: var(--ink);
+      background: var(--accent-pale);
+      border-color: var(--accent);
+    }
+    html[data-theme='dark']
+      :is(
+        .study-nav button.active,
+        .filter-pills button.active,
+        .select-option[data-active='true'],
+        .choice.selected:not(.locked),
+        .match-node.armed:not(:disabled)
+      ):hover {
+      background: color-mix(in srgb, var(--accent-soft) 88%, var(--accent));
+      color: var(--ink);
+    }
+    html[data-theme='dark'] :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a):hover {
+      color: color-mix(in srgb, var(--accent) 85%, white);
+    }
+    html[data-theme='dark'] :is(.text-button.danger-text, .stats-card-footer .text-button):hover {
+      color: #ffcfbf;
+    }
+    html[data-theme='dark'] .disconnect:hover {
+      color: #ffcfbf;
+      background: var(--error-bg);
+      border-color: var(--error-text);
+    }
+    html[data-theme='dark'] .button.danger:hover {
+      color: #27191e;
+      background: #ffcfbf;
+    }
+    html[data-theme='dark'] :is(.source-search, select):hover {
+      background: var(--surface-raised);
+    }
+  }
+  html[data-theme='dark'] :is(.button.primary, .level-button):not(:disabled):active {
+    background: color-mix(in srgb, var(--accent) 78%, #fff);
+    color: var(--control-ink);
+  }
+  html[data-theme='dark'] .button.secondary:not(:disabled):active,
+  html[data-theme='dark']
+    :is(
+      .study-nav button,
+      .filter-pills button,
+      .select-trigger,
+      .select-option,
+      .map-toggle,
+      .choice:not(.locked),
+      .match-node:not(:disabled),
+      .domain-row,
+      .official-grid > a
+    ):active {
+    color: var(--ink);
+    background: var(--accent-soft);
+  }
+  html[data-theme='dark'] .button.danger:active {
+    color: #27191e;
+    background: #fff0e8;
+  }
+  html[data-theme='dark'] .disconnect:active {
+    color: #fff0e8;
+    background: #58343b;
+  }
+  html[data-theme='dark'] .source-search:focus-within {
+    background: var(--surface-raised);
+  }
+  @media (max-width: 700px) {
+    html[data-theme='dark'] .hero-visual::after {
+      background: linear-gradient(180deg, #25212f, transparent 25%);
+    }
+  }
+}
+@media print {
+  html[data-theme='dark'] {
+    --page-bg: #fff;
+    --surface: #fff;
+    --surface-raised: #f4f2f7;
+    --surface-glass: #fff;
+    --ink: #25212b;
+    --text: #25212b;
+    --muted: #68636f;
+    --line: #e4e0e9;
+    --accent: #00515a;
+    --accent-soft: #e1efef;
+    --accent-pale: #eff8f7;
+    --control-ink: #fff;
+    --success-text: #267045;
+    --success-bg: #e8f3e9;
+    --error-text: #9d392b;
+    --error-bg: #fff0eb;
+    color-scheme: light !important;
+    background: #fff;
+    color: #25212b;
+  }
+  html[data-theme='dark'] .source-links a {
+    color: #00515a !important;
+  }
+  html[data-theme='dark'] .reasoning-details > summary {
+    color: #25212b !important;
+  }
+}
+
+@media screen {
+  @media (hover: hover) and (pointer: fine) {
+    html[data-theme='dark'] body .header-inner nav a:not(.active):hover {
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+    }
+  }
+  html[data-theme='dark'] body .header-inner nav a:active {
+    background: transparent;
+    color: var(--muted);
+    opacity: 0.72;
+    text-decoration: none;
+  }
+  html[data-theme='dark'] body .header-inner nav a.active:active {
+    color: var(--accent);
+    text-decoration: none;
+  }
+}
+
+@media screen {
+  html:not([data-theme='dark']) .footer-meta .button.secondary {
+    color: #174b49;
+    background-color: #b9d5cb;
+    border: 1px solid #8fb5a9;
+  }
+  html[data-theme='dark'] .footer-meta .button.secondary {
+    color: #e4f2eb;
+    background-color: #304d4b;
+    border: 1px solid #5e7c77;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html:not([data-theme='dark']) .footer-meta .button.secondary:not(:disabled):hover {
+      color: #123f3e;
+      background-color: #abccbf;
+      border-color: #7ba393;
+    }
+    html[data-theme='dark'] .footer-meta .button.secondary:not(:disabled):hover {
+      color: #eff8f3;
+      background-color: #3a5d59;
+      border-color: #779a93;
+    }
+  }
+  html:not([data-theme='dark']) .footer-meta .button.secondary:not(:disabled):active {
+    color: #103a39;
+    background-color: #9fbfb3;
+    border-color: #739b8d;
+  }
+  html[data-theme='dark'] .footer-meta .button.secondary:not(:disabled):active {
+    color: #f4faf7;
+    background-color: #456a64;
+    border-color: #8bad9f;
+  }
+}
