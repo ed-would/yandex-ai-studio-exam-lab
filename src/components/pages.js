@@ -30,7 +30,7 @@ export function Home({ state, questions, onStart, onRestart }) {
   const practiced = new Set(state.history.flatMap((a) => Object.keys(a.answers)));
   for (const a of Object.values(state.sessions)) Object.keys(a.answers).forEach((id) => practiced.add(id));
   return html`<div class="page home-page">
-    <section class="hero"><div class="hero-copy"><div class="exam-brand"><span>Подготовка к экзамену на платформе</span><${PlatformMark}/></div><h1>Основы<br/>работы с ИИ</h1><p class="hero-description">От первого промпта до сложных решений.<br class="desktop-only"/> Три тренировочных теста, подробные разборы<br class="desktop-only"/> и понятная карта подготовки.</p><div class="hero-actions"><a class="button primary" href="#levels">Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="book" size=${18}/>Карта подготовки</a></div><div class="hero-caption"><span class="live-dot"/>180 авторских вопросов · без регистрации</div></div><div class="hero-visual"><${Art} hero=${true}/><span class="hero-art-caption">Понимать. Применять. Связывать.</span></div></section>
+    <section class="hero"><div class="hero-copy"><div class="exam-brand"><span>Подготовка к экзамену на платформе</span><${PlatformMark}/></div><h1>Основы<br/>работы с ИИ</h1><p class="hero-description">От первого промпта до сложных решений.<br class="desktop-only"/> Три тренировочных теста, подробные разборы<br class="desktop-only"/> и понятная карта подготовки.</p><div class="hero-actions"><a class="button primary" href="#levels">Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="map" size=${18}/>Карта подготовки</a></div><div class="hero-caption"><span class="live-dot"/>180 авторских вопросов · без регистрации</div></div><div class="hero-visual"><${Art} hero=${true}/><span class="hero-art-caption">Понимать. Применять. Связывать.</span></div></section>
     <div class="overview-strip"><div><span class="overview-number">3</span><span>уровня сложности</span></div><div><span class="overview-number">6</span><span>доменов в каждом</span></div><div><span class="overview-number">60</span><span>вопросов в тесте</span></div><div class="overview-personal"><span class="overview-number">${practiced.size}<small>/180</small></span><span>вопросов уже разобрано</span></div></div>
     <section class="levels-section" id="levels"><${SectionBackdrop} name="studio-01-three-trajectories" format="webp"/><div class="section-heading"><div><span class="eyebrow">Твоя траектория</span><h2>Выбери свою точку старта</h2></div><p>Начни с любого уровня.<br/>Результаты сохраняются отдельно.</p></div><div class="level-grid">${LEVELS.map(
       (level) => {
@@ -83,25 +83,17 @@ export function History({ state, questions, onClearLevel, onClearAll, onBackup, 
   return html`<div class="page history-page"><div class="page-heading has-art progress-heading"><${SectionBackdrop} name="progress-prismatic-weave" format="webp"/><div class="heading-copy"><span class="eyebrow">Накапливай понимание</span><h1>Твой прогресс.</h1><p>Каждая попытка — отдельная точка. Возвращайся к разборам и наблюдай, как меняются результаты.</p></div></div><div class="stats-grid">${LEVELS.map(
     (level) => {
       const stats = levelStats(state, level.id, questions);
-      return html`<article class=${`stats-card theme-${level.id}`}><div class="stats-card-heading"><span class="badge">Уровень ${level.id}</span><div class="stats-card-art"><${Art} variant=${level.id} progress=${true}/></div></div><h2>${level.name}</h2><div class="stats-value">${stats.best === null ? '—' : `${formatPercent(stats.best)}%`}<span>лучший результат</span></div><div class="mini-chart" role="img" aria-label=${
-        stats.exams.length
-          ? `Последние попытки: ${stats.exams
-              .slice(-8)
-              .map((a) => `${formatPercent(scoreAttempt(a, questions).percent)} процентов`)
-              .join(', ')}`
-          : 'Пока нет завершённых экзаменов'
-      }>${
-        stats.exams.length
-          ? stats.exams.slice(-8).map((a) => {
-              const score = scoreAttempt(a, questions);
-              return html`<a href=${`#/results/${a.id}`} class="chart-column" title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${Math.round(score.percent)}</span><i style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`;
-            })
-          : Array.from(
-              { length: 8 },
-              (_, i) =>
-                html`<span class="empty-chart-column" style=${{ height: `${[22, 35, 29, 50, 46, 67, 72, 88][i]}%` }}/>`,
-            )
-      }</div><div class="stats-card-footer"><span>${stats.exams.length} ${stats.exams.length === 1 ? 'полная попытка' : stats.exams.length > 1 && stats.exams.length < 5 ? 'полные попытки' : 'полных попыток'}</span><button class="text-button" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button></div></article>`;
+      const hasAnswered = stats.exams.some((exam) => Object.keys(exam.answers).length > 0);
+      return html`<article class=${`stats-card theme-${level.id}`}><div class="stats-card-heading"><span class="badge">Уровень ${level.id}</span><div class="stats-card-art"><${Art} variant=${level.id} progress=${true}/></div></div><h2>${level.name}</h2>${
+        hasAnswered &&
+        html`<div class="stats-value">${formatPercent(stats.best)}%<span>лучший результат</span></div><div class="mini-chart" role="group" aria-label=${`Последние попытки: ${stats.exams
+          .slice(-8)
+          .map((a) => `${formatPercent(scoreAttempt(a, questions).percent)} процентов`)
+          .join(', ')}`}>${stats.exams.slice(-8).map((a) => {
+          const score = scoreAttempt(a, questions);
+          return html`<a href=${`#/results/${a.id}`} class="chart-column" aria-label=${`Открыть разбор результата: ${formatDate(a.completedAt)}, ${formatPercent(score.percent)}%`} title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${Math.round(score.percent)}</span><i aria-hidden="true" style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`;
+        })}</div>`
+      }<div class="stats-card-footer"><span>${stats.exams.length} ${stats.exams.length === 1 ? 'полная попытка' : stats.exams.length > 1 && stats.exams.length < 5 ? 'полные попытки' : 'полных попыток'}</span><button class="text-button" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button></div></article>`;
     },
   )}</div><section class="history-list-section"><div class="section-heading"><div><span class="eyebrow">Все сохранённые результаты</span><h2>История попыток</h2></div><div class="history-filters"><${SelectField} label="Уровень в истории" value=${levelFilter} onChange=${setLevelFilter} options=${[{ value: 'all', label: 'Все уровни' }, ...LEVELS.map((l) => ({ value: String(l.id), label: `Уровень ${l.id}` }))]}/><${SelectField} label="Режим в истории" value=${modeFilter} onChange=${setModeFilter} options=${[
     { value: 'all', label: 'Все попытки' },
@@ -122,17 +114,31 @@ export function History({ state, questions, onClearLevel, onClearAll, onBackup, 
 export function Study({ questions, initialDomain = 1 }) {
   const [domainId, setDomainId] = useState(Number(initialDomain) || 1);
   const [query, setQuery] = useState('');
+  const [selectedTopic, setSelectedTopic] = useState('');
   const domain = DOMAINS.find((d) => d.id === domainId) || DOMAINS[0];
   const relevant = questions.filter((q) => q.domain === domain.id);
-  const sources = [...new Map(relevant.flatMap((q) => q.sources).map((s) => [s.url, s])).values()].filter((s) =>
-    s.title.toLowerCase().includes(query.toLowerCase()),
-  );
-  const topics = [...new Set(relevant.map((q) => q.topic))];
+  const sourcesByTopic = new Map();
+  for (const question of relevant) {
+    const topicSources = sourcesByTopic.get(question.topic) || new Map();
+    for (const source of question.sources) topicSources.set(source.url, source);
+    sourcesByTopic.set(question.topic, topicSources);
+  }
+  const topics = [...sourcesByTopic.keys()];
+  const allSources = [...new Map(relevant.flatMap((q) => q.sources).map((s) => [s.url, s])).values()];
+  const topicSources = selectedTopic ? [...(sourcesByTopic.get(selectedTopic)?.values() || [])] : allSources;
+  const sources = topicSources.filter((s) => s.title.toLowerCase().includes(query.toLowerCase()));
+  const selectTopic = (topic) => {
+    setSelectedTopic(selectedTopic === topic ? '' : topic);
+    setQuery('');
+    const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ? 'auto' : 'smooth';
+    document.getElementById(`study-sources-${domain.id}`)?.scrollIntoView?.({ behavior, block: 'start' });
+  };
   return html`<div class="page study-page"><div class="page-heading has-art knowledge-heading"><${SectionBackdrop} name="study-phase-rosettes"/><div class="heading-copy"><span class="eyebrow">От ошибки к пониманию</span><h1>Карта подготовки.</h1><p>Короткие опоры по шести доменам и открытые источники, на которых построены задания.</p></div></div><div class="study-layout"><aside class="study-nav" aria-label="Домены программы">${DOMAINS.map(
     (d) =>
       html`<button class=${domain.id === d.id ? 'active' : ''} aria-pressed=${domain.id === d.id} onClick=${() => {
         setDomainId(d.id);
         setQuery('');
+        setSelectedTopic('');
       }}><span class="study-nav-icon"><${Icon} name=${d.icon} size=${20}/></span><span><strong>${d.short}</strong><small>Домен ${d.id} · около ${d.weight}% экзамена</small></span><${Icon} name="arrow" size=${16}/></button>`,
-  )}</aside><section class="study-content" key=${domain.id}><div class="study-domain-heading"><span class="eyebrow">Домен 0${domain.id}</span><span class="badge">30 вопросов в трёх уровнях</span><h2>${domain.title}</h2><p>${domain.description}</p></div><div class="study-guide">${domain.guide.map(([title, body], index) => html`<article><span class="guide-index">0${index + 1}</span><div><h3>${title}</h3><p>${body}</p></div></article>`)}</div><details class="topic-coverage"><summary>Какие темы проверяют задания<${Icon} name="chevron" size=${16}/></summary><div class="topic-tags">${topics.map((topic) => html`<span>${topic}</span>`)}</div></details><section class="study-sources"><div class="section-heading compact"><h3>Читать по теме</h3><span>${sources.length} ${sources.length === 1 ? 'источник' : 'источников'}</span></div><label class="source-search"><${Icon} name="search" size=${18}/><input type="search" aria-label="Найти материал по названию" placeholder="Найти материал по названию" value=${query} onInput=${(e) => setQuery(e.currentTarget.value)}/></label>${sources.length ? html`<${SourceLinks} sources=${sources}/>` : html`<p class="quiet">Материалов с таким названием нет. Измени запрос.</p>`}</section></section></div><section class="official-reading"><div class="official-platform"><${PlatformMark}/><span>Материалы платформы для подготовки</span></div><div class="section-heading"><div><span class="eyebrow">Из перечня организатора</span><h2>Рекомендованные материалы</h2></div><a class="text-button" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div><div class="official-grid">${OFFICIAL_RESOURCES.map((r) => html`<a href=${r.url} target="_blank" rel="noopener noreferrer"><span class="official-resource-icon"><${Icon} name="book" size=${19}/></span><span><strong>${r.title}</strong><small>${r.note}</small></span><${Icon} name="external" size=${16}/></a>`)}</div><p class="study-source-note">Источники проверены ${RESEARCH_DATE.toLowerCase()}. Для части курсов требуется регистрация; некоторые страницы ограничивают автоматическое чтение. Их закрытые уроки не включены в проект: темы раскрыты по открытой документации и первичным материалам. Полный журнал источников и ограничений — в папке docs проекта. Возможности и условия продуктов могут меняться.</p></section></div>`;
+  )}</aside><section class="study-content" key=${domain.id}><div class="study-domain-heading"><span class="eyebrow">Домен 0${domain.id}</span><span class="badge">30 вопросов в трёх уровнях</span><h2>${domain.title}</h2><p>${domain.description}</p></div><div class="study-guide">${domain.guide.map(([title, body], index) => html`<article><span class="guide-index">0${index + 1}</span><div><h3>${title}</h3><p>${body}</p></div></article>`)}</div><details class="accordion accordion--inline topic-coverage"><summary>Какие темы проверяют задания<${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="topic-copy"><div class="topic-tags">${topics.map((topic) => html`<button type="button" aria-pressed=${selectedTopic === topic} aria-label=${`Показать материалы по теме: ${topic}`} onClick=${() => selectTopic(topic)}>${topic}</button>`)}</div></div></div></div></details><section class="study-sources" id=${`study-sources-${domain.id}`}><div class="section-heading compact"><h3>Читать по теме</h3><span>${plural(sources.length, ['источник', 'источника', 'источников'])}</span></div>${selectedTopic && html`<div class="topic-filter-status" aria-live="polite"><span>Материалы по теме: <strong>${selectedTopic}</strong></span><button class="text-button" type="button" onClick=${() => setSelectedTopic('')}>Показать все</button></div>`}<label class="source-search"><${Icon} name="search" size=${18}/><input type="search" aria-label="Найти материал по названию" placeholder="Найти материал по названию" value=${query} onInput=${(e) => setQuery(e.currentTarget.value)}/></label>${sources.length ? html`<${SourceLinks} sources=${sources}/>` : html`<p class="quiet">Материалов с таким названием нет. ${selectedTopic ? 'Выбери другую тему или покажи все материалы.' : 'Измени запрос.'}</p>`}</section></section></div><section class="official-reading"><div class="official-platform"><${PlatformMark}/><span>Материалы платформы для подготовки</span></div><div class="section-heading"><div><span class="eyebrow">Из перечня организатора</span><h2>Рекомендованные материалы</h2></div><a class="text-button" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div><div class="official-grid">${OFFICIAL_RESOURCES.map((r) => html`<a href=${r.url} target="_blank" rel="noopener noreferrer"><span class="official-resource-icon"><${Icon} name="book" size=${19}/></span><span><strong>${r.title}</strong><small>${r.note}</small></span><${Icon} name="external" size=${16}/></a>`)}</div><p class="study-source-note">Источники проверены ${RESEARCH_DATE.toLowerCase()}. Для части курсов требуется регистрация; некоторые страницы ограничивают автоматическое чтение. Их закрытые уроки не включены в проект: темы раскрыты по открытой документации и первичным материалам. Полный журнал источников и ограничений — в папке docs проекта. Возможности и условия продуктов могут меняться.</p></section></div>`;
 }

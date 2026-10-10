@@ -8,8 +8,43 @@
     .glyph-kit{margin-top:48px}.glyph-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.glyph-card{background:#fff;border-radius:24px;padding:24px}.glyph-swatch{display:flex;align-items:center;justify-content:center;min-height:144px;background:#f4f2f7;border-radius:16px}.glyph-swatch.dark{background:#25212b}.glyph-swatch img{width:64px;height:64px}.glyph-card h3{margin:20px 0 8px;font-size:18px}.glyph-card p{margin:0 0 14px;font-size:14px}@media(max-width:700px){.glyph-grid{grid-template-columns:1fr}}
     @font-face{font-family:Unbounded;src:url('./fonts/unbounded-cyrillic-variable.woff2') format('woff2');font-weight:300 900;font-style:normal;font-display:swap}h1,.lockup-text>span{font-family:Unbounded,Arial,sans-serif;font-weight:450}.lockup-text>span{font-size:18px}.lockup-text small{font-family:Arial,sans-serif}@media(max-width:900px){.lockup-text>span{font-size:17px}}
   </style>
+  <link rel="stylesheet" href="./gallery-interactions.css" />
+  <link rel="stylesheet" href="./theme-controls.css" />
+  <meta name="color-scheme" content="light dark" />
+  <script src="./theme.js"></script>
   <main>
-    <a href="./">← К тренажёру</a>
+    <header class="gallery-toolbar">
+      <a href="./">← К тренажёру</a
+      ><button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Включить тёмную тему"
+        aria-pressed="false"
+        title="Включить тёмную тему"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <g class="theme-sun">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              class="theme-rays"
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"
+            />
+          </g>
+          <path class="theme-moon" d="M20.9 13.2A9 9 0 0 1 10.8 3.1 9 9 0 1 0 20.9 13.2Z" />
+        </svg>
+      </button>
+    </header>
     <h1>Тренажёр компетенций ИИ</h1>
     <p>
       Три абстрактные объёмные формы в палитре креативов проекта. Прозрачный фон. Ниже — знак в шапке и миниатюры 48, 32

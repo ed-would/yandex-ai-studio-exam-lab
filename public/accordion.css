@@ -1,0 +1,132 @@
+details.accordion > summary,
+.accordion-trigger {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.5;
+  list-style: none;
+  text-align: start;
+}
+.accordion-trigger {
+  width: 100%;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+details.accordion > summary::-webkit-details-marker {
+  display: none;
+}
+details.accordion > summary:focus-visible,
+.accordion-trigger:focus-visible {
+  outline-offset: -3px;
+}
+details.accordion > summary > .icon[data-icon='chevron'] {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  transition: transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.accordion-trigger > .icon[data-icon='chevron'] {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  transition: transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+details.accordion[open] > summary > .icon[data-icon='chevron'] {
+  transform: rotate(180deg);
+}
+.accordion-trigger[aria-expanded='true'] > .icon[data-icon='chevron'] {
+  transform: rotate(180deg);
+}
+details.accordion--inline > summary {
+  margin-inline: 4px;
+}
+details.accordion--surface {
+  overflow: hidden;
+  border: 1px solid var(--line, #e4e0e9);
+  border-radius: 14px;
+  background: var(--surface, #fff);
+}
+details.accordion--surface > summary {
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: inherit;
+}
+details.accordion--surface[open] > summary {
+  border-radius: 13px 13px 0 0;
+  border-bottom: 1px solid var(--line, #e4e0e9);
+  background: color-mix(in srgb, var(--accent, #005b64) 5%, transparent);
+}
+.details-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 240ms ease,
+    opacity 180ms ease,
+    visibility 0s linear 240ms;
+}
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 240ms ease,
+    opacity 180ms ease,
+    visibility 0s linear 240ms;
+}
+details[open] > .details-content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 240ms ease,
+    opacity 180ms ease,
+    visibility 0s;
+}
+.accordion-trigger[aria-expanded='true'] + .accordion-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 240ms ease,
+    opacity 180ms ease,
+    visibility 0s;
+}
+.details-content-inner {
+  min-height: 0;
+  overflow: clip;
+}
+.accordion-panel-inner {
+  min-height: 0;
+  overflow: clip;
+}
+@media (hover: hover) and (pointer: fine) {
+  details.accordion > summary:hover,
+  .accordion-trigger:hover {
+    background-color: color-mix(in srgb, var(--accent, #005b64) 7%, transparent);
+  }
+}
+details.accordion > summary:active,
+.accordion-trigger:active {
+  background-color: color-mix(in srgb, var(--accent, #005b64) 12%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  details.accordion > summary,
+  details.accordion > summary > .icon[data-icon='chevron'],
+  .accordion-trigger,
+  .accordion-trigger > .icon[data-icon='chevron'],
+  .details-content,
+  details[open] > .details-content,
+  .accordion-panel,
+  .accordion-trigger[aria-expanded='true'] + .accordion-panel {
+    transition: none;
+  }
+}

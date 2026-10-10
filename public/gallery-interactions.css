@@ -1,0 +1,116 @@
+/* Те же короткие отклики для обеих галерей; превью остаётся отдельной ссылкой. */
+.gallery-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.night-gallery-title {
+  margin-top: 56px;
+}
+html[data-theme='dark'] .preview::after {
+  border-color: var(--accent);
+}
+html[data-theme='dark'] body {
+  background: var(--page-bg);
+  color: var(--ink);
+}
+html[data-theme='dark'] :is(article, .option, .glyph-card) {
+  background: var(--surface);
+}
+html[data-theme='dark'] :is(p, small, .lockup-text small) {
+  color: var(--muted);
+}
+html[data-theme='dark'] a {
+  color: var(--accent);
+}
+html[data-theme='dark'] .tag {
+  color: #c5a8f2;
+}
+html[data-theme='dark'] .lockup {
+  border-color: var(--line);
+}
+html[data-theme='dark'] :is(a, summary):focus-visible {
+  outline-color: var(--focus);
+}
+a,
+summary {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+  text-underline-offset: 0.2em;
+}
+summary {
+  cursor: pointer;
+  border-radius: 12px;
+}
+.preview {
+  position: relative;
+}
+.preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 3px solid #005b64;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+:is(a, summary):focus-visible {
+  outline: 3px solid #7650bf;
+  outline-offset: 3px;
+}
+.preview:focus-visible {
+  outline-offset: -5px;
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme='dark'] a:hover {
+    color: #c2f0e9;
+  }
+  html[data-theme='dark'] summary:hover {
+    background: var(--surface-raised);
+  }
+  a:hover {
+    color: #003d45;
+    text-decoration-thickness: 2px;
+  }
+  summary:hover {
+    background: #e8e1ef;
+  }
+  .preview:hover::after {
+    opacity: 0.65;
+  }
+}
+a:active {
+  color: #6841ab;
+  text-decoration-thickness: 2px;
+}
+html[data-theme='dark'] a:active {
+  color: #fff;
+}
+html[data-theme='dark'] summary:active {
+  background: var(--accent-soft);
+}
+summary:active {
+  background: #d8c9e9;
+}
+.preview:active::after {
+  opacity: 1;
+  border-color: #6841ab;
+}
+@media (prefers-reduced-motion: reduce) {
+  a,
+  summary,
+  .preview::after {
+    transition: none;
+    transform: none;
+  }
+}
+.archive-accordion {
+  margin-top: 40px;
+}
+.archive-accordion .grid {
+  margin-top: 0;
+  padding: 8px;
+}

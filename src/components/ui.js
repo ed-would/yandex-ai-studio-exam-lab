@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { useEffect, useId, useRef } from 'preact/hooks';
 import htm from 'htm';
 import { APP_NAME, APP_TAGLINE } from '../data/meta.js';
+import { useTheme } from '../core/theme.js';
+import imageVariants from '../data/image-variants.json' with { type: 'json' };
 
 export const html = htm.bind(h);
 const PATHS = {
@@ -25,40 +27,77 @@ const PATHS = {
   nodes: ['M4 4h6v6H4z', 'M14 14h6v6h-6z', 'M14 4h6v6h-6z', 'M7 10v7h7', 'M10 7h4'],
   layers: ['m12 3 10 5-10 5L2 8z', 'm2 12 10 5 10-5', 'm2 16 10 5 10-5'],
   book: ['M12 5v16', 'M12 5C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-2-1-6-2-10 1z'],
+  map: ['M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z', 'M9 3v15', 'M15 6v15'],
   link: ['m10 14 4-4', 'M9 16l-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0', 'M15 8l2-2a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0'],
   menu: ['M4 6h16', 'M4 12h16', 'M4 18h16'],
   flag: ['M5 21V3', 'M5 4c5-4 9 4 15 0v10c-6 4-10-4-15 0'],
+  seed: ['M12 21v-8', 'M12 15C5 15 3 10 3 4c6 0 9 3 9 9', 'M12 17c7 0 9-5 9-11-6 0-9 3-9 9'],
   device: ['M3 4h18v13H3z', 'M8 21h8', 'M12 17v4'],
   search: ['M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0', 'm15 15 6 6'],
 };
 
 export function Icon({ name = 'spark', size = 20, className = '' }) {
-  return html`<svg class=${`icon ${className}`} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
+  return html`<svg class=${`icon ${className}`} data-icon=${name} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
 }
 
 export function Wordmark() {
-  return html`<span class="wordmark"><span class="brand-symbol"><img src=${assetUrl('brand/trainer-abstract.png')} alt="" width="256" height="256"/></span><span class="wordmark-text"><span>${APP_NAME}</span><small class="wordmark-tagline">${APP_TAGLINE}</small></span></span>`;
+  return html`<span class="wordmark"><span class="brand-symbol"><img src=${assetUrl('brand/trainer-abstract.png')} srcset=${responsiveSources('brand/trainer-abstract.png')} sizes="52px" alt="" width="256" height="256"/></span><span class="wordmark-text"><span>${APP_NAME}</span><small class="wordmark-tagline">${APP_TAGLINE}</small></span></span>`;
+}
+
+export function ThemeToggle() {
+  const dark = useTheme() === 'dark';
+  const label = dark ? 'Включить светлую тему' : 'Включить тёмную тему';
+  return html`<button class="theme-toggle" type="button" data-theme-toggle aria-label=${label} aria-pressed=${dark} title=${label}><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="theme-sun"><circle cx="12" cy="12" r="4"/><path class="theme-rays" d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></g><path class="theme-moon" d="M20.9 13.2A9 9 0 0 1 10.8 3.1 9 9 0 1 0 20.9 13.2Z"/></svg></button>`;
 }
 
 const assetUrl = (path) => `${import.meta.env?.BASE_URL || './'}images/${path}`;
+const responsiveSources = (path) =>
+  imageVariants[path]?.variants.map(([width, file]) => `${assetUrl(file)} ${width}w`).join(', ');
 
 export function PlatformMark() {
   return html`<span class="platform-mark"><img src=${assetUrl('brand/ai-studio-white.svg')} alt="Yandex AI Studio" width="347" height="58"/></span>`;
 }
 
-export function Art({ variant = 1, hero = false, progress = false }) {
+export function Art({ variant = 1, hero = false, progress = false, compact = false }) {
+  const dark = useTheme() === 'dark';
   const file = hero
     ? 'hero-ribbon-expanded.webp'
     : progress
       ? `progress/level-${variant}-${['foundations', 'application', 'expert'][variant - 1] || 'foundations'}.png`
       : `${['foundations', 'applied', 'systems'][variant - 1] || 'foundations'}.jpg`;
-  return html`<img class=${`generative-art art-${variant} ${hero ? 'art-hero' : ''} ${progress ? 'art-progress' : ''}`} src=${assetUrl(`generated/${file}`)} alt="" width=${progress ? 1254 : 1536} height=${progress ? 1254 : 1024} loading=${hero ? 'eager' : 'lazy'} decoding="async" fetchpriority=${hero ? 'high' : 'auto'}/>`;
+  const path = `generated/${file}`;
+  const night = `generated/dark/${hero ? 'hero-night' : `level-${variant}`}.webp`;
+  const useNightArt = dark && (hero || progress);
+  const size = hero
+    ? '(max-width: 570px) calc(100vw - 32px), (max-width: 900px) 60vw, (max-width: 1296px) calc(61vw - 40px), 752px'
+    : progress
+      ? '120px'
+      : compact
+        ? '72px'
+        : '(max-width: 570px) calc(100vw - 32px), (max-width: 900px) calc((100vw - 80px) / 2), 384px';
+  const dimensions = imageVariants[path];
+  return html`<picture class=${`generative-art art-${variant} ${hero ? 'art-hero' : ''} ${progress ? 'art-progress' : ''}`}>${useNightArt && html`<source media="all" srcset=${responsiveSources(night) || assetUrl(night)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading=${hero ? 'eager' : 'lazy'} decoding="async" fetchpriority=${hero ? 'high' : 'auto'}/></picture>`;
 }
 
 export function SectionBackdrop({ name, level, format = 'jpg' }) {
+  const dark = useTheme() === 'dark';
   const file =
     name || ['level-1-triangles', 'level-2-woven-orbits', 'level-3-prisms'][level - 1] || 'level-1-triangles';
-  return html`<img class="section-backdrop" src=${assetUrl(`generated/backgrounds/geometry/${file}.${format}`)} alt="" aria-hidden="true" width="1536" height="1024" loading="lazy" decoding="async"/>`;
+  const night = {
+    'studio-01-three-trajectories': 'levels-night.webp',
+    'footer-orbital-sectors': 'footer-night.webp',
+    'progress-prismatic-weave': 'progress-night.png',
+  }[file];
+  const path = `generated/backgrounds/geometry/${file}.${format}`;
+  const nightPath = night && `generated/dark/${night}`;
+  const dimensions = imageVariants[path];
+  const size =
+    file === 'footer-orbital-sectors'
+      ? '100vw'
+      : file === 'practice-folded-paths'
+        ? '(max-width: 900px) calc(100vw - 32px), 604px'
+        : '(max-width: 700px) calc(100vw - 32px), (max-width: 1296px) calc(100vw - 64px), 1232px';
+  return html`<picture class=${`section-backdrop ${night ? 'has-night-art' : ''}`} aria-hidden="true">${night && html`<source media=${dark ? 'all' : 'not all'} srcset=${responsiveSources(nightPath) || assetUrl(nightPath)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading="lazy" decoding="async"/></picture>`;
 }
 
 export function ProgressBar({ value, max = 100, label = '', className = '' }) {
@@ -66,11 +105,15 @@ export function ProgressBar({ value, max = 100, label = '', className = '' }) {
   return html`<div class=${`progress-track ${className}`} role="progressbar" aria-label=${label} aria-valuemin="0" aria-valuemax=${max} aria-valuenow=${value}><span style=${{ width: `${percent}%` }} /></div>`;
 }
 
-export const formatPercent = (value) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value);
-export const formatDate = (value) =>
-  new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(
-    new Date(value),
-  );
+const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
+const dateFormat = new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+export const formatPercent = (value) => percentFormat.format(value);
+export const formatDate = (value) => dateFormat.format(new Date(value));
 export const plural = (n, forms = ['вопрос', 'вопроса', 'вопросов']) =>
   `${n} ${forms[n % 100 >= 11 && n % 100 <= 19 ? 2 : n % 10 === 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 ? 1 : 2]}`;
 

@@ -16,6 +16,7 @@
     ".playwright-mcp/**",
     "assets/**",
     "docs/**",
+    "vendor/**",
     "public/images/**",
     "public/fonts/**",
     "public/third-party-notices.txt",

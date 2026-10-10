@@ -1,0 +1,263 @@
+{
+  "brand/trainer-abstract.png": {
+    "width": 256,
+    "height": 256,
+    "variants": [
+      [64, "optimized/brand/trainer-abstract-64.webp"],
+      [128, "optimized/brand/trainer-abstract-128.webp"],
+      [256, "optimized/brand/trainer-abstract-256.webp"]
+    ]
+  },
+  "generated/hero-ribbon-expanded.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/hero-ribbon-expanded-384.webp"],
+      [768, "optimized/generated/hero-ribbon-expanded-768.webp"],
+      [1152, "optimized/generated/hero-ribbon-expanded-1152.webp"],
+      [1536, "generated/hero-ribbon-expanded.webp"]
+    ]
+  },
+  "generated/foundations.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/foundations-384.webp"],
+      [1536, "generated/foundations.jpg"]
+    ]
+  },
+  "generated/applied.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/applied-384.webp"],
+      [1536, "generated/applied.jpg"]
+    ]
+  },
+  "generated/systems.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/systems-384.webp"],
+      [1536, "generated/systems.jpg"]
+    ]
+  },
+  "generated/progress/level-1-foundations.png": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/progress/level-1-foundations-128.webp"],
+      [256, "optimized/generated/progress/level-1-foundations-256.webp"],
+      [512, "optimized/generated/progress/level-1-foundations-512.webp"],
+      [768, "optimized/generated/progress/level-1-foundations-768.webp"],
+      [1254, "optimized/generated/progress/level-1-foundations-1254.webp"]
+    ]
+  },
+  "generated/progress/level-2-application.png": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/progress/level-2-application-128.webp"],
+      [256, "optimized/generated/progress/level-2-application-256.webp"],
+      [512, "optimized/generated/progress/level-2-application-512.webp"],
+      [768, "optimized/generated/progress/level-2-application-768.webp"],
+      [1254, "optimized/generated/progress/level-2-application-1254.webp"]
+    ]
+  },
+  "generated/progress/level-3-expert.png": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/progress/level-3-expert-128.webp"],
+      [256, "optimized/generated/progress/level-3-expert-256.webp"],
+      [512, "optimized/generated/progress/level-3-expert-512.webp"],
+      [768, "optimized/generated/progress/level-3-expert-768.webp"],
+      [1254, "optimized/generated/progress/level-3-expert-1254.webp"]
+    ]
+  },
+  "generated/dark/footer-night.webp": {
+    "width": 1942,
+    "height": 809,
+    "variants": [
+      [384, "optimized/generated/dark/footer-night-384.webp"],
+      [768, "optimized/generated/dark/footer-night-768.webp"],
+      [1152, "optimized/generated/dark/footer-night-1152.webp"],
+      [1942, "generated/dark/footer-night.webp"]
+    ]
+  },
+  "generated/dark/hero-night.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/dark/hero-night-384.webp"],
+      [768, "optimized/generated/dark/hero-night-768.webp"],
+      [1152, "optimized/generated/dark/hero-night-1152.webp"],
+      [1536, "generated/dark/hero-night.webp"]
+    ]
+  },
+  "generated/dark/progress-night.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/dark/progress-night-384.png"],
+      [768, "optimized/generated/dark/progress-night-768.png"],
+      [1152, "optimized/generated/dark/progress-night-1152.png"],
+      [1536, "generated/dark/progress-night.png"]
+    ]
+  },
+  "generated/dark/level-1.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/dark/level-1-128.webp"],
+      [256, "optimized/generated/dark/level-1-256.webp"],
+      [512, "optimized/generated/dark/level-1-512.webp"],
+      [768, "optimized/generated/dark/level-1-768.webp"],
+      [1254, "generated/dark/level-1.webp"]
+    ]
+  },
+  "generated/dark/level-2.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/dark/level-2-128.webp"],
+      [256, "optimized/generated/dark/level-2-256.webp"],
+      [512, "optimized/generated/dark/level-2-512.webp"],
+      [768, "optimized/generated/dark/level-2-768.webp"],
+      [1254, "generated/dark/level-2.webp"]
+    ]
+  },
+  "generated/dark/level-3.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "optimized/generated/dark/level-3-128.webp"],
+      [256, "optimized/generated/dark/level-3-256.webp"],
+      [512, "optimized/generated/dark/level-3-512.webp"],
+      [768, "optimized/generated/dark/level-3-768.webp"],
+      [1254, "generated/dark/level-3.webp"]
+    ]
+  },
+  "generated/dark/levels-night.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/dark/levels-night-384.webp"],
+      [768, "optimized/generated/dark/levels-night-768.webp"],
+      [1152, "optimized/generated/dark/levels-night-1152.webp"],
+      [1536, "generated/dark/levels-night.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/studio-01-three-trajectories.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-1152.webp"],
+      [1536, "generated/backgrounds/geometry/studio-01-three-trajectories.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/footer-orbital-sectors.webp": {
+    "width": 1942,
+    "height": 809,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-1152.webp"],
+      [1942, "generated/backgrounds/geometry/footer-orbital-sectors.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/practice-folded-paths.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/practice-folded-paths-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/practice-folded-paths-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/practice-folded-paths-1152.webp"],
+      [1536, "generated/backgrounds/geometry/practice-folded-paths.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/progress-prismatic-weave.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-1152.webp"],
+      [1536, "generated/backgrounds/geometry/progress-prismatic-weave.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/study-phase-rosettes.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/study-phase-rosettes-384.webp"],
+      [1536, "generated/backgrounds/geometry/study-phase-rosettes.jpg"]
+    ]
+  },
+  "generated/backgrounds/geometry/level-1-triangles.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/level-1-triangles-384.webp"],
+      [1536, "generated/backgrounds/geometry/level-1-triangles.jpg"]
+    ]
+  },
+  "generated/backgrounds/geometry/level-2-woven-orbits.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/level-2-woven-orbits-384.webp"],
+      [1536, "generated/backgrounds/geometry/level-2-woven-orbits.jpg"]
+    ]
+  },
+  "generated/backgrounds/geometry/level-3-prisms.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/level-3-prisms-384.webp"],
+      [1536, "generated/backgrounds/geometry/level-3-prisms.jpg"]
+    ]
+  },
+  "generated/backgrounds/geometry/studio-02-lilac-phase.webp": {
+    "width": 1774,
+    "height": 887,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-1152.webp"],
+      [1774, "generated/backgrounds/geometry/studio-02-lilac-phase.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/studio-03-mint-intersections.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-1152.webp"],
+      [1536, "generated/backgrounds/geometry/studio-03-mint-intersections.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/studio-04-citron-arcades.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-1152.webp"],
+      [1536, "generated/backgrounds/geometry/studio-04-citron-arcades.webp"]
+    ]
+  },
+  "generated/backgrounds/geometry/studio-05-rose-hourglass.webp": {
+    "width": 1774,
+    "height": 887,
+    "variants": [
+      [384, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-384.webp"],
+      [768, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-768.webp"],
+      [1152, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-1152.webp"],
+      [1774, "generated/backgrounds/geometry/studio-05-rose-hourglass.webp"]
+    ]
+  }
+}
