@@ -258,3 +258,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Unbounded — local variable display font (Cyrillic and Latin)
+Copyright 2022 The Unbounded Project Authors (https://github.com/googlefonts/unbounded)
+Licensed under the SIL Open Font License, Version 1.1.
+Full license: fonts/Unbounded-OFL.txt
+Source: https://fonts.google.com/specimen/Unbounded

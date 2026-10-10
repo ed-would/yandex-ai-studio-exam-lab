@@ -5,4 +5,6 @@ import d4 from './domain-4.json';
 import d5 from './domain-5.json';
 import d6 from './domain-6.json';
 
-export const questions = [...d1, ...d2, ...d3, ...d4, ...d5, ...d6].sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
+export const questions = [...d1, ...d2, ...d3, ...d4, ...d5, ...d6].sort(
+  (a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id),
+);

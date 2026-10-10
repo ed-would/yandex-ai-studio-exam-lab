@@ -1,0 +1,8 @@
+assert_lefthook_installed: true
+
+pre-commit:
+  commands:
+    check:
+      run: npm run check
+      env:
+        PRE_COMMIT: '1'

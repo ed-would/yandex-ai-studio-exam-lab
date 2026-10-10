@@ -1,0 +1,43 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "generate",
+  "date": "2026-10-10",
+  "direction": "Отдельные островки сложного геометрического рельефа, которые переходят в спокойную поверхность. Общая палитра: бирюзовый, лайм, сиреневый; акценты распределены по отдельным граням.",
+  "references": [
+    "public/images/generated/backgrounds/geometry/study-phase-rosettes.jpg",
+    "public/images/generated/backgrounds/geometry/level-2-woven-orbits.jpg",
+    "public/images/generated/backgrounds/geometry/reserve-kaleido-folds.jpg"
+  ],
+  "assets": [
+    {
+      "name": "footer-faceted-garden",
+      "title": "Созвездие связей",
+      "prompt": "Use case: stylized-concept. Asset type: original website footer background, wide landscape 1536x1024. Create a sophisticated geometric bas-relief pattern composition with plenty of empty space, inspired by contemporary abstract AI platform art and the project's sculpted tessellation language. A matte deep petrol teal ground #06414b. On the far right around the vertical middle, with some extension towards the lower-right: one interrupted field of interlocking folded fan rosettes, nested curved lozenges and articulated angular petals, repeating with precise crystalline symmetry. The geometric field breaks into two separated islands, not a solid full-frame texture, and gradually becomes flatter then vanishes into the plain ground towards the left. Left 55 percent and middle upper region are calm unpatterned teal for a text card. On the far upper left edge a tiny partial quieter cluster balances the right. Palette: teal base and teal geometric faces, deliberate selected petals in soft lime #dceba5 and muted lavender #bca2dc; put colors in separate geometric faces with crisp boundaries, roughly 12 percent lime and 8 percent lavender, not rainbow gradients. Elegant architectural layered relief, crisp folds, thin restrained ivory edge highlights, soft directional shadows, refined matte material, sophisticated graphic design, medium-scale rich geometric motif. Wide composition seen orthographically straight-on; some pattern at edges, breathing room in center. No single standalone object, no ribbons/waves, no spheres/bubbles, no hexagonal grid, no triangle hole textures, no glow, no text, no letters, no logo, no border.",
+      "placement": "Подвал на всех страницах",
+      "original": "assets/images/background-history/2026-10-10/geometric-v3/footer-faceted-garden.png",
+      "web": "public/images/generated/backgrounds/geometry/footer-faceted-garden.webp",
+      "webFormat": "WebP lossless",
+      "webDecodedRgbaSha256": "8a1296081082324dc45c225e2b6212c58117bf3c98ea00d66a251f3aa044a1a1"
+    },
+    {
+      "name": "practice-folded-paths",
+      "title": "Шаги понимания",
+      "prompt": "Use case: stylized-concept. Asset type: original web section background for learning through practice, wide landscape 1536x1024. Design a beautiful sparse geometric tessellation bas-relief, a complex rhythmic pattern of interlocking nested chevron fans and bent pinwheel diamonds, with rounded precise folded edges, NOT just basic triangles. The pattern represents small steps joining into a coherent path: recurring four-part fan tiles smoothly shift orientation along a diagonal rhythm. The motif appears in an interrupted band near the lower and right edges, with a small separate top-right patch; it gently flattens and fades into a very pale warm lime ground #f5f7e4 over the left 65 percent and most of the upper middle. An elegant airy field with large unpatterned negative space for interface text. Matte pale lime and soft olive relief faces, occasional petrol teal #3f8587 segments and muted lilac #c4b0e1 segments as selective crisp accents, not gradients mixing colors everywhere. Lime dominates, about 10 percent teal and 6 percent lilac. Architectural precision, sophisticated nontrivial repeating geometry, thin ivory contour edges, soft shadows, restrained depth. A flat front-facing surface, not floating sculptures; coherent pattern islands with a few complete identifiable motif cells. No waves, ribbons, bubbles, hexagon grid, triangles with holes, neon/glow, text, letters, logos, watermark, border.",
+      "placement": "Учёба через практику на главной",
+      "original": "assets/images/background-history/2026-10-10/geometric-v3/practice-folded-paths.png",
+      "web": "public/images/generated/backgrounds/geometry/practice-folded-paths.webp",
+      "webFormat": "WebP lossless",
+      "webDecodedRgbaSha256": "670f97dbaee362dabdca466f516697a353f60eba79258b38b4590afdb7947cc0"
+    },
+    {
+      "name": "progress-prismatic-weave",
+      "title": "Связи и прогресс",
+      "prompt": "Use case: stylized-concept. Asset type: original web section background for progress and saved knowledge, landscape 1536x1024. A refined geometric relief pattern with meaningful connected geometry: nested asymmetric folded diamond rosettes interlock through alternating under-over square quarter-turn facets to form a carefully designed prismatic weave. Rich repeating tessellation, recognizable complex motif like contemporary AI studio geometric patterns, but completely original. Composition: a dense small island at far upper right and a larger sculpted pattern island rising from lower-right, separated by a plain gap; individual geometric cells become shallower and stop near the center, leaving left 60 percent completely quiet and most of upper center empty. Pale lavender background #eee7f7, lavender and plum relief faces, intentional mint teal #85b9af and pale lime #dae8a3 selected facets in distinct places as clear but restrained color accents. Violet dominant about 75 percent, teal 15 percent, lime 10 percent; no rainbow blending. Crisp folded matte surfaces, soft measured shadows, thin ivory edge lines, precise quiet luxury graphic composition, orthographic view, shallow 3D paper-ceramic relief. Not a solid full-canvas pattern; several areas without geometry. No floating single object, no 3D waves/ribbons, no bubbles, no hexagonal honeycomb, no simple triangles, no neon/glow, no text, no letters, no logo, no border.",
+      "placement": "Шапка страницы прогресса",
+      "original": "assets/images/background-history/2026-10-10/geometric-v3/progress-prismatic-weave.png",
+      "web": "public/images/generated/backgrounds/geometry/progress-prismatic-weave.webp",
+      "webFormat": "WebP lossless",
+      "webDecodedRgbaSha256": "7d730d0d2fc15617737db0f2b218516335ef1fd12b5bc27dac0258de4125307e"
+    }
+  ]
+}

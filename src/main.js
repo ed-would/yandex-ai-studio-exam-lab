@@ -6,9 +6,12 @@ import './styles.css';
 
 class ErrorBoundary extends Component {
   state = { error: false };
-  static getDerivedStateFromError() { return { error: true }; }
+  static getDerivedStateFromError() {
+    return { error: true };
+  }
   render() {
-    if (this.state.error) return html`<main class="page"><div class="empty-state"><h1>Не удалось показать страницу</h1><p>Обнови страницу. Сохранённые результаты остаются в браузере.</p><button class="button primary" onClick=${() => window.location.reload()}>Обновить страницу</button></div></main>`;
+    if (this.state.error)
+      return html`<main class="page"><div class="empty-state"><h1>Не удалось показать страницу</h1><p>Обнови страницу. Сохранённые результаты остаются в браузере.</p><button class="button primary" onClick=${() => window.location.reload()}>Обновить страницу</button></div></main>`;
     return this.props.children;
   }
 }
