@@ -1,69 +1,122 @@
-import { useMemo, useState } from 'preact/hooks';
-import { DOMAINS, LEVELS, OFFICIAL_RESOURCES, PROGRAM_DATE, PROGRAM_URL, RESEARCH_DATE, TRAINING_TARGET, levelById } from '../data/meta.js';
-import { evaluate, levelStats, scoreAttempt, sessionKey } from '../core/exam.js';
-import { html, Art, EmptyState, Icon, ProgressBar, SourceLinks, formatDate, formatPercent, plural } from './ui.js';
-import { ReviewItem } from './questions.js';
+import { useState } from 'preact/hooks';
+import {
+  DOMAINS,
+  LEVELS,
+  OFFICIAL_RESOURCES,
+  PROGRAM_URL,
+  RESEARCH_DATE,
+  TRAINING_TARGET,
+  levelById,
+} from '../data/meta.js';
+import { levelStats, scoreAttempt, sessionKey } from '../core/exam.js';
+import {
+  html,
+  Art,
+  SectionBackdrop,
+  PlatformMark,
+  EmptyState,
+  Icon,
+  ProgressBar,
+  SourceLinks,
+  formatDate,
+  formatPercent,
+  plural,
+} from './ui.js';
+export { Results } from './results-page.js';
+import { SelectField } from './select-field.js';
 
 export function Home({ state, questions, onStart, onRestart }) {
   const finished = state.history.filter((a) => a.mode === 'exam');
   const practiced = new Set(state.history.flatMap((a) => Object.keys(a.answers)));
   for (const a of Object.values(state.sessions)) Object.keys(a.answers).forEach((id) => practiced.add(id));
   return html`<div class="page home-page">
-    <section class="hero"><div class="hero-copy"><span class="eyebrow"><span class="live-dot"/>Подготовка к экзамену на платформе Yandex AI Studio</span><h1>Знания, которые<br/><span>работают.</span></h1><p class="hero-description">Три тренировочных теста помогут подготовиться<br class="desktop-only"/> к экзамену «Основы работы с ИИ»<br class="desktop-only"/> на платформе Yandex AI Studio.</p><div class="hero-actions"><a class="button primary" href="#levels">Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="book" size=${18}/>Карта подготовки</a></div><div class="hero-caption">180 авторских вопросов · без регистрации</div></div><div class="hero-visual"><${Art} variant=${1} hero=${true}/><div class="hero-visual-label"><span class="code-label">ОТ ПОНЯТИЙ К РЕШЕНИЯМ</span><div class="visual-chips"><span>01 / понять</span><span>02 / применить</span><span>03 / связать</span></div></div></div></section>
+    <section class="hero"><div class="hero-copy"><div class="exam-brand"><span>Подготовка к экзамену на платформе</span><${PlatformMark}/></div><h1>Основы<br/>работы с ИИ</h1><p class="hero-description">От первого промпта до сложных решений.<br class="desktop-only"/> Три тренировочных теста, подробные разборы<br class="desktop-only"/> и понятная карта подготовки.</p><div class="hero-actions"><a class="button primary" href="#levels">Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="book" size=${18}/>Карта подготовки</a></div><div class="hero-caption"><span class="live-dot"/>180 авторских вопросов · без регистрации</div></div><div class="hero-visual"><${Art} hero=${true}/><span class="hero-art-caption">Понимать. Применять. Связывать.</span></div></section>
     <div class="overview-strip"><div><span class="overview-number">3</span><span>уровня сложности</span></div><div><span class="overview-number">6</span><span>доменов в каждом</span></div><div><span class="overview-number">60</span><span>вопросов в тесте</span></div><div class="overview-personal"><span class="overview-number">${practiced.size}<small>/180</small></span><span>вопросов уже разобрано</span></div></div>
-    <section class="levels-section" id="levels"><div class="section-heading"><div><span class="eyebrow">Твоя траектория</span><h2>От основы к сложным решениям</h2></div><p>Начни с любого уровня.<br/>Результаты сохраняются отдельно.</p></div><div class="level-grid">${LEVELS.map((level) => {
-      const stats = levelStats(state, level.id, questions);
-      const active = state.sessions[sessionKey(level.id)];
-      const reviewed = active ? Object.keys(active.answers).length : 0;
-      return html`<article class=${`level-card theme-${level.id}`} key=${level.id}><div class="level-card-top"><span class="level-number">0${level.id}</span><span class="badge">${level.tag}</span></div><div class="level-art"><${Art} variant=${level.id}/></div><div class="level-card-copy"><span class="level-kicker">${level.kicker}</span><h3>${level.name}</h3><p>${level.description}</p></div><div class="level-metrics"><span>60 вопросов</span><span>${stats.best !== null ? html`Лучший: <strong>${formatPercent(stats.best)}%</strong>` : 'Первый шаг впереди'}</span></div>${active ? html`<div class="card-progress"><${ProgressBar} value=${reviewed} max=${60} label=${`Прогресс уровня ${level.id}`}/><span>${reviewed} из 60 проверено</span></div>` : stats.latest ? html`<div class="card-progress completed-caption"><${Icon} name="check" size=${15}/>Последний результат: ${formatPercent(stats.latestScore.percent)}%</div>` : html`<div class="card-progress quiet">Один ответ · мультивыбор · пары</div>`}<button class="button level-button" data-start=${level.id} onClick=${() => onStart(level.id)}>${active ? 'Продолжить' : stats.exams.length ? 'Пройти ещё раз' : 'Начать тест'}<${Icon} name="arrow" size=${18}/></button>${active && html`<button class="text-button restart-link" onClick=${() => onRestart(level.id)}>Начать заново</button>`}</article>`;
-    })}</div></section>
-    ${Object.values(state.sessions).some((a) => a.mode === 'mistakes') && html`<section class="resume-practice"><${Icon} name="refresh"/><div><strong>Есть незавершённый разбор ошибок</strong><p>Эти тренировки сохраняются отдельно от полных экзаменов.</p></div><div class="resume-links">${Object.values(state.sessions).filter((a) => a.mode === 'mistakes').map((a) => html`<a class="button secondary small" href=${`#/mistakes/${a.level}`}>Уровень ${a.level}<${Icon} name="arrow" size=${16}/></a>`)}</div></section>`}
-    <section class="home-lower"><div class="curriculum-panel"><div class="section-heading compact"><div><span class="eyebrow">Программа экзамена</span><h2>Шесть областей знаний</h2></div><span class="mini-label">по 10 вопросов</span></div><div class="domain-list">${DOMAINS.map((domain) => html`<a class="domain-row" href=${`#/study/${domain.id}`}><span class="domain-icon"><${Icon} name=${domain.icon}/></span><span><strong>${domain.short}</strong><small>${domain.description}</small></span><span class="domain-index">0${domain.id}</span></a>`)}</div></div><div class="how-panel"><span class="eyebrow">Учёба через практику</span><h2>Каждый ответ<br/>становится уроком.</h2><div class="how-step"><span>01</span><div><h3>Выбирай и проверяй</h3><p>До проверки можно изменить выбор или разорвать связь в сопоставлении.</p></div></div><div class="how-step"><span>02</span><div><h3>Разбирай причину</h3><p>Сразу увидишь результат, объяснение и короткую памятку. Проверенный ответ зафиксирован.</p></div></div><div class="how-step"><span>03</span><div><h3>Возвращайся сильнее</h3><p>Изучи материалы, повтори ошибки или пересдай уровень. История покажет прогресс.</p></div></div><a class="button secondary" href="#/history">${finished.length ? 'Посмотреть мой прогресс' : 'Как будет выглядеть прогресс'}<${Icon} name="chart" size=${18}/></a></div></section>
-    <aside class="program-note"><${Icon} name="info"/><p>Независимый учебный проект по программе от ${PROGRAM_DATE.toLowerCase()}. Вопросы авторские. Три уровня и цель ${TRAINING_TARGET}% относятся к тренажёру. На настоящем экзамене веса доменов различаются: 14%, 18%, 12%, 16%, 12% и 28%. <a href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Открыть программу<${Icon} name="external" size=${12}/></a></p></aside>
-  </div>`;
-}
-
-export function DomainResults({ score }) {
-  return html`<div class="domain-results">${score.byDomain.filter((row) => row.total).map((row) => {
-    const domain = DOMAINS[row.domain - 1];
-    return html`<div class="domain-result"><span class="domain-result-icon"><${Icon} name=${domain.icon} size=${19}/></span><div><div class="domain-result-caption"><span>${domain.short}</span><strong>${row.correct}<small> / ${row.total}</small></strong></div><${ProgressBar} value=${row.correct} max=${row.total} label=${`${domain.short}: ${row.correct} из ${row.total}`} className=${row.correct / row.total >= .8 ? 'strong-result' : 'needs-work'}/></div></div>`;
-  })}</div>`;
-}
-
-export function Results({ attempt, questions, state, onRestart, onMistakes, onExportReport }) {
-  const [filter, setFilter] = useState('all');
-  const [domain, setDomain] = useState('all');
-  const bank = useMemo(() => new Map(questions.map((q) => [q.id, q])), [questions]);
-  const level = levelById(attempt.level);
-  const score = scoreAttempt(attempt, questions);
-  const isPractice = attempt.mode === 'mistakes';
-  const entries = attempt.questionIds.map((id, i) => ({ question: bank.get(id), answer: attempt.answers[id], number: i + 1 }));
-  const filtered = entries.filter(({ question, answer }) => {
-    if (domain !== 'all' && question.domain !== Number(domain)) return false;
-    if (filter === 'correct') return Boolean(answer) && evaluate(question, answer.response);
-    if (filter === 'incorrect') return Boolean(answer) && !evaluate(question, answer.response);
-    if (filter === 'unanswered') return !answer;
-    if (filter === 'bookmarks') return attempt.bookmarks.includes(question.id);
-    return true;
-  });
-  const previous = state.history.filter((a) => a.mode === 'exam' && a.level === attempt.level && a.completedAt < attempt.completedAt).sort((a, b) => b.completedAt.localeCompare(a.completedAt))[0];
-  const delta = previous && !isPractice ? score.percent - scoreAttempt(previous, questions).percent : null;
-  return html`<div class=${`page results-page theme-${attempt.level}`}><div class="breadcrumb"><a href="#/">Тесты</a><span>/</span><span>Уровень ${attempt.level} · ${level.name}</span></div><div class="page-heading"><span class="eyebrow">${isPractice ? 'Тренировка по ошибкам завершена' : 'Тест завершён'} · ${formatDate(attempt.completedAt)}</span><h1>${score.percent === 100 ? 'Всё на своих местах.' : score.percent >= TRAINING_TARGET ? 'Уверенный результат.' : 'Теперь понятно, что повторить.'}</h1><p>${isPractice ? 'Эта подборка не заменяет результат полного экзамена.' : 'Ответы сохранены. Дальше — работа с темами, которые требуют внимания.'}</p></div>
-    <section class="results-top"><div class="score-card"><div class="score-orbit" style=${{ '--score': `${score.percent}%` }}><div><span class="score-number">${formatPercent(score.percent)}<small>%</small></span><span>${score.correct} из ${score.total} баллов</span></div></div><div class="score-caption"><span class="badge">${level.name}</span><h2>${isPractice ? 'Результат тренировки' : score.percent >= TRAINING_TARGET ? 'Учебная цель достигнута' : `До учебной цели ${TRAINING_TARGET}%`}</h2>${delta !== null && html`<p class="score-delta">${delta > 0 ? '+' : ''}${formatPercent(Math.round(delta * 10) / 10)} п. п. к предыдущей попытке</p>`}<div class="score-breakdown"><span><i class="status-dot correct"/>Верно <strong>${score.correct}</strong></span><span><i class="status-dot incorrect"/>Ошибки <strong>${score.wrong}</strong></span><span><i class="status-dot unanswered"/>Пропущено <strong>${score.unanswered}</strong></span></div></div></div><div class="domain-score-panel"><div class="section-heading compact"><h2>По доменам</h2><span class="mini-label">верные / всего</span></div><${DomainResults} score=${score}/></div></section>
-    <details class="scoring-info"><summary><${Icon} name="info" size=${17}/>Как считается результат<${Icon} name="chevron" size=${16}/></summary><p>Каждое задание даёт 1 балл только за полностью правильный ответ. Для мультивыбора должен совпасть весь набор, для сопоставления — все пары. Частичных баллов нет. Процент = правильные ответы ÷ ${score.total} × 100. Пропущенные задания дают 0 баллов.</p>${score.weighted !== null && html`<p>Дополнительный ориентир по весам доменов программы: <strong>${formatPercent(score.weighted)}%</strong>. Формула: сумма долей правильных ответов в домене, умноженных на его вес (14, 18, 12, 16, 12, 28%). Основной балл выше сохраняет равный вес всех 60 заданий. Это не прогноз официального экзамена и не его шкала оценки.</p>`}<p>Цель ${TRAINING_TARGET}% выбрана для самостоятельной тренировки и не является официальным проходным баллом.</p></details>
-    <div class="result-actions"><button class="button primary" onClick=${() => onRestart(attempt.level)}>Повторить уровень<${Icon} name="refresh" size=${18}/></button>${score.incorrect > 0 && html`<button class="button secondary" onClick=${() => onMistakes(attempt)}>Повторить ошибки (${score.incorrect})<${Icon} name="arrow" size=${17}/></button>`}${attempt.level < 3 && html`<button class="button secondary" onClick=${() => onRestart(attempt.level + 1, true)}>К уровню ${attempt.level + 1}<${Icon} name="arrow" size=${17}/></button>`}<button class="text-button export-report" onClick=${() => onExportReport(attempt)}><${Icon} name="download" size=${17}/>Скачать разбор</button></div>
-    <section class="review-section"><div class="section-heading"><div><span class="eyebrow">Закрепить знания</span><h2>Разбор каждого ответа</h2></div><a class="text-button" href="#/study"><${Icon} name="book" size=${17}/>Перейти к материалам</a></div><div class="review-controls"><div class="filter-pills" aria-label="Фильтр результатов">${[['all', `Все ${score.total}`], ['incorrect', `Ошибки ${score.wrong}`], ['unanswered', `Пропущено ${score.unanswered}`], ['correct', `Верно ${score.correct}`], ['bookmarks', `Закладки ${attempt.bookmarks.length}`]].map(([value, label]) => html`<button class=${filter === value ? 'active' : ''} onClick=${() => setFilter(value)} aria-pressed=${filter === value}>${label}</button>`)}</div><label class="select-field"><span class="sr-only">Фильтр по домену</span><select value=${domain} onChange=${(event) => setDomain(event.currentTarget.value)}><option value="all">Все домены</option>${DOMAINS.map((d) => html`<option value=${d.id}>${d.id}. ${d.short}</option>`)}</select></label></div><div class="review-list">${filtered.length ? filtered.map((entry) => html`<${ReviewItem} key=${entry.question.id} ...${entry} bookmarked=${attempt.bookmarks.includes(entry.question.id)}/>` ) : html`<${EmptyState} title="В этой подборке нет вопросов" icon="check"><p>Выбери другой фильтр, чтобы посмотреть ответы.</p><button class="text-button" onClick=${() => { setFilter('all'); setDomain('all'); }}>Показать все ответы</button></${EmptyState}>`}</div></section>
+    <section class="levels-section" id="levels"><${SectionBackdrop} name="studio-01-three-trajectories" format="webp"/><div class="section-heading"><div><span class="eyebrow">Твоя траектория</span><h2>Выбери свою точку старта</h2></div><p>Начни с любого уровня.<br/>Результаты сохраняются отдельно.</p></div><div class="level-grid">${LEVELS.map(
+      (level) => {
+        const stats = levelStats(state, level.id, questions);
+        const active = state.sessions[sessionKey(level.id)];
+        const reviewed = active ? Object.keys(active.answers).length : 0;
+        return html`<article class=${`level-card theme-${level.id}`} key=${level.id}><div class="level-card-top"><span class="level-number">Уровень ${level.id}</span><span class="badge">${level.tag}</span></div><div class="level-art"><${Art} variant=${level.id}/></div><div class="level-card-copy"><span class="level-kicker">${level.kicker}</span><h3>${level.name}</h3><p>${level.description}</p></div><div class="level-metrics"><span>60 вопросов</span><span>${stats.best !== null ? html`Лучший: <strong>${formatPercent(stats.best)}%</strong>` : 'Первый шаг впереди'}</span></div>${active ? html`<div class="card-progress"><${ProgressBar} value=${reviewed} max=${60} label=${`Прогресс уровня ${level.id}`}/><span>${reviewed} из 60 проверено</span></div>` : stats.latest ? html`<div class="card-progress completed-caption"><${Icon} name="check" size=${15}/>Последний результат: ${formatPercent(stats.latestScore.percent)}%</div>` : html`<div class="card-progress quiet">Один ответ · мультивыбор · пары</div>`}<button class="button level-button" data-start=${level.id} onClick=${() => onStart(level.id)}>${active ? 'Продолжить' : stats.exams.length ? 'Пройти ещё раз' : 'Начать тест'}<${Icon} name="arrow" size=${18}/></button>${active && html`<button class="text-button restart-link" onClick=${() => onRestart(level.id)}>Начать заново</button>`}</article>`;
+      },
+    )}</div></section>
+    ${
+      Object.values(state.sessions).some((a) => a.mode === 'mistakes') &&
+      html`<section class="resume-practice"><${Icon} name="refresh"/><div><strong>Есть незавершённый разбор ошибок</strong><p>Эти тренировки сохраняются отдельно от полных экзаменов.</p></div><div class="resume-links">${Object.values(
+        state.sessions,
+      )
+        .filter((a) => a.mode === 'mistakes')
+        .map(
+          (a) =>
+            html`<a class="button secondary small" href=${`#/mistakes/${a.level}`}>Уровень ${a.level}<${Icon} name="arrow" size=${16}/></a>`,
+        )}</div></section>`
+    }
+    <section class="home-lower" aria-label="Программа и практика">
+      <article class="curriculum-panel lower-panel">
+        <div class="lower-panel-heading"><span class="eyebrow">Программа экзамена</span><h2>Шесть областей<br/>знаний</h2></div>
+        <div class="domain-list">${DOMAINS.map((domain) => html`<a class="domain-row" href=${`#/study/${domain.id}`}><span class="domain-icon"><${Icon} name=${domain.icon}/></span><span><strong>${domain.short}</strong><small>${domain.description}</small></span><span class="domain-index">0${domain.id}</span></a>`)}</div>
+        <div class="lower-panel-footer"><p class="lower-panel-caption">По 10 вопросов в каждой области на каждом уровне.</p><a class="button secondary" href="#/study">Карта подготовки<${Icon} name="arrow" size=${18}/></a></div>
+      </article>
+      <article class="how-panel lower-panel"><${SectionBackdrop} name="practice-folded-paths" format="webp"/>
+        <div class="lower-panel-heading"><span class="eyebrow">Учёба через практику</span><h2>Каждый ответ<br/>становится уроком.</h2></div>
+        <div class="how-steps">
+          <div class="how-step"><span>01</span><div><h3>Выбирай и проверяй</h3><p>До проверки можно изменить выбор или разорвать связь в сопоставлении.</p></div></div>
+          <div class="how-step"><span>02</span><div><h3>Разбирай причину</h3><p>Сразу увидишь результат, объяснение и короткую памятку. Проверенный ответ зафиксирован.</p></div></div>
+          <div class="how-step"><span>03</span><div><h3>Возвращайся сильнее</h3><p>Изучи материалы, повтори ошибки или пересдай уровень. История покажет прогресс.</p></div></div>
+        </div>
+        <div class="practice-note"><${Icon} name="clock" size=${20}/><div><strong>В своём темпе</strong><p>Тренируйся без таймера. Можно прервать попытку и вернуться к ней позже.</p></div></div>
+        <div class="lower-panel-footer"><a class="button secondary" href="#/history">${finished.length ? 'Посмотреть прогресс' : 'Как устроен прогресс'}<${Icon} name="chart" size=${18}/></a></div>
+      </article>
+    </section>
   </div>`;
 }
 
 export function History({ state, questions, onClearLevel, onClearAll, onBackup, onImport }) {
   const [levelFilter, setLevelFilter] = useState('all');
   const [modeFilter, setModeFilter] = useState('all');
-  const history = state.history.filter((a) => (levelFilter === 'all' || a.level === Number(levelFilter)) && (modeFilter === 'all' || a.mode === modeFilter)).sort((a, b) => b.completedAt.localeCompare(a.completedAt));
-  return html`<div class="page history-page"><div class="page-heading"><span class="eyebrow">Накапливай понимание</span><h1>Твой прогресс.</h1><p>Каждая попытка — отдельная точка. Возвращайся к разборам и наблюдай, как меняются результаты.</p></div><div class="stats-grid">${LEVELS.map((level) => {
-    const stats = levelStats(state, level.id, questions);
-    return html`<article class=${`stats-card theme-${level.id}`}><div class="stats-card-heading"><span class="badge">Уровень ${level.id}</span><${Icon} name=${level.id === 1 ? 'spark' : level.id === 2 ? 'nodes' : 'layers'} size=${24}/></div><h2>${level.name}</h2><div class="stats-value">${stats.best === null ? '—' : `${formatPercent(stats.best)}%`}<span>лучший результат</span></div><div class="mini-chart" role="img" aria-label=${stats.exams.length ? `Последние попытки: ${stats.exams.slice(-8).map((a) => `${formatPercent(scoreAttempt(a, questions).percent)} процентов`).join(', ')}` : 'Пока нет завершённых экзаменов'}>${stats.exams.length ? stats.exams.slice(-8).map((a) => { const score = scoreAttempt(a, questions); return html`<a href=${`#/results/${a.id}`} class="chart-column" title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${Math.round(score.percent)}</span><i style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`; }) : Array.from({ length: 8 }, (_, i) => html`<span class="empty-chart-column" style=${{ height: `${[22, 35, 29, 50, 46, 67, 72, 88][i]}%` }}/>`)}</div><div class="stats-card-footer"><span>${stats.exams.length} ${stats.exams.length === 1 ? 'полная попытка' : stats.exams.length > 1 && stats.exams.length < 5 ? 'полные попытки' : 'полных попыток'}</span><button class="text-button" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button></div></article>`;
-  })}</div><section class="history-list-section"><div class="section-heading"><div><span class="eyebrow">Все сохранённые результаты</span><h2>История попыток</h2></div><div class="history-filters"><label><span class="sr-only">Уровень в истории</span><select value=${levelFilter} onChange=${(e) => setLevelFilter(e.currentTarget.value)}><option value="all">Все уровни</option>${LEVELS.map((l) => html`<option value=${l.id}>Уровень ${l.id}</option>`)}</select></label><label><span class="sr-only">Режим в истории</span><select value=${modeFilter} onChange=${(e) => setModeFilter(e.currentTarget.value)}><option value="all">Все попытки</option><option value="exam">Полные экзамены</option><option value="mistakes">Работа над ошибками</option></select></label></div></div>${history.length ? html`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>Тест</th><th>Дата</th><th>Результат</th><th><span class="sr-only">Действие</span></th></tr></thead><tbody>${history.map((a) => { const score = scoreAttempt(a, questions); return html`<tr><td><span class=${`history-level theme-${a.level}`}>0${a.level}</span><span class="history-title"><strong>${levelById(a.level).name}</strong><small>${a.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'} · ${plural(score.total)}</small></span></td><td>${formatDate(a.completedAt)}</td><td><strong class=${score.percent >= TRAINING_TARGET ? 'positive-text' : ''}>${formatPercent(score.percent)}%</strong><span class="history-fraction">${score.correct} / ${score.total}</span></td><td><a class="text-button" href=${`#/results/${a.id}`}>Разбор<${Icon} name="arrow" size=${17}/></a></td></tr>`; })}</tbody></table></div>` : html`<${EmptyState} icon="chart" title=${state.history.length ? 'Нет попыток с такими условиями' : 'Здесь появится твоя история'}><p>${state.history.length ? 'Попробуй другой фильтр.' : 'Пройди первый тест. Мы сохраним результат и разбор всех ответов.'}</p><a class="button primary" href="#/">Выбрать тест<${Icon} name="arrow" size=${17}/></a></${EmptyState}>`}</section><section class="data-panel"><div><span class="eyebrow">Твои данные под контролем</span><h2>Сохранения на этом устройстве</h2><p>Прогресс хранится в этом браузере. Скачай копию перед очисткой данных браузера или переносом на другое устройство. Полные экзамены и работа над ошибками учитываются отдельно.</p></div><div class="data-actions"><button class="button secondary" onClick=${onBackup}><${Icon} name="download" size=${17}/>Скачать копию</button><label class="button secondary import-button"><${Icon} name="upload" size=${17}/>Восстановить из копии<input class="file-input" type="file" accept="application/json,.json" onChange=${onImport}/></label><button class="text-button danger-text" onClick=${onClearAll}><${Icon} name="trash" size=${16}/>Очистить все результаты</button></div></section></div>`;
+  const history = state.history
+    .filter(
+      (a) =>
+        (levelFilter === 'all' || a.level === Number(levelFilter)) && (modeFilter === 'all' || a.mode === modeFilter),
+    )
+    .sort((a, b) => b.completedAt.localeCompare(a.completedAt));
+  return html`<div class="page history-page"><div class="page-heading has-art progress-heading"><${SectionBackdrop} name="progress-prismatic-weave" format="webp"/><div class="heading-copy"><span class="eyebrow">Накапливай понимание</span><h1>Твой прогресс.</h1><p>Каждая попытка — отдельная точка. Возвращайся к разборам и наблюдай, как меняются результаты.</p></div></div><div class="stats-grid">${LEVELS.map(
+    (level) => {
+      const stats = levelStats(state, level.id, questions);
+      return html`<article class=${`stats-card theme-${level.id}`}><div class="stats-card-heading"><span class="badge">Уровень ${level.id}</span><div class="stats-card-art"><${Art} variant=${level.id} progress=${true}/></div></div><h2>${level.name}</h2><div class="stats-value">${stats.best === null ? '—' : `${formatPercent(stats.best)}%`}<span>лучший результат</span></div><div class="mini-chart" role="img" aria-label=${
+        stats.exams.length
+          ? `Последние попытки: ${stats.exams
+              .slice(-8)
+              .map((a) => `${formatPercent(scoreAttempt(a, questions).percent)} процентов`)
+              .join(', ')}`
+          : 'Пока нет завершённых экзаменов'
+      }>${
+        stats.exams.length
+          ? stats.exams.slice(-8).map((a) => {
+              const score = scoreAttempt(a, questions);
+              return html`<a href=${`#/results/${a.id}`} class="chart-column" title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${Math.round(score.percent)}</span><i style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`;
+            })
+          : Array.from(
+              { length: 8 },
+              (_, i) =>
+                html`<span class="empty-chart-column" style=${{ height: `${[22, 35, 29, 50, 46, 67, 72, 88][i]}%` }}/>`,
+            )
+      }</div><div class="stats-card-footer"><span>${stats.exams.length} ${stats.exams.length === 1 ? 'полная попытка' : stats.exams.length > 1 && stats.exams.length < 5 ? 'полные попытки' : 'полных попыток'}</span><button class="text-button" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button></div></article>`;
+    },
+  )}</div><section class="history-list-section"><div class="section-heading"><div><span class="eyebrow">Все сохранённые результаты</span><h2>История попыток</h2></div><div class="history-filters"><${SelectField} label="Уровень в истории" value=${levelFilter} onChange=${setLevelFilter} options=${[{ value: 'all', label: 'Все уровни' }, ...LEVELS.map((l) => ({ value: String(l.id), label: `Уровень ${l.id}` }))]}/><${SelectField} label="Режим в истории" value=${modeFilter} onChange=${setModeFilter} options=${[
+    { value: 'all', label: 'Все попытки' },
+    { value: 'exam', label: 'Полные экзамены' },
+    { value: 'mistakes', label: 'Работа над ошибками' },
+  ]}/></div></div>${
+    history.length
+      ? html`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>Тест</th><th>Дата</th><th>Результат</th><th><span class="sr-only">Действие</span></th></tr></thead><tbody>${history.map(
+          (a) => {
+            const score = scoreAttempt(a, questions);
+            return html`<tr><td><span class=${`history-level theme-${a.level}`}>0${a.level}</span><span class="history-title"><strong>${levelById(a.level).name}</strong><small>${a.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'} · ${plural(score.total)}</small></span></td><td>${formatDate(a.completedAt)}</td><td><strong class=${score.percent >= TRAINING_TARGET ? 'positive-text' : ''}>${formatPercent(score.percent)}%</strong><span class="history-fraction">${score.correct} / ${score.total}</span></td><td><a class="text-button" href=${`#/results/${a.id}`}>Разбор<${Icon} name="arrow" size=${17}/></a></td></tr>`;
+          },
+        )}</tbody></table></div>`
+      : html`<${EmptyState} icon="chart" title=${state.history.length ? 'Нет попыток с такими условиями' : 'Здесь появится твоя история'}><p>${state.history.length ? 'Попробуй другой фильтр.' : 'Пройди первый тест. Мы сохраним результат и разбор всех ответов.'}</p><a class="button primary" href="#/">Выбрать тест<${Icon} name="arrow" size=${17}/></a></${EmptyState}>`
+  }</section><section class="data-panel"><div><span class="eyebrow">Твои данные под контролем</span><h2>Сохранения на этом устройстве</h2><p>Прогресс хранится в этом браузере. Скачай копию перед очисткой данных браузера или переносом на другое устройство. Полные экзамены и работа над ошибками учитываются отдельно.</p></div><div class="data-actions"><button class="button secondary" onClick=${onBackup}><${Icon} name="download" size=${17}/>Скачать копию</button><label class="button secondary import-button"><${Icon} name="upload" size=${17}/>Восстановить из копии<input class="file-input" type="file" accept="application/json,.json" onChange=${onImport}/></label><button class="text-button danger-text" onClick=${onClearAll}><${Icon} name="trash" size=${16}/>Очистить все результаты</button></div></section></div>`;
 }
 
 export function Study({ questions, initialDomain = 1 }) {
@@ -71,7 +124,15 @@ export function Study({ questions, initialDomain = 1 }) {
   const [query, setQuery] = useState('');
   const domain = DOMAINS.find((d) => d.id === domainId) || DOMAINS[0];
   const relevant = questions.filter((q) => q.domain === domain.id);
-  const sources = [...new Map(relevant.flatMap((q) => q.sources).map((s) => [s.url, s])).values()].filter((s) => s.title.toLowerCase().includes(query.toLowerCase()));
+  const sources = [...new Map(relevant.flatMap((q) => q.sources).map((s) => [s.url, s])).values()].filter((s) =>
+    s.title.toLowerCase().includes(query.toLowerCase()),
+  );
   const topics = [...new Set(relevant.map((q) => q.topic))];
-  return html`<div class="page study-page"><div class="page-heading"><span class="eyebrow">От ошибки к пониманию</span><h1>Карта подготовки.</h1><p>Короткие опоры по шести доменам и открытые источники, на которых построены задания.</p></div><div class="study-layout"><aside class="study-nav" aria-label="Домены программы">${DOMAINS.map((d) => html`<button class=${domain.id === d.id ? 'active' : ''} aria-pressed=${domain.id === d.id} onClick=${() => { setDomainId(d.id); setQuery(''); }}><span class="study-nav-icon"><${Icon} name=${d.icon} size=${20}/></span><span><strong>${d.short}</strong><small>Домен ${d.id} · около ${d.weight}% экзамена</small></span><${Icon} name="arrow" size=${16}/></button>`)}</aside><section class="study-content" key=${domain.id}><div class="study-domain-heading"><span class="eyebrow">Домен 0${domain.id}</span><span class="badge">30 вопросов в трёх уровнях</span><h2>${domain.title}</h2><p>${domain.description}</p></div><div class="study-guide">${domain.guide.map(([title, body], index) => html`<article><span class="guide-index">0${index + 1}</span><div><h3>${title}</h3><p>${body}</p></div></article>`)}</div><details class="topic-coverage"><summary>Какие темы проверяют задания<${Icon} name="chevron" size=${16}/></summary><div class="topic-tags">${topics.map((topic) => html`<span>${topic}</span>`)}</div></details><section class="study-sources"><div class="section-heading compact"><h3>Читать по теме</h3><span>${sources.length} ${sources.length === 1 ? 'источник' : 'источников'}</span></div><label class="source-search"><${Icon} name="search" size=${18}/><input type="search" aria-label="Найти материал по названию" placeholder="Найти материал по названию" value=${query} onInput=${(e) => setQuery(e.currentTarget.value)}/></label>${sources.length ? html`<${SourceLinks} sources=${sources}/>` : html`<p class="quiet">Материалов с таким названием нет. Измени запрос.</p>`}</section></section></div><section class="official-reading"><div class="section-heading"><div><span class="eyebrow">Из перечня организатора</span><h2>Рекомендованные материалы</h2></div><a class="text-button" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div><div class="official-grid">${OFFICIAL_RESOURCES.map((r) => html`<a href=${r.url} target="_blank" rel="noopener noreferrer"><span class="official-resource-icon"><${Icon} name="book" size=${19}/></span><span><strong>${r.title}</strong><small>${r.note}</small></span><${Icon} name="external" size=${16}/></a>`)}</div><p class="study-source-note">Источники проверены ${RESEARCH_DATE.toLowerCase()}. Для части курсов требуется регистрация; некоторые страницы ограничивают автоматическое чтение. Их закрытые уроки не включены в проект: темы раскрыты по открытой документации и первичным материалам. Полный журнал источников и ограничений — в папке docs проекта. Возможности и условия продуктов могут меняться.</p></section></div>`;
+  return html`<div class="page study-page"><div class="page-heading has-art knowledge-heading"><${SectionBackdrop} name="study-phase-rosettes"/><div class="heading-copy"><span class="eyebrow">От ошибки к пониманию</span><h1>Карта подготовки.</h1><p>Короткие опоры по шести доменам и открытые источники, на которых построены задания.</p></div></div><div class="study-layout"><aside class="study-nav" aria-label="Домены программы">${DOMAINS.map(
+    (d) =>
+      html`<button class=${domain.id === d.id ? 'active' : ''} aria-pressed=${domain.id === d.id} onClick=${() => {
+        setDomainId(d.id);
+        setQuery('');
+      }}><span class="study-nav-icon"><${Icon} name=${d.icon} size=${20}/></span><span><strong>${d.short}</strong><small>Домен ${d.id} · около ${d.weight}% экзамена</small></span><${Icon} name="arrow" size=${16}/></button>`,
+  )}</aside><section class="study-content" key=${domain.id}><div class="study-domain-heading"><span class="eyebrow">Домен 0${domain.id}</span><span class="badge">30 вопросов в трёх уровнях</span><h2>${domain.title}</h2><p>${domain.description}</p></div><div class="study-guide">${domain.guide.map(([title, body], index) => html`<article><span class="guide-index">0${index + 1}</span><div><h3>${title}</h3><p>${body}</p></div></article>`)}</div><details class="topic-coverage"><summary>Какие темы проверяют задания<${Icon} name="chevron" size=${16}/></summary><div class="topic-tags">${topics.map((topic) => html`<span>${topic}</span>`)}</div></details><section class="study-sources"><div class="section-heading compact"><h3>Читать по теме</h3><span>${sources.length} ${sources.length === 1 ? 'источник' : 'источников'}</span></div><label class="source-search"><${Icon} name="search" size=${18}/><input type="search" aria-label="Найти материал по названию" placeholder="Найти материал по названию" value=${query} onInput=${(e) => setQuery(e.currentTarget.value)}/></label>${sources.length ? html`<${SourceLinks} sources=${sources}/>` : html`<p class="quiet">Материалов с таким названием нет. Измени запрос.</p>`}</section></section></div><section class="official-reading"><div class="official-platform"><${PlatformMark}/><span>Материалы платформы для подготовки</span></div><div class="section-heading"><div><span class="eyebrow">Из перечня организатора</span><h2>Рекомендованные материалы</h2></div><a class="text-button" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div><div class="official-grid">${OFFICIAL_RESOURCES.map((r) => html`<a href=${r.url} target="_blank" rel="noopener noreferrer"><span class="official-resource-icon"><${Icon} name="book" size=${19}/></span><span><strong>${r.title}</strong><small>${r.note}</small></span><${Icon} name="external" size=${16}/></a>`)}</div><p class="study-source-note">Источники проверены ${RESEARCH_DATE.toLowerCase()}. Для части курсов требуется регистрация; некоторые страницы ограничивают автоматическое чтение. Их закрытые уроки не включены в проект: темы раскрыты по открытой документации и первичным материалам. Полный журнал источников и ограничений — в папке docs проекта. Возможности и условия продуктов могут меняться.</p></section></div>`;
 }

@@ -1,0 +1,19 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "generate",
+  "date": "2026-10-10",
+  "name": "levels-harmony-weave",
+  "title": "Три уровня — один узор",
+  "direction": "Общий фон секции выбора уровня, равномерно соединяющий бирюзовый, лаймовый и сиреневый акценты в спокойной геометрии.",
+  "prompt": "Create a polished, original background image for the level-selection section of a Russian AI exam-preparation website. Use-case: stylized-concept. Wide landscape 3:2, front-facing seamless architectural bas-relief pattern, refined and quiet enough to sit behind three large translucent UI cards and a white heading panel. Composition: a continuous but airy field of interlocking folded rosette tiles and nested pinwheel-fan facets, with a memorable repeating geometry that feels intricate and crafted rather than generic. Each larger motif weaves all three level colors together; distribute deep petrol-teal, soft chartreuse/lime, and muted lavender evenly across the image, with no single color taking over and no three separate color zones. Keep the palette pale, desaturated, and harmonious against a warm near-white ground; use colored facets as tasteful accents, thin ivory seams, shallow sculpted relief, and restrained soft shadows. The pattern should remain legible at a glance and at small scale while leaving generous calm areas. The result is a single versatile underlay for foundational, advanced, and expert levels, so it should feel balanced and welcoming, not competitive or loud. No text, lettering, logos, UI cards, isolated objects, bubbles, ribbons, waves, hexagonal grid, plain triangle tessellation, neon, saturated gradients, or strong glow.",
+  "placement": "Подложка секции выбора трёх уровней",
+  "original": "assets/images/background-history/2026-10-10/levels-universal/levels-harmony-weave.png",
+  "web": "public/images/generated/backgrounds/geometry/levels-harmony-weave.webp",
+  "webFormat": "WebP lossless",
+  "webDecodedRgbaSha256": "c6d4aa142d4d5d70158c61a27709cb62b31a71d3662e911ce6dcb0220d48c481",
+  "references": [
+    "public/images/generated/backgrounds/geometry/footer-faceted-garden.webp",
+    "public/images/generated/backgrounds/geometry/practice-folded-paths.webp",
+    "public/images/generated/backgrounds/geometry/progress-prismatic-weave.webp"
+  ]
+}

@@ -2,22 +2,48 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import {
-  connectPair, copy, emptyResponse, errorIds, evaluate, finishAttempt,
-  isValidResponse, levelStats, makeAttempt, moveCursor, scoreAttempt,
-  sessionKey, setDraft, submitAnswer, toggleBookmark,
+  connectPair,
+  copy,
+  emptyResponse,
+  errorIds,
+  evaluate,
+  finishAttempt,
+  isValidResponse,
+  levelStats,
+  makeAttempt,
+  moveCursor,
+  scoreAttempt,
+  sessionKey,
+  setDraft,
+  submitAnswer,
+  toggleBookmark,
 } from '../src/core/exam.js';
 import {
-  clearLevel, completeSession, freshState, makeBackup, MAX_BACKUP_BYTES,
-  parseBackup, readState, SCHEMA_VERSION, storageKey, validateState, writeState,
+  clearLevel,
+  completeSession,
+  freshState,
+  makeBackup,
+  MAX_BACKUP_BYTES,
+  parseBackup,
+  readState,
+  SCHEMA_VERSION,
+  storageKey,
+  validateState,
+  writeState,
 } from '../src/core/storage.js';
 import { createHtmlReport } from '../src/core/report.js';
+import { resultCoaching, resultOutcome } from '../src/core/coaching.js';
 import { BANK_VERSION, DOMAINS } from '../src/data/meta.js';
 import { validateBank } from '../scripts/validate-bank.mjs';
 
 // Read the same authored JSON as the application; tests need no browser,
 // bundler, DOM implementation, network or JSON-module import extension.
-const files = await Promise.all(Array.from({ length: 6 }, (_, i) => readFile(new URL(`../src/data/domain-${i + 1}.json`, import.meta.url), 'utf8')));
-const questions = files.flatMap((text) => JSON.parse(text)).sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
+const files = await Promise.all(
+  Array.from({ length: 6 }, (_, i) => readFile(new URL(`../src/data/domain-${i + 1}.json`, import.meta.url), 'utf8')),
+);
+const questions = files
+  .flatMap((text) => JSON.parse(text))
+  .sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
 const at = (type, level = 1) => questions.find((q) => q.level === level && q.type === type);
 const start = '2026-10-09T09:00:00.000Z';
 const checked = '2026-10-09T09:01:00.000Z';
@@ -36,7 +62,11 @@ const wrongResponse = (q) => {
   return response;
 };
 const attempt = (level = 1, mode = 'exam', ids = null) => makeAttempt(level, questions, mode, ids, start);
-const withSession = (a, revision = 0) => ({ ...freshState(), revision, sessions: { [sessionKey(a.level, a.mode)]: a } });
+const withSession = (a, revision = 0) => ({
+  ...freshState(),
+  revision,
+  sessions: { [sessionKey(a.level, a.mode)]: a },
+});
 const completed = (level = 1, isCorrect = () => false, completedAt = ended, mode = 'exam', ids = null) => {
   let a = attempt(level, mode, ids);
   for (const id of a.questionIds) {
@@ -47,41 +77,246 @@ const completed = (level = 1, isCorrect = () => false, completedAt = ended, mode
 };
 
 class MemoryStorage {
-  constructor(entries = []) { this.values = new Map(entries); this.writes = 0; }
-  getItem(key) { return this.values.get(key) ?? null; }
-  setItem(key, value) { this.writes += 1; this.values.set(key, String(value)); }
-  removeItem(key) { this.values.delete(key); }
+  constructor(entries = []) {
+    this.values = new Map(entries);
+    this.writes = 0;
+  }
+  getItem(key) {
+    return this.values.get(key) ?? null;
+  }
+  setItem(key, value) {
+    this.writes += 1;
+    this.values.set(key, String(value));
+  }
+  removeItem(key) {
+    this.values.delete(key);
+  }
 }
+
+test('состояние результата меняется ровно на границах 60, 80 и 95 процентов', () => {
+  for (const [percent, expected] of [
+    [0, 'starting'],
+    [59.9, 'starting'],
+    [60, 'close'],
+    [79.9, 'close'],
+    [80, 'confident'],
+    [94.9, 'confident'],
+    [95, 'excellent'],
+    [100, 'excellent'],
+  ])
+    assert.equal(resultOutcome(percent).id, expected, String(percent));
+});
+
+test('рекомендации ранжируют реальные ошибки и называют темы из ошибочных заданий', () => {
+  const extraFailures = questions.filter((q) => q.level === 1 && q.domain === 6).slice(0, 2);
+  const failedIds = new Set(extraFailures.map((q) => q.id));
+  const a = completed(1, (q) => q.domain !== 2 && !failedIds.has(q.id));
+  const coaching = resultCoaching(a, questions);
+  assert.equal(coaching.score.percent, 80);
+  assert.equal(coaching.needed, 0);
+  assert.deepEqual(
+    coaching.priorities.map((row) => row.id),
+    [2, 6],
+  );
+  assert.deepEqual(
+    coaching.strong.map((row) => row.id),
+    [1, 3, 4, 5, 6],
+  );
+  assert.equal(coaching.priorities[0].wrong, 10);
+  assert.deepEqual(
+    coaching.priorities[1].topics,
+    extraFailures.map((q) => ({ title: q.topic, takeaway: q.takeaway })),
+  );
+  for (const row of coaching.priorities) {
+    const expected = new Set(
+      questions
+        .filter((q) => q.level === 1 && q.domain === row.id && (q.domain === 2 || failedIds.has(q.id)))
+        .map((q) => q.topic),
+    );
+    assert.deepEqual(new Set(row.topics.map((topic) => topic.title)), expected);
+  }
+  assert.equal(
+    coaching.formatFocus.wrong,
+    Math.max(
+      ...['single', 'multi', 'match'].map(
+        (type) =>
+          questions.filter((q) => q.level === 1 && q.type === type && (q.domain === 2 || failedIds.has(q.id))).length,
+      ),
+    ),
+  );
+});
+
+test('пропуски и непроверенные черновики не превращаются в рекомендации о слабых знаниях', () => {
+  let a = attempt();
+  const qs = questions.filter((q) => q.level === 1);
+  for (const q of qs.slice(0, 8)) a = submitAnswer(a, q, rightResponse(q), checked);
+  a = submitAnswer(a, qs[8], wrongResponse(qs[8]), checked);
+  a = setDraft(a, qs[10], rightResponse(qs[10]));
+  const coaching = resultCoaching(finishAttempt(a, ended), questions);
+  assert.equal(coaching.score.wrong, 1);
+  assert.equal(coaching.score.unanswered, 51);
+  assert.deepEqual(
+    coaching.priorities.map((row) => row.id),
+    [1],
+  );
+  assert.equal(coaching.strong.length, 0);
+  assert.equal(coaching.skipped.length, 6);
+  assert.equal(coaching.domains[1].topics.length, 0);
+  assert.equal(coaching.outcome.achievement, 'Попытка завершена досрочно');
+  assert.match(coaching.outcome.description, /по пропускам ещё предстоит проверить знания/);
+});
+
+test('без проверенных ответов нет сильных, слабых тем и совета по формату', () => {
+  const coaching = resultCoaching(finishAttempt(attempt(), ended), questions);
+  assert.equal(coaching.outcome.title, 'Начни с первого ответа.');
+  assert.equal(coaching.priorities.length, 0);
+  assert.equal(coaching.strong.length, 0);
+  assert.equal(coaching.formatFocus, null);
+  assert.equal(coaching.needed, 48);
+});
+
+test('идеальная подборка ошибок не выдаётся за полный экзамен; оформление не меняет общие шаблоны', () => {
+  const ids = questions
+    .filter((q) => q.level === 1 && q.domain === 2)
+    .slice(0, 3)
+    .map((q) => q.id);
+  const practice = resultCoaching(
+    completed(1, () => true, ended, 'mistakes', ids),
+    questions,
+  );
+  assert.equal(practice.isPractice, true);
+  assert.equal(practice.score.total, 3);
+  assert.equal(practice.score.weighted, null);
+  assert.equal(practice.outcome.achievement, 'Подборка без ошибок');
+  assert.match(practice.outcome.description, /результат выбранной подборки/);
+  const full = resultCoaching(
+    completed(1, () => true),
+    questions,
+  );
+  assert.equal(full.outcome.achievement, 'Все 60 — на своих местах');
+  assert.equal(full.strong.length, 6);
+  assert.equal(resultOutcome(100).achievement, 'Точность в деталях');
+});
+
+test('до учебной цели указано реальное число недостающих правильных ответов', () => {
+  const correctIds = new Set(
+    questions
+      .filter((q) => q.level === 1)
+      .slice(0, 35)
+      .map((q) => q.id),
+  );
+  const coaching = resultCoaching(
+    completed(1, (q) => correctIds.has(q.id)),
+    questions,
+  );
+  assert.equal(coaching.score.percent, 58.3);
+  assert.equal(coaching.needed, 13);
+});
 
 test('реальный банк проходит контракт и содержит 180 самостоятельных заданий', () => {
   const result = validateBank(questions);
   assert.deepEqual(result.errors, []);
   assert.equal(result.stats.total, 180);
   assert.equal(result.stats.cells.length, 18);
-  for (const cell of result.stats.cells) assert.deepEqual([cell.total, cell.single, cell.multi, cell.match], [10, 4, 4, 2]);
+  for (const cell of result.stats.cells)
+    assert.deepEqual([cell.total, cell.single, cell.multi, cell.match], [10, 4, 4, 2]);
 });
 
 test('валидатор обнаруживает поломки распределения, языка, ключей, пар и источников', async (t) => {
   const cases = [
-    ['дубликат ID', (bank) => { bank[1].id = bank[0].id; }],
-    ['нечисловой уровень', (bank) => { bank[0].level = '['; }],
-    ['повтор формулировки с пробелами', (bank) => { bank[1].prompt = `  ${bank[0].prompt.toLocaleUpperCase('ru')}  `; }],
-    ['английский вопрос', (bank) => { bank[0].prompt = 'Which answer is correct?'; }],
-    ['пустое объяснение варианта', (bank) => { bank.find((q) => q.type === 'single').options[0].explanation = ''; }],
-    ['неизвестный правильный вариант', (bank) => { bank.find((q) => q.type === 'single').correct = ['z']; }],
-    ['два ответа single', (bank) => { bank.find((q) => q.type === 'single').correct = ['a', 'b']; }],
-    ['слишком мало вариантов multi', (bank) => { bank.find((q) => q.type === 'multi').options.pop(); }],
-    ['повтор правой части пары', (bank) => { const q = bank.find((item) => item.type === 'match'); q.pairs[q.left[1].id] = q.pairs[q.left[0].id]; }],
-    ['нет объяснения пары', (bank) => { const q = bank.find((item) => item.type === 'match'); delete q.pairExplanations[q.left[0].id]; }],
-    ['источник исполняет код', (bank) => { bank[0].sources[0].url = 'javascript:alert(1)'; }],
-    ['источник с логином', (bank) => { bank[0].sources[0].url = 'https://user:secret@example.com/article'; }],
-    ['сокращённый источник', (bank) => { bank[0].sources[0].url = 'https://bit.ly/example'; }],
-    ['неполная матрица', (bank) => { bank.pop(); }],
+    [
+      'дубликат ID',
+      (bank) => {
+        bank[1].id = bank[0].id;
+      },
+    ],
+    [
+      'нечисловой уровень',
+      (bank) => {
+        bank[0].level = '[';
+      },
+    ],
+    [
+      'повтор формулировки с пробелами',
+      (bank) => {
+        bank[1].prompt = `  ${bank[0].prompt.toLocaleUpperCase('ru')}  `;
+      },
+    ],
+    [
+      'английский вопрос',
+      (bank) => {
+        bank[0].prompt = 'Which answer is correct?';
+      },
+    ],
+    [
+      'пустое объяснение варианта',
+      (bank) => {
+        bank.find((q) => q.type === 'single').options[0].explanation = '';
+      },
+    ],
+    [
+      'неизвестный правильный вариант',
+      (bank) => {
+        bank.find((q) => q.type === 'single').correct = ['z'];
+      },
+    ],
+    [
+      'два ответа single',
+      (bank) => {
+        bank.find((q) => q.type === 'single').correct = ['a', 'b'];
+      },
+    ],
+    [
+      'слишком мало вариантов multi',
+      (bank) => {
+        bank.find((q) => q.type === 'multi').options.pop();
+      },
+    ],
+    [
+      'повтор правой части пары',
+      (bank) => {
+        const q = bank.find((item) => item.type === 'match');
+        q.pairs[q.left[1].id] = q.pairs[q.left[0].id];
+      },
+    ],
+    [
+      'нет объяснения пары',
+      (bank) => {
+        const q = bank.find((item) => item.type === 'match');
+        delete q.pairExplanations[q.left[0].id];
+      },
+    ],
+    [
+      'источник исполняет код',
+      (bank) => {
+        bank[0].sources[0].url = 'javascript:alert(1)';
+      },
+    ],
+    [
+      'источник с логином',
+      (bank) => {
+        bank[0].sources[0].url = 'https://user:secret@example.com/article';
+      },
+    ],
+    [
+      'сокращённый источник',
+      (bank) => {
+        bank[0].sources[0].url = 'https://bit.ly/example';
+      },
+    ],
+    [
+      'неполная матрица',
+      (bank) => {
+        bank.pop();
+      },
+    ],
   ];
-  for (const [name, mutate] of cases) await t.test(name, () => {
-    const bank = clone(questions); mutate(bank);
-    assert.ok(validateBank(bank).errors.length > 0);
-  });
+  for (const [name, mutate] of cases)
+    await t.test(name, () => {
+      const bank = clone(questions);
+      mutate(bank);
+      assert.ok(validateBank(bank).errors.length > 0);
+    });
   assert.ok(validateBank(null).errors.length > 0);
 });
 
@@ -115,15 +350,23 @@ test('multi требует ровно правильный набор: поря�
   const all = questions.find((item) => item.type === 'multi' && item.correct.length === 5);
   assert.equal(evaluate(one, rightResponse(one)), true);
   assert.equal(evaluate(all, all.options.map((o) => o.id).reverse()), true);
-  assert.equal(evaluate(all, all.options.slice(1).map((o) => o.id)), false);
+  assert.equal(
+    evaluate(
+      all,
+      all.options.slice(1).map((o) => o.id),
+    ),
+    false,
+  );
 });
 
 test('match требует все правильные пары и запрещает повторное использование правого элемента', () => {
   const q = at('match');
-  const incomplete = rightResponse(q); delete incomplete[q.left[0].id];
+  const incomplete = rightResponse(q);
+  delete incomplete[q.left[0].id];
   assert.equal(isValidResponse(q, incomplete, false), true);
   assert.equal(evaluate(q, incomplete), false);
-  const duplicated = rightResponse(q); duplicated[q.left[1].id] = duplicated[q.left[0].id];
+  const duplicated = rightResponse(q);
+  duplicated[q.left[1].id] = duplicated[q.left[0].id];
   assert.equal(isValidResponse(q, duplicated), false);
   assert.equal(evaluate(q, duplicated), false);
   assert.equal(evaluate(q, { ...q.pairs, missing: q.right[0].id }), false);
@@ -213,7 +456,13 @@ test('курсор ограничен тестом, закладки перек�
   assert.deepEqual(toggleBookmark(saved, q.id).bookmarks, []);
   assert.strictEqual(toggleBookmark(saved, 'missing'), saved);
   const done = finishAttempt(saved, ended);
-  for (const next of [moveCursor(done, 1), toggleBookmark(done, q.id), setDraft(done, q, rightResponse(q)), submitAnswer(done, q, rightResponse(q)), finishAttempt(done)]) {
+  for (const next of [
+    moveCursor(done, 1),
+    toggleBookmark(done, q.id),
+    setDraft(done, q, rightResponse(q)),
+    submitAnswer(done, q, rightResponse(q)),
+    finishAttempt(done),
+  ]) {
     assert.strictEqual(next, done);
   }
 });
@@ -227,7 +476,10 @@ test('досрочное завершение оставляет пропуще�
   const done = finishAttempt(a, ended);
   assert.deepEqual(done.drafts, {});
   const score = scoreAttempt(done, questions);
-  assert.deepEqual([score.correct, score.total, score.answered, score.wrong, score.unanswered, score.incorrect], [1, 60, 2, 1, 58, 59]);
+  assert.deepEqual(
+    [score.correct, score.total, score.answered, score.wrong, score.unanswered, score.incorrect],
+    [1, 60, 2, 1, 58, 59],
+  );
   assert.equal(score.percent, 1.7);
   assert.equal(errorIds(done, questions).length, 59);
   assert.ok(errorIds(done, questions).includes(singles[2].id));
@@ -236,13 +488,22 @@ test('досрочное завершение оставляет пропуще�
 });
 
 test('основной балл пропорционален 60 вопросам, взвешенный отдельно учитывает веса программы', () => {
-  assert.equal(DOMAINS.reduce((sum, d) => sum + d.weight, 0), 100);
+  assert.equal(
+    DOMAINS.reduce((sum, d) => sum + d.weight, 0),
+    100,
+  );
   const onlyD6 = completed(1, (q) => q.domain === 6);
   const score = scoreAttempt(onlyD6, questions);
   assert.deepEqual([score.correct, score.total, score.answered, score.percent, score.weighted], [10, 60, 60, 16.7, 28]);
-  assert.deepEqual(score.byDomain.map((row) => row.correct), [0, 0, 0, 0, 0, 10]);
+  assert.deepEqual(
+    score.byDomain.map((row) => row.correct),
+    [0, 0, 0, 0, 0, 10],
+  );
   assert.ok(score.byDomain.every((row) => row.total === 10 && row.answered === 10));
-  const perfect = scoreAttempt(completed(2, () => true), questions);
+  const perfect = scoreAttempt(
+    completed(2, () => true),
+    questions,
+  );
   assert.deepEqual([perfect.percent, perfect.weighted, perfect.correct], [100, 100, 60]);
   const wrong = scoreAttempt(completed(3), questions);
   assert.deepEqual([wrong.percent, wrong.weighted], [0, 0]);
@@ -262,19 +523,35 @@ test('режим ошибок включает только выбранные �
 });
 
 test('режимы и уровни имеют независимые сессии, clearLevel удаляет только выбранный уровень', () => {
-  const e1 = attempt(1); const e2 = attempt(2); const e3 = attempt(3);
+  const e1 = attempt(1);
+  const e2 = attempt(2);
+  const e3 = attempt(3);
   const m1 = attempt(1, 'mistakes', [at('single').id]);
-  const h1 = completed(1); const h2 = completed(2, () => true);
+  const h1 = completed(1);
+  const h2 = completed(2, () => true);
   const h3 = completed(3, () => true, ended, 'mistakes', [at('single', 3).id]);
-  const state = { ...freshState(), sessions: { 'exam:1': e1, 'exam:2': e2, 'exam:3': e3, 'mistakes:1': m1 }, history: [h1, h2, h3] };
+  const state = {
+    ...freshState(),
+    sessions: { 'exam:1': e1, 'exam:2': e2, 'exam:3': e3, 'mistakes:1': m1 },
+    history: [h1, h2, h3],
+  };
   const checkedState = validateState(state, questions);
   assert.equal(Object.keys(checkedState.sessions).length, 4);
   const cleared = clearLevel(checkedState, 1);
   assert.deepEqual(Object.keys(cleared.sessions).sort(), ['exam:2', 'exam:3']);
-  assert.deepEqual(cleared.history.map((a) => a.id), [h2.id, h3.id]);
+  assert.deepEqual(
+    cleared.history.map((a) => a.id),
+    [h2.id, h3.id],
+  );
   assert.equal(state.history.length, 3);
   assert.equal(Object.keys(state.sessions).length, 4);
-  assert.deepEqual(freshState(), { schemaVersion: SCHEMA_VERSION, bankVersion: BANK_VERSION, revision: 0, sessions: {}, history: [] });
+  assert.deepEqual(freshState(), {
+    schemaVersion: SCHEMA_VERSION,
+    bankVersion: BANK_VERSION,
+    revision: 0,
+    sessions: {},
+    history: [],
+  });
 });
 
 test('история сохраняется один раз, новый пересдаваемый экзамен не меняет прошлый результат', () => {
@@ -293,7 +570,8 @@ test('история сохраняется один раз, новый пере
 });
 
 test('завершение с неверным ключом не должно удалять экзамен другого уровня', () => {
-  const e1 = attempt(1); const e2 = attempt(2);
+  const e1 = attempt(1);
+  const e2 = attempt(2);
   const state = { ...freshState(), sessions: { 'exam:1': e1, 'exam:2': e2 }, history: [] };
   const done1 = finishAttempt(e1, ended);
   const next = completeSession(state, 'exam:2', done1);
@@ -301,7 +579,8 @@ test('завершение с неверным ключом не должно у
 });
 
 test('завершение устаревшей попытки не должно стирать новую попытку того же уровня', () => {
-  const stale = attempt(1); const current = attempt(1);
+  const stale = attempt(1);
+  const current = attempt(1);
   const state = withSession(current);
   const next = completeSession(state, 'exam:1', finishAttempt(stale, ended));
   assert.deepEqual(next, state, 'Должен совпадать идентификатор активной попытки, а не только уровень.');
@@ -315,12 +594,21 @@ test('статистика уровня учитывает только полн
   const otherLevel = completed(2, () => true);
   const state = { ...freshState(), history: [third, first, otherLevel, practice, second] };
   const stats = levelStats(state, 1, questions);
-  assert.deepEqual(stats.exams.map((a) => a.id), [first.id, second.id, third.id]);
+  assert.deepEqual(
+    stats.exams.map((a) => a.id),
+    [first.id, second.id, third.id],
+  );
   assert.equal(stats.best, 100);
   assert.equal(stats.previous, 16.7);
   assert.equal(stats.latest.id, third.id);
   assert.equal(stats.latestScore.percent, 100);
-  assert.deepEqual(levelStats(freshState(), 1, questions), { exams: [], latest: null, best: null, previous: null, latestScore: null });
+  assert.deepEqual(levelStats(freshState(), 1, questions), {
+    exams: [],
+    latest: null,
+    best: null,
+    previous: null,
+    latestScore: null,
+  });
 });
 
 test('резервная копия восстанавливает историю и черновик; подменённый correct пересчитывается', () => {
@@ -330,16 +618,26 @@ test('резервная копия восстанавливает истори�
   const done = completed(2, () => true);
   const state = { ...withSession(active, 7), history: [done] };
   const saved = makeBackup(state);
+  assert.equal(saved.application, 'ai-basics-exam-trainer');
   saved.state.sessions['exam:1'].answers[q.id].correct = true;
   saved.state.history[0].answers[at('single', 2).id].correct = false;
   const restored = parseBackup(JSON.stringify(saved), questions);
+  assert.deepEqual(
+    parseBackup(JSON.stringify({ ...saved, application: 'ai-practicum' }), questions),
+    restored,
+    'Резервные копии до переименования остаются совместимыми.',
+  );
   assert.equal(restored.revision, 7);
   assert.equal(restored.sessions['exam:1'].answers[q.id].correct, false);
   assert.equal(restored.history[0].answers[at('single', 2).id].correct, true);
   assert.deepEqual(restored.sessions['exam:1'].drafts, active.drafts);
   assert.equal(scoreAttempt(restored.sessions['exam:1'], questions).correct, 0);
   assert.equal(scoreAttempt(restored.history[0], questions).percent, 100);
-  assert.equal(saved.state.sessions['exam:1'].answers[q.id].correct, true, 'Валидация не должна менять переданный объект.');
+  assert.equal(
+    saved.state.sessions['exam:1'].answers[q.id].correct,
+    true,
+    'Валидация не должна менять переданный объект.',
+  );
 });
 
 test('score не доверяет флагу correct даже до валидации импортированного состояния', () => {
@@ -355,45 +653,195 @@ test('score не доверяет флагу correct даже до валида�
 test('повреждённые, несовместимые и структурно неверные сохранения отклоняются', async (t) => {
   const base = withSession(attempt());
   const cases = [
-    ['неверная версия схемы', (s) => { s.schemaVersion += 1; }],
-    ['неверная версия банка', (s) => { s.bankVersion = 'other'; }],
-    ['отрицательная ревизия', (s) => { s.revision = -1; }],
-    ['дробная ревизия', (s) => { s.revision = 0.5; }],
-    ['массив вместо sessions', (s) => { s.sessions = []; }],
-    ['объект вместо history', (s) => { s.history = {}; }],
-    ['неверный ключ сессии', (s) => { s.sessions['exam:2'] = s.sessions['exam:1']; delete s.sessions['exam:1']; }],
-    ['чужой уровень вопроса', (s) => { s.sessions['exam:1'].questionIds[0] = at('single', 2).id; }],
-    ['дубли вопросов', (s) => { s.sessions['exam:1'].questionIds[1] = s.sessions['exam:1'].questionIds[0]; }],
-    ['пустой тест', (s) => { s.sessions['exam:1'].questionIds = []; }],
-    ['сокращённый экзамен', (s) => { s.sessions['exam:1'].questionIds.pop(); }],
-    ['переставленные вопросы экзамена', (s) => { s.sessions['exam:1'].questionIds.reverse(); }],
-    ['курсор вне теста', (s) => { s.sessions['exam:1'].cursor = 60; }],
-    ['неверная дата', (s) => { s.sessions['exam:1'].startedAt = 'not-a-date'; }],
-    ['завершённая активная сессия', (s) => { s.sessions['exam:1'].completedAt = ended; }],
-    ['опасный ID', (s) => { s.sessions['exam:1'].id = '<script>alert(1)</script>'; }],
-    ['неизвестный режим', (s) => { s.sessions['exam:1'].mode = 'admin'; }],
-    ['чужая закладка', (s) => { s.sessions['exam:1'].bookmarks = [at('single', 2).id]; }],
-    ['повтор закладки', (s) => { const id = at('single').id; s.sessions['exam:1'].bookmarks = [id, id]; }],
-    ['неизвестный ответ', (s) => { s.sessions['exam:1'].answers.unknown = { response: ['a'], correct: true, submittedAt: checked }; }],
-    ['неполный проверенный ответ', (s) => { s.sessions['exam:1'].answers[at('single').id] = { response: [], correct: true, submittedAt: checked }; }],
-    ['неизвестный вариант', (s) => { s.sessions['exam:1'].answers[at('single').id] = { response: ['z'], correct: true, submittedAt: checked }; }],
-    ['черновик чужого вопроса', (s) => { s.sessions['exam:1'].drafts[at('single', 2).id] = rightResponse(at('single', 2)); }],
-    ['черновик проверенного ответа', (s) => { const q = at('single'); s.sessions['exam:1'] = submitAnswer(s.sessions['exam:1'], q, rightResponse(q), checked); s.sessions['exam:1'].drafts[q.id] = rightResponse(q); }],
-    ['повтор ID попытки', (s) => { s.history = [finishAttempt(s.sessions['exam:1'], ended)]; }],
-    ['незавершённая попытка в истории', (s) => { const a = s.sessions['exam:1']; s.sessions = {}; s.history = [a]; }],
-    ['черновик в завершённой истории', (s) => { const q = at('single'); const a = finishAttempt(s.sessions['exam:1'], ended); a.drafts[q.id] = rightResponse(q); s.sessions = {}; s.history = [a]; }],
+    [
+      'неверная версия схемы',
+      (s) => {
+        s.schemaVersion += 1;
+      },
+    ],
+    [
+      'неверная версия банка',
+      (s) => {
+        s.bankVersion = 'other';
+      },
+    ],
+    [
+      'отрицательная ревизия',
+      (s) => {
+        s.revision = -1;
+      },
+    ],
+    [
+      'дробная ревизия',
+      (s) => {
+        s.revision = 0.5;
+      },
+    ],
+    [
+      'массив вместо sessions',
+      (s) => {
+        s.sessions = [];
+      },
+    ],
+    [
+      'объект вместо history',
+      (s) => {
+        s.history = {};
+      },
+    ],
+    [
+      'неверный ключ сессии',
+      (s) => {
+        s.sessions['exam:2'] = s.sessions['exam:1'];
+        delete s.sessions['exam:1'];
+      },
+    ],
+    [
+      'чужой уровень вопроса',
+      (s) => {
+        s.sessions['exam:1'].questionIds[0] = at('single', 2).id;
+      },
+    ],
+    [
+      'дубли вопросов',
+      (s) => {
+        s.sessions['exam:1'].questionIds[1] = s.sessions['exam:1'].questionIds[0];
+      },
+    ],
+    [
+      'пустой тест',
+      (s) => {
+        s.sessions['exam:1'].questionIds = [];
+      },
+    ],
+    [
+      'сокращённый экзамен',
+      (s) => {
+        s.sessions['exam:1'].questionIds.pop();
+      },
+    ],
+    [
+      'переставленные вопросы экзамена',
+      (s) => {
+        s.sessions['exam:1'].questionIds.reverse();
+      },
+    ],
+    [
+      'курсор вне теста',
+      (s) => {
+        s.sessions['exam:1'].cursor = 60;
+      },
+    ],
+    [
+      'неверная дата',
+      (s) => {
+        s.sessions['exam:1'].startedAt = 'not-a-date';
+      },
+    ],
+    [
+      'завершённая активная сессия',
+      (s) => {
+        s.sessions['exam:1'].completedAt = ended;
+      },
+    ],
+    [
+      'опасный ID',
+      (s) => {
+        s.sessions['exam:1'].id = '<script>alert(1)</script>';
+      },
+    ],
+    [
+      'неизвестный режим',
+      (s) => {
+        s.sessions['exam:1'].mode = 'admin';
+      },
+    ],
+    [
+      'чужая закладка',
+      (s) => {
+        s.sessions['exam:1'].bookmarks = [at('single', 2).id];
+      },
+    ],
+    [
+      'повтор закладки',
+      (s) => {
+        const id = at('single').id;
+        s.sessions['exam:1'].bookmarks = [id, id];
+      },
+    ],
+    [
+      'неизвестный ответ',
+      (s) => {
+        s.sessions['exam:1'].answers.unknown = { response: ['a'], correct: true, submittedAt: checked };
+      },
+    ],
+    [
+      'неполный проверенный ответ',
+      (s) => {
+        s.sessions['exam:1'].answers[at('single').id] = { response: [], correct: true, submittedAt: checked };
+      },
+    ],
+    [
+      'неизвестный вариант',
+      (s) => {
+        s.sessions['exam:1'].answers[at('single').id] = { response: ['z'], correct: true, submittedAt: checked };
+      },
+    ],
+    [
+      'черновик чужого вопроса',
+      (s) => {
+        s.sessions['exam:1'].drafts[at('single', 2).id] = rightResponse(at('single', 2));
+      },
+    ],
+    [
+      'черновик проверенного ответа',
+      (s) => {
+        const q = at('single');
+        s.sessions['exam:1'] = submitAnswer(s.sessions['exam:1'], q, rightResponse(q), checked);
+        s.sessions['exam:1'].drafts[q.id] = rightResponse(q);
+      },
+    ],
+    [
+      'повтор ID попытки',
+      (s) => {
+        s.history = [finishAttempt(s.sessions['exam:1'], ended)];
+      },
+    ],
+    [
+      'незавершённая попытка в истории',
+      (s) => {
+        const a = s.sessions['exam:1'];
+        s.sessions = {};
+        s.history = [a];
+      },
+    ],
+    [
+      'черновик в завершённой истории',
+      (s) => {
+        const q = at('single');
+        const a = finishAttempt(s.sessions['exam:1'], ended);
+        a.drafts[q.id] = rightResponse(q);
+        s.sessions = {};
+        s.history = [a];
+      },
+    ],
   ];
-  for (const [name, mutate] of cases) await t.test(name, () => {
-    const damaged = clone(base); mutate(damaged);
-    assert.throws(() => validateState(damaged, questions));
-    assert.throws(() => parseBackup(JSON.stringify({ application: 'ai-practicum', state: damaged }), questions));
-  });
+  for (const [name, mutate] of cases)
+    await t.test(name, () => {
+      const damaged = clone(base);
+      mutate(damaged);
+      assert.throws(() => validateState(damaged, questions));
+      assert.throws(() => parseBackup(JSON.stringify({ application: 'ai-practicum', state: damaged }), questions));
+    });
   for (const value of [null, [], 17, 'state', {}, undefined]) assert.throws(() => validateState(value, questions));
 });
 
 test('резервные копии: некорректный JSON, чужое приложение и предел именно в байтах', () => {
   assert.throws(() => parseBackup('{broken', questions), /JSON/u);
-  assert.throws(() => parseBackup(JSON.stringify({ application: 'other', state: freshState() }), questions), /резервная копия/u);
+  assert.throws(
+    () => parseBackup(JSON.stringify({ application: 'other', state: freshState() }), questions),
+    /резервная копия/u,
+  );
   assert.throws(() => parseBackup(null, questions));
   const tooManyAscii = 'x'.repeat(MAX_BACKUP_BYTES + 1);
   assert.throws(() => parseBackup(tooManyAscii, questions), /10 МБ/u);
@@ -414,7 +862,15 @@ test('повреждённое локальное сохранение защи�
   assert.ok(result.warning);
   assert.equal(storage.getItem('progress'), raw);
   assert.equal(storage.writes, 0);
-  const unavailable = readState({ getItem() { throw new Error('SecurityError'); } }, 'progress', questions);
+  const unavailable = readState(
+    {
+      getItem() {
+        throw new Error('SecurityError');
+      },
+    },
+    'progress',
+    questions,
+  );
   assert.equal(unavailable.protected, false);
   assert.ok(unavailable.warning);
   assert.deepEqual(readState(null, 'progress', questions).state, freshState());
@@ -423,7 +879,11 @@ test('повреждённое локальное сохранение защи�
 test('нехватка места или запрет записи возвращают предупреждение, не уничтожая сохранение', () => {
   const original = JSON.stringify({ ...freshState(), revision: 2 });
   const storage = new MemoryStorage([['progress', original]]);
-  storage.setItem = () => { const error = new Error('quota full'); error.name = 'QuotaExceededError'; throw error; };
+  storage.setItem = () => {
+    const error = new Error('quota full');
+    error.name = 'QuotaExceededError';
+    throw error;
+  };
   const result = writeState(storage, 'progress', { ...freshState(), revision: 3 }, 2);
   assert.equal(result.ok, false);
   assert.ok(result.warning);
@@ -480,8 +940,11 @@ test('HTML-отчёт содержит исходные ответы, поясн
 test('HTML-отчёт экранирует тексты, пояснения, даты, пары и атрибуты ссылок', () => {
   const marker = `<img src=x onerror="alert('x')"> & <script>alert(1)</script>`;
   const q = clone(at('single'));
-  q.prompt = marker; q.explanation = marker; q.takeaway = marker;
-  q.options[0].text = marker; q.options[0].explanation = marker;
+  q.prompt = marker;
+  q.explanation = marker;
+  q.takeaway = marker;
+  q.options[0].text = marker;
+  q.options[0].explanation = marker;
   q.sources = [
     { title: marker, url: 'https://safe.example/?q=" onclick="alert(1)' },
     { title: 'Недопустимая ссылка', url: 'javascript:alert(1)' },
@@ -489,9 +952,10 @@ test('HTML-отчёт экранирует тексты, пояснения, д�
     { title: 'Без протокола', url: '//unsafe.example/' },
   ];
   const pair = clone(at('match'));
-  pair.left[0].text = marker; pair.right[0].text = marker;
+  pair.left[0].text = marker;
+  pair.right[0].text = marker;
   pair.pairExplanations[pair.left[0].id] = marker;
-  const localBank = questions.map((item) => item.id === q.id ? q : item.id === pair.id ? pair : item);
+  const localBank = questions.map((item) => (item.id === q.id ? q : item.id === pair.id ? pair : item));
   let a = makeAttempt(1, localBank, 'mistakes', [q.id, pair.id], start);
   a = submitAnswer(a, q, rightResponse(q), checked);
   a = submitAnswer(a, pair, rightResponse(pair), checked);

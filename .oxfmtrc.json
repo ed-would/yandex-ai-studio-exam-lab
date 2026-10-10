@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "embeddedLanguageFormatting": "off",
+  "sortImports": false,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    ".playwright-mcp/**",
+    "assets/**",
+    "docs/**",
+    "public/images/**",
+    "public/fonts/**",
+    "public/third-party-notices.txt",
+    "package-lock.json",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md",
+    "src/data/domain-*.json"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true,
+    "node": false
+  },
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.{js,mjs,cjs}", "scripts/**"],
+      "env": { "browser": false, "node": true }
+    },
+    {
+      "files": ["src/**/*.js", "public/**/*.js"],
+      "env": { "browser": true, "node": false }
+    },
+    {
+      "files": ["tests/**"],
+      "env": { "browser": true, "node": true }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    ".playwright-mcp/**",
+    "assets/**",
+    "docs/**",
+    "public/images/**",
+    "public/fonts/**"
+  ]
+}
