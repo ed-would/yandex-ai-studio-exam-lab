@@ -1,0 +1,19 @@
+name: Вопрос
+description: Помощь с запуском, использованием и устройством проекта.
+title: '[Question]: '
+body:
+  - type: markdown
+    attributes:
+      value: 'Перед вопросом проверьте README.md, SUPPORT.md и существующие Issues. Не прикладывайте личные данные.'
+  - type: textarea
+    id: question
+    attributes:
+      label: Вопрос и контекст
+      description: Что хотите сделать и какая информация нужна?
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: Что уже пробовали
+      description: Для локального запуска укажите ОС, версии Node.js и npm, команду и текст ошибки.

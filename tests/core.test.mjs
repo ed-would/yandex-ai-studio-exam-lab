@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import {
   connectPair,
   copy,
   emptyResponse,
+  expireTimedQuestions,
   errorIds,
   evaluate,
   finishAttempt,
@@ -12,6 +13,8 @@ import {
   levelStats,
   makeAttempt,
   moveCursor,
+  QUESTION_SECONDS,
+  questionSecondsLeft,
   scoreAttempt,
   sessionKey,
   setDraft,
@@ -853,15 +856,17 @@ test('резервные копии: некорректный JSON, чужое �
 });
 
 test('повреждённое локальное сохранение защищено от молчаливой перезаписи при чтении', () => {
-  const raw = '{неполный JSON';
-  const storage = new MemoryStorage([['progress', raw]]);
-  const result = readState(storage, 'progress', questions);
-  assert.deepEqual(result.state, freshState());
-  assert.equal(result.protected, true);
-  assert.equal(result.raw, raw);
-  assert.ok(result.warning);
-  assert.equal(storage.getItem('progress'), raw);
-  assert.equal(storage.writes, 0);
+  for (const raw of ['', '{неполный JSON']) {
+    const storage = new MemoryStorage([['progress', raw]]);
+    const result = readState(storage, 'progress', questions);
+    assert.deepEqual(result.state, freshState());
+    assert.equal(result.protected, true);
+    assert.equal(result.raw, raw);
+    assert.ok(result.warning);
+    assert.equal(writeState(storage, 'progress', freshState(), 0).ok, false);
+    assert.equal(storage.getItem('progress'), raw);
+    assert.equal(storage.writes, 0);
+  }
   const unavailable = readState(
     {
       getItem() {
@@ -1002,12 +1007,133 @@ test('responsive-изображения имеют реальные размер
   const manifest = JSON.parse(await readFile(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'));
   for (const [source, image] of Object.entries(manifest)) {
     assert.ok(image.width > 0 && image.height > 0, source);
+    const original = await readFile(new URL(`../public/images/${source}`, import.meta.url)).catch((error) => {
+      if (error.code !== 'ENOENT') throw error;
+      return readFile(new URL(`../docs/design-lab/${source.replace(/^brand\//, 'logos/')}`, import.meta.url));
+    });
     let previous = 0;
     for (const [width, path] of image.variants) {
       assert.ok(width > previous && width <= image.width, path);
       previous = width;
-      assert.ok((await readFile(new URL(`../public/images/${path}`, import.meta.url))).length > 0, path);
+      assert.ok(path === source || path.endsWith('-optimized.webp'), path);
+      assert.equal(path.slice(0, path.lastIndexOf('/')), source.slice(0, source.lastIndexOf('/')), path);
+      const variant = await readFile(new URL(`../public/images/${path}`, import.meta.url));
+      assert.ok(variant.length > 0, path);
+      if (path !== source) assert.ok(variant.length < original.length, path);
     }
     assert.equal(previous, image.width, source);
+  }
+  const folders = (await readdir(new URL('../public/images/', import.meta.url))).filter((file) => file !== '.DS_Store');
+  assert.deepEqual(folders.sort(), ['artwork', 'brand']);
+  const files = new Set(
+    (
+      await Promise.all(
+        folders.map(async (folder) =>
+          (await readdir(new URL(`../public/images/${folder}/`, import.meta.url)))
+            .filter((file) => file !== '.DS_Store')
+            .map((file) => `${folder}/${file}`),
+        ),
+      )
+    ).flat(),
+  );
+  const used = new Set(Object.values(manifest).flatMap(({ variants }) => variants.map(([, file]) => file)));
+  used.add('brand/ai-studio-white.svg');
+  assert.deepEqual(files, used);
+});
+test('таймер даёт 72 секунды и сохраняет сроки при переходах между вопросами', () => {
+  assert.equal(QUESTION_SECONDS, 72);
+  assert.equal(attempt().timing, undefined);
+  const timed = makeAttempt(1, questions, 'exam', null, start, true);
+  const first = timed.questionIds[0];
+  const startMs = Date.parse(start);
+  assert.equal(questionSecondsLeft(timed, first, startMs), 72);
+  assert.equal(questionSecondsLeft(timed, first, startMs + 62000), 10);
+  assert.equal(questionSecondsLeft(timed, first, startMs + 72000), 0);
+  assert.equal(questionSecondsLeft(timed, first, startMs + 100000), 0);
+  const moved = moveCursor(timed, 1, new Date(startMs + 20000).toISOString());
+  const returned = moveCursor(moved, 0, new Date(startMs + 30000).toISOString());
+  assert.equal(returned.timing.deadlines[first], timed.timing.deadlines[first]);
+  assert.equal(questionSecondsLeft(returned, first, startMs + 30000), 42);
+  assert.equal(questionSecondsLeft(returned, timed.questionIds[1], startMs + 30000), 62);
+  assert.deepEqual(validateState(withSession(returned), questions), withSession(returned));
+});
+
+test('таймер фиксирует ошибку для любого формата и не принимает просроченный ответ или черновик', () => {
+  const deadline = new Date(Date.parse(start) + 72000).toISOString();
+  const justBefore = new Date(Date.parse(deadline) - 1).toISOString();
+  for (const type of ['single', 'multi', 'match']) {
+    const q = at(type);
+    const timed = makeAttempt(1, questions, 'mistakes', [q.id], start, true);
+    const drafted = setDraft(timed, q, rightResponse(q), start);
+    const accepted = submitAnswer(drafted, q, rightResponse(q), justBefore);
+    assert.equal(accepted.answers[q.id].correct, true);
+    const expired = submitAnswer(drafted, q, rightResponse(q), deadline);
+    assert.equal(expired.answers[q.id].correct, false);
+    assert.equal(expired.answers[q.id].timedOut, true);
+    assert.deepEqual(expired.answers[q.id].response, emptyResponse(q));
+    assert.deepEqual(expired.drafts, {});
+    assert.deepEqual(setDraft(drafted, q, rightResponse(q), deadline), expired);
+    assert.equal(submitAnswer(expired, q, rightResponse(q), deadline), expired);
+    assert.equal(expireTimedQuestions(expired, questions, ended), expired);
+    const score = scoreAttempt(expired, questions);
+    assert.equal(score.wrong, 1);
+    assert.equal(score.unanswered, 0);
+    assert.deepEqual(errorIds(expired, questions), [q.id]);
+    assert.deepEqual(validateState(withSession(expired), questions), withSession(expired));
+    const complete = finishAttempt(expired, deadline);
+    const state = { ...freshState(), history: [complete] };
+    assert.deepEqual(parseBackup(JSON.stringify(makeBackup(state)), questions), state);
+    assert.match(createHtmlReport(complete, questions), /Ошибка · время вышло/);
+  }
+});
+
+test('таймер сжигает все просроченные посещённые вопросы и открывает ближайший без ответа', () => {
+  const timed = makeAttempt(1, questions, 'exam', null, start, true);
+  const later = moveCursor(timed, 2, checked);
+  const when = new Date(Date.parse(checked) + 72000).toISOString();
+  const expired = expireTimedQuestions(later, questions, when);
+  assert.ok(expired.answers[timed.questionIds[0]].timedOut);
+  assert.ok(expired.answers[timed.questionIds[2]].timedOut);
+  assert.equal(expired.cursor, 3);
+  assert.equal(questionSecondsLeft(expired, timed.questionIds[3], Date.parse(when)), 72);
+  const review = moveCursor(expired, 0, when);
+  assert.equal(expireTimedQuestions(review, questions, when), review);
+});
+
+test('таймер не меняет старые попытки и отклоняет подделанные сроки и ответы', () => {
+  const legacy = withSession(attempt());
+  assert.deepEqual(validateState(legacy, questions), legacy);
+  const timed = makeAttempt(1, questions, 'exam', null, start, true);
+  const expired = expireTimedQuestions(timed, questions, new Date(Date.parse(start) + 72000).toISOString());
+  const original = withSession(expired);
+  for (const mutate of [
+    (a) => {
+      a.timing.secondsPerQuestion = 73;
+    },
+    (a) => {
+      a.timing.deadlines.unknown = ended;
+    },
+    (a) => {
+      a.timing.deadlines[a.questionIds[0]] = 'broken';
+    },
+    (a) => {
+      a.timing.deadlines[a.questionIds[0]] = ended;
+    },
+    (a) => {
+      delete a.timing;
+    },
+    (a) => {
+      a.answers[a.questionIds[0]].response = rightResponse(questions[0]);
+    },
+    (a) => {
+      a.answers[a.questionIds[0]].timedOut = false;
+    },
+    (a) => {
+      delete a.timing.deadlines[a.questionIds[a.cursor]];
+    },
+  ]) {
+    const broken = clone(original);
+    mutate(broken.sessions['exam:1']);
+    assert.throws(() => validateState(broken, questions));
   }
 });

@@ -1,0 +1,23 @@
+.progress-track {
+  --progress-fill: var(--ui-accent);
+  height: 5px;
+  min-width: 0;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--muted) 28%, var(--surface));
+  overflow: hidden;
+}
+
+.progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--progress-fill);
+  background-image: var(--ui-gradient);
+  transition: width 0.45s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-track > span {
+    transition: none;
+  }
+}

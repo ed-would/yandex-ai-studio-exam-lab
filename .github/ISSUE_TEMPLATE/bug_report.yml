@@ -1,0 +1,33 @@
+name: Ошибка приложения
+description: Сбой запуска, интерфейса, результатов или сохранений.
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: 'Не публикуйте секреты и личные резервные копии. Об уязвимостях сообщайте приватно по SECURITY.md.'
+  - type: textarea
+    id: problem
+    attributes:
+      label: Что произошло
+      description: Опишите сбой и ожидаемое поведение.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Как воспроизвести
+      description: Шаги, уровень или ID вопроса, если они важны. Используйте искусственные данные.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Среда
+      description: Браузер и версия, ОС, адрес сайта или команда запуска, коммит или версия проекта. Для локального запуска — версии Node.js и npm.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Дополнительные сведения
+      description: Текст ошибки, безопасный пример или снимок экрана без личных данных.

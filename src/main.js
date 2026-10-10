@@ -4,6 +4,7 @@ import { html } from './components/ui.js';
 import { questions } from './data/bank.js';
 import './styles.css';
 import './theme.css';
+import './components/progress-bar.css';
 
 class ErrorBoundary extends Component {
   state = { error: false };
@@ -17,4 +18,12 @@ class ErrorBoundary extends Component {
   }
 }
 
-render(html`<${ErrorBoundary}><${App} questions=${questions}/></${ErrorBoundary}>`, document.getElementById('app'));
+const mount = (Root) =>
+  render(html`<${ErrorBoundary}><${Root} questions=${questions}/></${ErrorBoundary}>`, document.getElementById('app'));
+
+if (import.meta.env.DEV && import.meta.env.MODE === 'results-preview') {
+  Promise.all([import('./dev/results-preview.js'), import('./dev/results-preview.css')]).then(([preview]) => {
+    preview.preparePreviewRoute();
+    mount(preview.ResultsPreview);
+  });
+} else mount(App);

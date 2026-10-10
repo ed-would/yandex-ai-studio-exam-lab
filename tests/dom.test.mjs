@@ -16,10 +16,13 @@ const { render } = await import('preact');
 const { act } = await import('preact/test-utils');
 const { html } = await import('../src/components/ui.js');
 const { App } = await import('../src/app.js');
-const { freshState, makeBackup } = await import('../src/core/storage.js');
-const { makeAttempt, finishAttempt, scoreAttempt, submitAnswer } = await import('../src/core/exam.js');
+const { freshState, makeBackup, writeTabProgress } = await import('../src/core/storage.js');
+const { makeAttempt, finishAttempt, moveCursor, scoreAttempt, setDraft, submitAnswer } =
+  await import('../src/core/exam.js');
 const { CompletionConfetti } = await import('../src/components/completion-confetti.js');
 const { BANK_VERSION } = await import('../src/data/meta.js');
+const imageVariants = JSON.parse(readFileSync(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'));
+const { ResultsPreview, preparePreviewRoute } = await import('../src/dev/results-preview.js');
 const questions = Array.from({ length: 6 }, (_, index) =>
   JSON.parse(readFileSync(new URL(`../src/data/domain-${index + 1}.json`, import.meta.url), 'utf8')),
 )
@@ -82,6 +85,46 @@ afterEach(async () => {
   await unmount();
 });
 
+test('макеты переключают уровни и результаты, переживают повторный монтаж и не меняют настоящий прогресс', async (t) => {
+  const realKey = 'ai-practicum:v1:/';
+  const before = window.localStorage.getItem(realKey);
+  t.after(() =>
+    before === null ? window.localStorage.removeItem(realKey) : window.localStorage.setItem(realKey, before),
+  );
+  const realState = freshState();
+  realState.history.push(finishAttempt(makeAttempt(3, questions)));
+  const raw = JSON.stringify(realState);
+  window.localStorage.setItem(realKey, raw);
+  preparePreviewRoute();
+  const previewMount = () => act(() => render(html`<${ResultsPreview} questions=${questions}/>`, container));
+  await previewMount();
+  assert.equal(window.location.hash, '#/results/preview-1-target80');
+  assert.equal(get('.score-number').textContent, '80%');
+  await click(findButton('Следующий'));
+  assert.equal(window.location.hash, '#/results/preview-1-below95');
+  assert.equal(get('.score-number').textContent, '93,3%');
+  const select = get('select[aria-label="Тест для просмотра"]');
+  await act(() => {
+    select.value = '3';
+    select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.equal(window.location.hash, '#/results/preview-3-below95');
+  assert.ok(get('.results-page.theme-3'));
+  await unmount();
+  await previewMount();
+  assert.equal(get('.score-number').textContent, '93,3%');
+  await go('#/history');
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Очистить результаты'));
+  assert.equal(container.querySelector('.history-table'), null);
+  await click(findButton('Открыть результат'));
+  assert.equal(get('.score-number').textContent, '93,3%');
+  await go('#/history');
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
+  assert.equal(window.localStorage.getItem(realKey), raw);
+});
+
 test('переключатель обновляет тему и иллюстрации, сохраняя текущий тест и черновик', async () => {
   const initial = freshState();
   const attempt = makeAttempt(1, questions);
@@ -102,6 +145,23 @@ test('переключатель обновляет тему и иллюстра
   await go('#/');
   const heroSource = container.querySelector('.hero-visual .generative-art source');
   assert.equal(heroSource?.media, root.dataset.theme === 'dark' ? 'all' : undefined);
+  assert.match(get('.hero-visual img').getAttribute('src'), /images\/artwork\/hero-ribbon-expanded\.webp$/);
+  for (const image of container.querySelectorAll('.generative-art img, .section-backdrop img, .brand-symbol img')) {
+    const source = image.getAttribute('src').replace(/^\.\/images\//, '');
+    assert.ok(
+      Object.values(imageVariants).some(({ variants }) => variants.at(-1)[1] === source),
+      source,
+    );
+  }
+  for (const image of container.querySelectorAll('img[srcset], source[srcset]')) {
+    for (const candidate of image.getAttribute('srcset').split(', ')) {
+      const source = candidate.split(' ')[0].replace(/^\.\/images\//, '');
+      assert.ok(
+        Object.values(imageVariants).some(({ variants }) => variants.some(([, file]) => file === source)),
+        source,
+      );
+    }
+  }
   await go('#/exam/1');
   assert.equal(get('.choice input').checked, true);
   assert.equal(storage.getItem(key), saved);
@@ -196,31 +256,40 @@ test('хлопушка появляется после завершения и �
   assert.equal(container.querySelector('.completion-confetti'), null);
 });
 
-test('лучший результат скрыт, пока в экзамене нет ни одного ответа', async () => {
+test('карточки прогресса сохраняют места результата и диаграммы без выдуманных баллов', async () => {
   await mount();
   await go('#/history');
-  assert.equal(container.querySelectorAll('.stats-value').length, 0);
-  assert.equal(container.querySelectorAll('.mini-chart').length, 0);
+  assert.equal(container.querySelectorAll('.stats-value-empty').length, 3);
+  assert.equal(container.querySelectorAll('.mini-chart-empty').length, 3);
+  assert.equal(container.querySelectorAll('.chart-column').length, 0);
+  assert.ok(
+    [...container.querySelectorAll('.stats-value')].every((node) => node.textContent === '—пока нет результата'),
+  );
   await unmount();
 
   const empty = finishAttempt(makeAttempt(1, questions));
   const answeredQuestion = questions.find((question) => question.level === 1 && question.type === 'single');
   const answered = finishAttempt(
-    submitAnswer(makeAttempt(1, questions), answeredQuestion, [...answeredQuestion.correct]),
+    submitAnswer(makeAttempt(1, questions), answeredQuestion, [
+      answeredQuestion.options.find((option) => !answeredQuestion.correct.includes(option.id)).id,
+    ]),
   );
   const initial = freshState();
-  initial.history.push(empty, answered);
+  initial.history.push(empty, answered, finishAttempt(makeAttempt(2, questions)));
   storage.setItem(key, JSON.stringify(initial));
   await mount();
   await go('#/history');
 
-  assert.equal(container.querySelectorAll('.stats-value').length, 1);
-  assert.equal(container.querySelectorAll('.mini-chart').length, 1);
-  assert.match(get('.stats-card.theme-1 .stats-value').textContent, /лучший результат/);
-  assert.equal(container.querySelector('.stats-card.theme-2 .stats-value'), null);
-  assert.equal(container.querySelector('.stats-card.theme-3 .stats-value'), null);
-  assert.equal(container.querySelector('.stats-card.theme-2 .mini-chart'), null);
-  assert.equal(container.querySelector('.stats-card.theme-3 .mini-chart'), null);
+  assert.equal(container.querySelectorAll('.stats-value').length, 3);
+  assert.equal(container.querySelectorAll('.mini-chart').length, 3);
+  assert.equal(get('.stats-card.theme-1 .stats-value').textContent, '0%лучший результат');
+  for (const level of [2, 3]) {
+    const card = get(`.stats-card.theme-${level}`);
+    assert.equal(card.querySelector('.stats-value').textContent, '—пока нет результата');
+    assert.equal(card.querySelector('.mini-chart').getAttribute('aria-label'), 'Нет данных о результатах попыток');
+    assert.equal(card.querySelector('.chart-column'), null);
+    assert.equal(Boolean(card.querySelector('.stats-card-footer button')), level === 2);
+  }
 });
 
 test('хлопушка учитывает reduced motion, останавливается по таймеру и снимает обработчики', async () => {
@@ -365,6 +434,61 @@ test('Сопоставление создаёт, заменяет и удаля�
   assert.equal(container.querySelectorAll('.pair-explanation').length, q.left.length);
 });
 
+test('Сопоставление сохраняет единое состояние в мобильных select и блокирует пары после проверки', async () => {
+  await mount();
+  await click('[data-start="1"]');
+  const qs = questions.filter((q) => q.level === 1);
+  const q = qs.find((q) => q.type === 'match');
+  await click(`[data-question-index="${qs.indexOf(q)}"]`);
+
+  const selects = () => [...container.querySelectorAll('.match-mobile-select')];
+  assert.equal(selects().length, q.left.length);
+  assert.ok(selects().every((select) => select.options.length === q.right.length + 1));
+  assert.ok(
+    selects().every((select, index) => select.getAttribute('aria-label') === `Соответствие для: ${q.left[index].text}`),
+  );
+  assert.equal(container.querySelectorAll('.match-board-desktop .match-node').length, q.left.length + q.right.length);
+
+  const change = async (index, value) => {
+    await act(() => {
+      const select = selects()[index];
+      select.value = value;
+      select.dispatchEvent(new window.Event('change', { bubbles: true }));
+    });
+  };
+  await change(0, q.right[0].id);
+  await change(1, q.right[1].id);
+  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {
+    [q.left[0].id]: q.right[0].id,
+    [q.left[1].id]: q.right[1].id,
+  });
+  assert.match(
+    selects()[0].closest('.match-mobile-row').textContent,
+    new RegExp(q.right[0].text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+  );
+
+  // Выбор занятого определения заменяет предыдущую связь.
+  await change(1, q.right[0].id);
+  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[1].id]: q.right[0].id });
+  // Пустой option удаляет связь, а resize не меняет черновик.
+  await change(1, '');
+  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  await change(0, q.right[1].id);
+  await act(() => window.dispatchEvent(new window.Event('resize')));
+  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[0].id]: q.right[1].id });
+  await click('.clear-pairs');
+  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+
+  // Полный корректный ответ блокирует обе презентации и показывает выбранные определения.
+  for (const [index, left] of q.left.entries()) await change(index, q.pairs[left.id]);
+  assert.equal(get('[data-action="check-answer"]').disabled, false);
+  await click('[data-action="check-answer"]');
+  assert.ok(get('.feedback.correct'));
+  assert.ok(selects().every((select) => select.disabled));
+  assert.equal(container.querySelectorAll('.match-mobile-definition').length, q.left.length);
+  assert.ok([...container.querySelectorAll('.match-board-desktop .match-node')].every((node) => node.disabled));
+});
+
 test('Черновик, ответ, текущая позиция и закладка переживают перезапуск приложения', async () => {
   await mount();
   await click('[data-start="2"]');
@@ -451,6 +575,62 @@ test('Все 180 заданий проходимы через DOM: три пол
   );
 });
 
+test('пустой прогресс скрывает очистку, черновик показывает её только для своего уровня', async () => {
+  for (const raw of [null, JSON.stringify(freshState())]) {
+    if (raw !== null) storage.setItem(key, raw);
+    await mount();
+    await go('#/history');
+    assert.equal(container.querySelector('[aria-label^="Очистить результаты уровня"]'), null);
+    assert.equal(findButton('Очистить все результаты'), undefined);
+    await unmount();
+  }
+
+  await mount();
+  await go('#/');
+  await click('[data-start="1"]');
+  await click(`input[value="${questions[0].correct[0]}"]`);
+  await go('#/history');
+  assert.ok(get('[aria-label="Очистить результаты уровня 1"]'));
+  assert.equal(container.querySelectorAll('[aria-label^="Очистить результаты уровня"]').length, 1);
+  assert.match(get('.stats-card-footer').textContent, /0 полных попыток/);
+  assert.ok(findButton('Очистить все результаты'));
+  await click('[aria-label="Очистить результаты уровня 1"]');
+  await click(findButton('Очистить результаты'));
+  assert.deepEqual(currentState().sessions, {});
+  assert.equal(container.querySelector('[aria-label^="Очистить результаты уровня"]'), null);
+  assert.equal(findButton('Очистить все результаты'), undefined);
+});
+
+test('очистка учитывает завершённые и незавершённые разборы ошибок независимо от фильтра', async () => {
+  const initial = freshState();
+  initial.history.push(finishAttempt(makeAttempt(1, questions, 'mistakes', [questions[0].id])));
+  initial.sessions['mistakes:2'] = makeAttempt(2, questions, 'mistakes', [questions.find((q) => q.level === 2).id]);
+  storage.setItem(key, JSON.stringify(initial));
+  await mount();
+  await go('#/history');
+  const mode = get('select[aria-label="Режим в истории"]');
+  await act(() => {
+    mode.value = 'exam';
+    mode.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+  assert.match(text(), /Нет попыток с такими условиями/);
+  assert.ok(get('[aria-label="Очистить результаты уровня 1"]'));
+  assert.ok(get('[aria-label="Очистить результаты уровня 2"]'));
+  assert.equal(container.querySelector('[aria-label="Очистить результаты уровня 3"]'), null);
+  assert.ok(
+    [...container.querySelectorAll('.stats-card-footer')].every((node) => /0 полных попыток/.test(node.textContent)),
+  );
+  await click('[aria-label="Очистить результаты уровня 1"]');
+  await click(findButton('Очистить результаты'));
+  assert.equal(container.querySelector('[aria-label="Очистить результаты уровня 1"]'), null);
+  assert.ok(findButton('Очистить все результаты'));
+  await click('[aria-label="Очистить результаты уровня 2"]');
+  await click(findButton('Очистить результаты'));
+  assert.deepEqual(currentState().sessions, {});
+  assert.deepEqual(currentState().history, []);
+  assert.equal(findButton('Очистить все результаты'), undefined);
+});
+
 test('Очистка отдельного уровня сохраняет другие, полная очистка удаляет все попытки', async () => {
   const initial = freshState();
   for (const level of [1, 2]) initial.history.push(finishAttempt(makeAttempt(level, questions)));
@@ -463,10 +643,14 @@ test('Очистка отдельного уровня сохраняет дру
   assert.equal(currentState().history.length, 1);
   assert.equal(currentState().history[0].level, 2);
   assert.ok(currentState().sessions['exam:3']);
+  assert.equal(container.querySelector('[aria-label="Очистить результаты уровня 1"]'), null);
+  assert.ok(get('[aria-label="Очистить результаты уровня 3"]'));
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(currentState().history.length, 0);
   assert.deepEqual(currentState().sessions, {});
+  assert.equal(container.querySelector('[aria-label^="Очистить результаты уровня"]'), null);
+  assert.equal(findButton('Очистить все результаты'), undefined);
 });
 
 test('Темы фильтруют материалы каждого домена, список можно сбросить и искать', async () => {
@@ -567,6 +751,10 @@ test('Повреждённое сохранение не стирается ав
   storage.setItem(key, '{broken');
   await mount();
   assert.ok(get('.storage-warning'));
+  await go('#/history');
+  assert.equal(container.querySelector('[aria-label^="Очистить результаты уровня"]'), null);
+  assert.ok(findButton('Очистить все результаты'));
+  await go('#/');
   await click('[data-start="1"]');
   await click(`input[value="${questions[0].correct[0]}"]`);
   assert.equal(storage.getItem(key), '{broken');
@@ -601,6 +789,7 @@ test('устаревшее сохранение можно скрыть, очи�
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.storage-warning'), null);
   assert.equal(JSON.parse(storage.getItem(key)).bankVersion, BANK_VERSION);
+  assert.equal(findButton('Очистить все результаты'), undefined);
 
   await go('#/');
   await click('[data-start="1"]');
@@ -622,7 +811,7 @@ test('без Web Locks полная очистка снимает блокиро
   const oldState = freshState();
   oldState.bankVersion = 'older-question-bank';
   window.localStorage.setItem(key, JSON.stringify(oldState));
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(html`<${App} questions=${questions} storageName=${key} tabStorage=${null}/>`, container));
   assert.match(text(), /До очистки новые попытки не сохраняются на устройстве/);
   assert.match(text(), /только в памяти вкладки/);
 
@@ -1035,7 +1224,7 @@ test('браузер без Web Locks не пишет в localStorage и про�
   Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
   const raw = JSON.stringify(freshState());
   window.localStorage.setItem(key, raw);
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(html`<${App} questions=${questions} storageName=${key} tabStorage=${null}/>`, container));
   assert.match(text(), /только в памяти вкладки/);
   await click('[data-start="1"]');
   await click(`input[value="${questions[0].correct[0]}"]`);
@@ -1044,4 +1233,619 @@ test('браузер без Web Locks не пишет в localStorage и про�
   await act(() => window.dispatchEvent(new window.StorageEvent('storage', { key, storageArea: window.localStorage })));
   assert.doesNotMatch(text(), /Прогресс изменился в другой вкладке/);
   assert.equal(window.localStorage.getItem(key), raw);
+});
+
+test('вкладочный кэш сохраняет завершённый результат после перезапуска с защищёнными данными', async (t) => {
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  t.after(() => {
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  for (const raw of ['', '{broken', JSON.stringify({ ...freshState(), bankVersion: 'older-question-bank' })]) {
+    const local = new MemoryStorage();
+    local.map.set(key, raw);
+    const tab = new MemoryStorage();
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+    window.location.hash = '#/';
+    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await click('[data-start="1"]');
+    await click(`input[value="${questions[0].correct[0]}"]`);
+    await click(findButton('Проверить'));
+    await click(findButton('Завершить'));
+    await click(findButton('Завершить и посмотреть балл'));
+    const resultId = window.location.hash.replace('#/results/', '');
+    assert.ok(resultId);
+    assert.match(text(), /только в этой вкладке/);
+    await unmount();
+    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    assert.equal(window.location.hash, `#/results/${resultId}`);
+    assert.ok(get('.results-page'));
+    await go('#/history');
+    assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+    assert.equal(local.getItem(key), raw);
+    await unmount();
+  }
+});
+
+test('вкладочный кэш переживает отсутствие или запрет Web Locks', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else delete window.navigator.locks;
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  for (const locks of [
+    undefined,
+    { request: () => Promise.reject(new window.DOMException('Blocked', 'SecurityError')) },
+  ]) {
+    const local = new MemoryStorage();
+    local.map.set(key, JSON.stringify(freshState()));
+    const tab = new MemoryStorage();
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+    Object.defineProperty(window.navigator, 'locks', { configurable: true, value: locks });
+    window.location.hash = '#/';
+    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await click('[data-start="1"]');
+    await click(`input[value="${questions[0].correct[0]}"]`);
+    await click(findButton('Проверить'));
+    await click(findButton('Завершить'));
+    await click(findButton('Завершить и посмотреть балл'));
+    const resultId = window.location.hash.replace('#/results/', '');
+    await unmount();
+    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    assert.equal(window.location.hash, `#/results/${resultId}`);
+    assert.match(text(), /только в этой вкладке/);
+    assert.equal(local.getItem(key), JSON.stringify(freshState()), `locks=${locks ? 'denied' : 'absent'}`);
+    await unmount();
+  }
+});
+
+test('вкладочный кэш сохраняет прогресс при ошибке локальной записи', async (t) => {
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const original = JSON.stringify(freshState());
+  local.map.set(key, original);
+  const tab = new MemoryStorage();
+  local.setItem = () => {
+    throw new Error('Storage full');
+  };
+  t.after(() => {
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await click('[data-start="1"]');
+  await click(`input[value="${questions[0].correct[0]}"]`);
+  assert.match(text(), /переживёт обновление/);
+  assert.match(text(), /Скачай копию до закрытия вкладки/);
+  await unmount();
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  assert.ok(get('.question-prompt'));
+  assert.equal(local.getItem(key), original);
+  assert.ok(tab.getItem(`${key}:tab-progress`));
+});
+
+test('вкладочный кэш отбрасывается после внешнего изменения и сохраняет чужую историю', async (t) => {
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const tab = new MemoryStorage();
+  const base = freshState();
+  const cached = { ...base, sessions: { 'exam:1': makeAttempt(1, questions) } };
+  const foreign = { ...freshState(), history: [finishAttempt(makeAttempt(2, questions))] };
+  local.map.set(key, JSON.stringify(base));
+  writeTabProgress(tab, key, local.getItem(key), cached);
+  t.after(() => {
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  local.setItem(key, JSON.stringify(foreign));
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await go('#/history');
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  assert.equal(tab.getItem(`${key}:tab-progress`), null);
+  assert.equal(local.getItem(key), JSON.stringify(foreign));
+});
+
+test('вкладочный кэш удаляется после успешной очистки и восстановления', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const tab = new MemoryStorage();
+  const original = JSON.stringify(freshState());
+  const local = new MemoryStorage();
+  local.map.set(key, original);
+  const cached = { ...freshState(), sessions: { 'exam:1': makeAttempt(1, questions) } };
+  writeTabProgress(tab, key, original, cached);
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else delete window.navigator.locks;
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  Object.defineProperty(window.navigator, 'locks', {
+    configurable: true,
+    value: { request: (_name, save) => Promise.resolve(save()) },
+  });
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await go('#/history');
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Очистить результаты'));
+  assert.equal(tab.getItem(`${key}:tab-progress`), null);
+  assert.notEqual(local.getItem(key), original);
+});
+
+test('вкладочный кэш удаляется после успешного импорта', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const tab = new MemoryStorage();
+  const original = JSON.stringify(freshState());
+  local.map.set(key, original);
+  writeTabProgress(tab, key, original, { ...freshState(), sessions: { 'exam:1': makeAttempt(1, questions) } });
+  const imported = freshState();
+  imported.history.push(finishAttempt(makeAttempt(3, questions)));
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else delete window.navigator.locks;
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  Object.defineProperty(window.navigator, 'locks', {
+    configurable: true,
+    value: { request: (_name, save) => Promise.resolve(save()) },
+  });
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await go('#/history');
+  const input = get('input[type="file"]');
+  const file = new window.File([JSON.stringify(makeBackup(imported))], 'backup.json', { type: 'application/json' });
+  Object.defineProperty(input, 'files', { value: [file], configurable: true });
+  await act(async () => {
+    input.dispatchEvent(new window.Event('change', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  await click(findButton('Восстановить'));
+  assert.equal(tab.getItem(`${key}:tab-progress`), null);
+  assert.equal(JSON.parse(local.getItem(key)).history.length, 1);
+});
+
+test('вкладочный кэш удаляется после восстановления защищённого локального сохранения', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const tab = new MemoryStorage();
+  const old = { ...freshState(), bankVersion: 'older-question-bank' };
+  const oldRaw = JSON.stringify(old);
+  local.map.set(key, oldRaw);
+  writeTabProgress(tab, key, oldRaw, { ...freshState(), sessions: { 'exam:1': makeAttempt(1, questions) } });
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else delete window.navigator.locks;
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  Object.defineProperty(window.navigator, 'locks', {
+    configurable: true,
+    value: { request: (_name, save) => Promise.resolve(save()) },
+  });
+  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await go('#/history');
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Очистить результаты'));
+  assert.equal(tab.getItem(`${key}:tab-progress`), null);
+  assert.equal(JSON.parse(local.getItem(key)).bankVersion, BANK_VERSION);
+});
+
+test('обычное локальное сохранение переживает завершение и повторный монтаж', async () => {
+  await mount();
+  await click('[data-start="1"]');
+  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(findButton('Проверить'));
+  await click(findButton('Завершить'));
+  await click(findButton('Завершить и посмотреть балл'));
+  const resultId = window.location.hash.replace('#/results/', '');
+  await go('#/history');
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  await unmount();
+  await mount();
+  assert.equal(window.location.hash, '#/history');
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  await go(`#/results/${resultId}`);
+  assert.ok(get('.results-page'));
+});
+
+test('неудачная очистка или импорт не заменяют временную копию текущего прогресса', async () => {
+  const raw = '{protected-original';
+  storage.setItem(key, raw);
+  const tab = new MemoryStorage();
+  const cached = { ...freshState(), history: [finishAttempt(makeAttempt(1, questions))] };
+  writeTabProgress(tab, key, raw, cached);
+  const tabRaw = tab.getItem(`${key}:tab-progress`);
+  storage.setItem = () => {
+    throw new Error('Storage full');
+  };
+  const renderApp = () =>
+    act(() =>
+      render(html`<${App} questions=${questions} storage=${storage} storageName=${key} tabStorage=${tab}/>`, container),
+    );
+  await renderApp();
+  await go('#/history');
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Очистить результаты'));
+  assert.equal(tab.getItem(`${key}:tab-progress`), tabRaw);
+  assert.ok(findButton('Очистить результаты'));
+  await unmount();
+  await renderApp();
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  const input = get('input[type="file"]');
+  const imported = { ...freshState(), history: [finishAttempt(makeAttempt(3, questions))] };
+  Object.defineProperty(input, 'files', {
+    value: [new window.File([JSON.stringify(makeBackup(imported))], 'backup.json')],
+    configurable: true,
+  });
+  await act(async () => {
+    input.dispatchEvent(new window.Event('change', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  await click(findButton('Восстановить'));
+  assert.equal(storage.getItem(key), raw);
+  assert.equal(tab.getItem(`${key}:tab-progress`), tabRaw);
+  await unmount();
+  await renderApp();
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  assert.match(get('.history-title').textContent, /Базовый/);
+});
+
+test('завершение снова показывает предупреждение, если оба сохранения недоступны', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  t.after(() =>
+    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
+  );
+  Object.defineProperty(window.navigator, 'locks', {
+    configurable: true,
+    value: { request: (_name, save) => Promise.resolve(save()) },
+  });
+  await mount();
+  await click('[data-start="1"]');
+  storage.setItem = () => {
+    throw new Error('Storage full');
+  };
+  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(findButton('Проверить'));
+  assert.ok(get('.storage-warning'));
+  await click('[aria-label="Скрыть сообщение"]');
+  assert.equal(container.querySelector('.storage-warning'), null);
+  await click(findButton('Завершить'));
+  await click(findButton('Завершить и посмотреть балл'));
+  assert.ok(get('.results-page'));
+  assert.match(get('.storage-warning').textContent, /Не удалось сохранить прогресс/);
+  assert.match(get('.storage-warning').textContent, /только в памяти вкладки/);
+  assert.doesNotMatch(get('.storage-warning').textContent, /переживёт обновление/);
+});
+
+test('очистка уровня при отказе обоих хранилищ сохраняет историю и подтверждение', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  t.after(() =>
+    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
+  );
+  const state = { ...freshState(), history: [finishAttempt(makeAttempt(1, questions))] };
+  for (const rejectedLocks of [false, true]) {
+    Object.defineProperty(window.navigator, 'locks', {
+      configurable: true,
+      value: {
+        request: (_name, save) =>
+          rejectedLocks ? Promise.reject(new window.DOMException('Blocked', 'SecurityError')) : Promise.resolve(save()),
+      },
+    });
+    for (const protectedRaw of [null, '']) {
+      const local = new MemoryStorage();
+      const tab = new MemoryStorage();
+      const raw = protectedRaw ?? JSON.stringify(state);
+      local.setItem(key, raw);
+      if (protectedRaw !== null) writeTabProgress(tab, key, raw, state);
+      const tabRaw = tab.getItem(`${key}:tab-progress`);
+      local.setItem = tab.setItem = () => {
+        throw new Error('Storage full');
+      };
+      const renderApp = () =>
+        act(() =>
+          render(
+            html`<${App} questions=${questions} storage=${local} storageName=${key} tabStorage=${tab}/>`,
+            container,
+          ),
+        );
+      await renderApp();
+      await go('#/history');
+      await click('[aria-label="Очистить результаты уровня 1"]');
+      await click(findButton('Очистить результаты'));
+      assert.ok(findButton('Очистить результаты'));
+      assert.doesNotMatch(text(), /Результаты уровня 1 удалены/);
+      assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+      assert.equal(local.getItem(key), raw);
+      assert.equal(tab.getItem(`${key}:tab-progress`), tabRaw);
+      await unmount();
+      await renderApp();
+      assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+      await unmount();
+    }
+  }
+});
+
+test('очистка уровня сохраняется во вкладочном кэше при защищённом оригинале', async () => {
+  const raw = '';
+  storage.setItem(key, raw);
+  const tab = new MemoryStorage();
+  const state = {
+    ...freshState(),
+    history: [finishAttempt(makeAttempt(1, questions)), finishAttempt(makeAttempt(2, questions))],
+  };
+  writeTabProgress(tab, key, raw, state);
+  const renderApp = () =>
+    act(() =>
+      render(html`<${App} questions=${questions} storage=${storage} storageName=${key} tabStorage=${tab}/>`, container),
+    );
+  await renderApp();
+  await go('#/history');
+  await click('[aria-label="Очистить результаты уровня 1"]');
+  await click(findButton('Очистить результаты'));
+  assert.match(text(), /Результаты уровня 1 удалены/);
+  await unmount();
+  await renderApp();
+  assert.equal(storage.getItem(key), raw);
+  assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
+  assert.match(get('.history-title').textContent, /Продвинутый/);
+});
+test('таймер включается перед стартом, а продолжение и повторный монтаж не сбрасывают срок', async () => {
+  await mount();
+  assert.equal(get('[role="switch"]').checked, false);
+  await click('[role="switch"]');
+  await click('[data-start="1"]');
+  const timed = currentState().sessions['exam:1'];
+  const deadline = timed.timing.deadlines[timed.questionIds[0]];
+  assert.equal(timed.timing.secondsPerQuestion, 72);
+  assert.ok(get('[role="timer"]'));
+  assert.match(get('[role="timer"]').textContent, /01:1[012]/);
+  await go('#/');
+  await click('[role="switch"]');
+  assert.equal(get('[role="switch"]').checked, false);
+  await click('[data-start="1"]');
+  assert.equal(currentState().sessions['exam:1'].timing.deadlines[timed.questionIds[0]], deadline);
+  await unmount();
+  await mount();
+  assert.ok(get('[role="timer"]'));
+  assert.equal(currentState().sessions['exam:1'].timing.deadlines[timed.questionIds[0]], deadline);
+});
+
+test('таймер красный в последние 10 секунд и автоматически блокирует просроченный вопрос', async () => {
+  const start = new Date(Date.now() - 65000).toISOString();
+  const timed = makeAttempt(1, questions, 'exam', null, start, true);
+  storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': timed } }));
+  await go('#/exam/1');
+  await mount();
+  assert.ok(get('[role="timer"].urgent'));
+  assert.match(text(), /Время истекает/);
+  await unmount();
+  const past = new Date(Date.now() - 74000).toISOString();
+  const expired = makeAttempt(1, questions, 'exam', null, past, true);
+  const q = questions.find((q) => q.id === expired.questionIds[0]);
+  const draft = setDraft(expired, q, q.correct, past);
+  storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': draft } }));
+  await mount();
+  assert.equal(currentState().sessions['exam:1'].cursor, 1);
+  assert.ok(currentState().sessions['exam:1'].answers[q.id].timedOut);
+  assert.match(text(), /Вопрос засчитан как ошибка/);
+  await click('[data-question-index="0"]');
+  assert.ok(get('input[type="radio"]').disabled);
+  assert.match(get('.feedback-heading').textContent, /Время вышло/);
+  assert.equal(container.querySelector('.check-answer'), null);
+  assert.match(get('[role="timer"]').textContent, /00:00/);
+  await unmount();
+  await mount();
+  assert.equal(currentState().sessions['exam:1'].cursor, 0);
+  assert.ok(currentState().sessions['exam:1'].answers[q.id].timedOut);
+});
+
+test('таймер последнего вопроса завершает тест и оставляет ошибку доступной в разборе', async () => {
+  const started = new Date(Date.now() - 80000).toISOString();
+  let timed = makeAttempt(1, questions, 'exam', null, started, true);
+  const ids = timed.questionIds;
+  for (let index = 0; index < ids.length - 1; index++) {
+    const now = new Date(Date.parse(started) + index).toISOString();
+    timed = moveCursor(timed, index, now);
+    const q = questions.find((q) => q.id === ids[index]);
+    timed = submitAnswer(timed, q, q.type === 'match' ? q.pairs : q.correct, now);
+  }
+  timed = moveCursor(timed, ids.length - 1, new Date(Date.parse(started) + 100).toISOString());
+  storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': timed } }));
+  await go('#/exam/1');
+  await mount();
+  assert.ok(get('.results-page'));
+  assert.equal(currentState().sessions['exam:1'], undefined);
+  const result = currentState().history[0];
+  assert.ok(result.answers[ids.at(-1)].timedOut);
+  assert.equal(scoreAttempt(result, questions).wrong, 1);
+  assert.equal(scoreAttempt(result, questions).unanswered, 0);
+  const review = [...container.querySelectorAll('.review-item')].at(-1);
+  await click(review.querySelector('summary'));
+  assert.match(review.textContent, /Время вышло/);
+  assert.ok(review.querySelector('.main-explanation'));
+  await unmount();
+  await mount();
+  assert.ok(get('.results-page'));
+});
+test('без таймера тест по умолчанию сохраняет прежний режим', async () => {
+  await mount();
+  await click('[data-start="2"]');
+  assert.equal(currentState().sessions['exam:2'].timing, undefined);
+  assert.equal(container.querySelector('[role="timer"]'), null);
+});
+
+test('таймер можно выбрать и для повторной подготовки по ошибкам', async () => {
+  const q = questions[0];
+  const original = makeAttempt(1, questions, 'mistakes', [q.id]);
+  const wrong = [q.options.find((option) => !q.correct.includes(option.id)).id];
+  const complete = finishAttempt(submitAnswer(original, q, wrong));
+  storage.setItem(key, JSON.stringify({ ...freshState(), history: [complete] }));
+  await go(`#/results/${complete.id}`);
+  await mount();
+  await click('[role="switch"]');
+  await click(findButton('Повторить ошибки (1)'));
+  assert.ok(get('[role="timer"]'));
+  assert.equal(currentState().sessions['mistakes:1'].timing.secondsPerQuestion, 72);
+});
+test('таймер с отложенным Web Lock не возвращает пользователя с материалов и не сжигает невидимый следующий вопрос', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  t.after(() =>
+    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
+  );
+  for (const mode of ['exam', 'mistakes']) {
+    const requests = [];
+    Object.defineProperty(window.navigator, 'locks', {
+      configurable: true,
+      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+    });
+    const started = new Date(Date.now() - 74000).toISOString();
+    const timed = makeAttempt(1, questions, mode, mode === 'mistakes' ? [questions[0].id] : null, started, true);
+    const session = `${mode}:1`;
+    storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { [session]: timed } }));
+    await go(`#/${mode}/1`);
+    await mount();
+    assert.equal(requests.length, 1);
+    await go('#/study');
+    await act(async () => {
+      await requests.shift()();
+    });
+    assert.equal(window.location.hash, '#/study');
+    assert.equal(currentState().history.length, 0);
+    assert.deepEqual(currentState().sessions[session].answers, {});
+    assert.equal(currentState().sessions[session].cursor, 0);
+    assert.equal(Object.keys(currentState().sessions[session].timing.deadlines).length, 1);
+    await go(`#/${mode}/1`);
+    await act(async () => {
+      await requests.shift()();
+    });
+    if (mode === 'mistakes') {
+      assert.ok(get('.results-page'));
+      assert.ok(currentState().history[0].answers[questions[0].id].timedOut);
+    } else {
+      const next = currentState().sessions[session];
+      assert.equal(next.cursor, 1);
+      assert.ok(next.answers[questions[0].id].timedOut);
+      assert.ok(Date.parse(next.timing.deadlines[next.questionIds[1]]) > Date.now() + 70000);
+    }
+    await unmount();
+  }
+});
+
+test('таймер отложенного старта отменяется при уходе с экрана, а новая попытка получает полный срок', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  t.after(() =>
+    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
+  );
+  for (const mode of ['exam', 'mistakes']) {
+    const requests = [];
+    Object.defineProperty(window.navigator, 'locks', {
+      configurable: true,
+      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+    });
+    const initial = freshState();
+    let origin = '#/';
+    if (mode === 'mistakes') {
+      const q = questions[0];
+      const wrong = [q.options.find((option) => !q.correct.includes(option.id)).id];
+      const result = finishAttempt(submitAnswer(makeAttempt(1, questions, mode, [q.id]), q, wrong));
+      initial.history.push(result);
+      origin = `#/results/${result.id}`;
+    }
+    storage.setItem(key, JSON.stringify(initial));
+    await go(origin);
+    await mount();
+    await click('[role="switch"]');
+    const start = () => click(mode === 'exam' ? '[data-start="1"]' : findButton('Повторить ошибки (1)'));
+    await start();
+    assert.equal(requests.length, 1);
+    await go('#/study');
+    await act(async () => {
+      await requests.shift()();
+    });
+    assert.equal(window.location.hash, '#/study');
+    assert.deepEqual(currentState().sessions, {});
+    assert.equal(currentState().history.length, initial.history.length);
+    await go(origin);
+    await start();
+    const beforeSave = Date.now();
+    await act(async () => {
+      await requests.shift()();
+    });
+    assert.equal(window.location.hash, `#/${mode}/1`);
+    const started = currentState().sessions[`${mode}:1`];
+    assert.ok(Date.parse(started.timing.deadlines[started.questionIds[0]]) >= beforeSave + 72000);
+    assert.equal(container.querySelector('[role="dialog"]'), null);
+    await unmount();
+  }
+});
+
+test('таймер отложенного завершения сохраняет результат без возврата на экран теста или результатов', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  t.after(() =>
+    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
+  );
+  for (const mode of ['exam', 'mistakes']) {
+    const requests = [];
+    Object.defineProperty(window.navigator, 'locks', {
+      configurable: true,
+      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+    });
+    const timed = makeAttempt(1, questions, mode, mode === 'mistakes' ? [questions[0].id] : null, undefined, true);
+    const session = `${mode}:1`;
+    storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { [session]: timed } }));
+    await go(`#/${mode}/1`);
+    await mount();
+    await click(findButton('Завершить'));
+    await click(findButton('Завершить и посмотреть балл'));
+    assert.equal(requests.length, 1);
+    const destination = mode === 'exam' ? '#/study' : '#/';
+    await go(destination);
+    await act(async () => {
+      await requests.shift()();
+    });
+    assert.equal(window.location.hash, destination);
+    assert.equal(currentState().sessions[session], undefined);
+    assert.equal(currentState().history.length, 1);
+    const result = currentState().history[0];
+    assert.equal(result.id, timed.id);
+    assert.deepEqual(result.timing, timed.timing);
+    await unmount();
+    await mount();
+    assert.equal(window.location.hash, destination);
+    await go(`#/results/${result.id}`);
+    assert.ok(get('.results-page'));
+    await unmount();
+  }
 });

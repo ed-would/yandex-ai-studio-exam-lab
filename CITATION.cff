@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: 'Если используете этот проект в работе или публикации, пожалуйста, укажите автора и исходный репозиторий.'
+type: software
+title: 'Тренажёр компетенций ИИ — Yandex AI Studio Exam Lab'
+authors:
+  - family-names: Would
+    given-names: Ed
+    website: 'https://github.com/ed-would'
+repository-code: 'https://github.com/ed-would/yandex-ai-studio-exam-lab'
+url: 'https://github.com/ed-would/yandex-ai-studio-exam-lab'
+license: MIT
+abstract: 'Независимый русскоязычный тренажёр по программе экзамена «Основы работы с ИИ»: 180 авторских вопросов, три тренировочных теста и разборы ответов.'
+keywords:
+  - Yandex AI Studio
+  - AI literacy
+  - exam preparation
+  - generative AI

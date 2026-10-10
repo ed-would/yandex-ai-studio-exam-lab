@@ -60,7 +60,7 @@ details.accordion--surface > summary {
 details.accordion--surface[open] > summary {
   border-radius: 13px 13px 0 0;
   border-bottom: 1px solid var(--line, #e4e0e9);
-  background: color-mix(in srgb, var(--accent, #005b64) 5%, transparent);
+  background: color-mix(in srgb, var(--ui-accent, #25212b) 5%, transparent);
 }
 .details-content {
   display: grid;
@@ -111,12 +111,12 @@ details[open] > .details-content {
 @media (hover: hover) and (pointer: fine) {
   details.accordion > summary:hover,
   .accordion-trigger:hover {
-    background-color: color-mix(in srgb, var(--accent, #005b64) 7%, transparent);
+    background-color: color-mix(in srgb, var(--ui-accent, #25212b) 7%, transparent);
   }
 }
 details.accordion > summary:active,
 .accordion-trigger:active {
-  background-color: color-mix(in srgb, var(--accent, #005b64) 12%, transparent);
+  background-color: color-mix(in srgb, var(--ui-accent, #25212b) 12%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   details.accordion > summary,

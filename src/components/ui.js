@@ -15,7 +15,8 @@ const PATHS = {
   external: ['M14 4h6v6', 'm20 4-9 9', 'M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5'],
   bookmark: ['M6 4h12v17l-6-4-6 4z'],
   clock: ['M12 8v5l3 2', 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0'],
-  refresh: ['M20 7v5h-5', 'M4 17v-5h5', 'M6.1 6.1A8 8 0 0 1 20 12', 'M17.9 17.9A8 8 0 0 1 4 12'],
+  calendar: ['M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2'],
+  refresh: ['M3 12a9 9 0 1 0 9-9c-2.52 0-4.93 1-6.74 2.74L3 8', 'M3 3v5h5'],
   download: ['M12 3v12', 'm7 10 5 5 5-5', 'M4 16v5h16v-5'],
   upload: ['M12 16V4', 'm7 9 5-5 5 5', 'M4 17v4h16v-4'],
   trash: ['M3 6h18', 'M9 6V3h6v3', 'm5 6 1 15h12l1-15', 'M10 10v7', 'M14 10v7'],
@@ -37,7 +38,13 @@ const PATHS = {
 };
 
 export function Icon({ name = 'spark', size = 20, className = '' }) {
-  return html`<svg class=${`icon ${className}`} data-icon=${name} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
+  const gradientId = `icon-gradient-${useId()}`;
+  return html`<svg class=${`icon ${className}`} data-icon=${name} style=${{ '--icon-gradient': `url(#${gradientId})` }} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient class="ui-icon-gradient" id=${gradientId} gradientUnits="userSpaceOnUse" x1="-2.4" y1="6.72" x2="26.4" y2="17.28"><stop offset="0%"/><stop offset="50%"/><stop offset="100%"/></linearGradient></defs>${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
+}
+
+export function TimerOption({ enabled = false, onChange }) {
+  const id = useId();
+  return html`<label class="timer-option" for=${id}><span class="timer-option-icon"><${Icon} name="clock" size=${23}/></span><span class="timer-option-copy"><strong>Таймер для новых попыток</strong><small>Включи перед стартом. 1:12 на вопрос, затем 0 баллов и следующий вопрос. У «Продолжить» режим не меняется.</small></span><input id=${id} type="checkbox" role="switch" checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/><span class="timer-switch" aria-hidden="true"/></label>`;
 }
 
 export function Wordmark() {
@@ -50,7 +57,8 @@ export function ThemeToggle() {
   return html`<button class="theme-toggle" type="button" data-theme-toggle aria-label=${label} aria-pressed=${dark} title=${label}><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="theme-sun"><circle cx="12" cy="12" r="4"/><path class="theme-rays" d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></g><path class="theme-moon" d="M20.9 13.2A9 9 0 0 1 10.8 3.1 9 9 0 1 0 20.9 13.2Z"/></svg></button>`;
 }
 
-const assetUrl = (path) => `${import.meta.env?.BASE_URL || './'}images/${path}`;
+const assetUrl = (path) =>
+  `${import.meta.env?.BASE_URL || './'}images/${imageVariants[path]?.variants.at(-1)?.[1] || path}`;
 const responsiveSources = (path) =>
   imageVariants[path]?.variants.map(([width, file]) => `${assetUrl(file)} ${width}w`).join(', ');
 
@@ -63,10 +71,10 @@ export function Art({ variant = 1, hero = false, progress = false, compact = fal
   const file = hero
     ? 'hero-ribbon-expanded.webp'
     : progress
-      ? `progress/level-${variant}-${['foundations', 'application', 'expert'][variant - 1] || 'foundations'}.png`
+      ? `level-${variant}-${['foundations', 'application', 'expert'][variant - 1] || 'foundations'}.png`
       : `${['foundations', 'applied', 'systems'][variant - 1] || 'foundations'}.jpg`;
-  const path = `generated/${file}`;
-  const night = `generated/dark/${hero ? 'hero-night' : `level-${variant}`}.webp`;
+  const path = `artwork/${file}`;
+  const night = `artwork/${hero ? 'hero-night' : `level-${variant}`}.webp`;
   const useNightArt = dark && (hero || progress);
   const size = hero
     ? '(max-width: 570px) calc(100vw - 32px), (max-width: 900px) 60vw, (max-width: 1296px) calc(61vw - 40px), 752px'
@@ -87,9 +95,10 @@ export function SectionBackdrop({ name, level, format = 'jpg' }) {
     'studio-01-three-trajectories': 'levels-night.webp',
     'footer-orbital-sectors': 'footer-night.webp',
     'progress-prismatic-weave': 'progress-night.png',
+    'study-phase-rosettes': 'study-night.webp',
   }[file];
-  const path = `generated/backgrounds/geometry/${file}.${format}`;
-  const nightPath = night && `generated/dark/${night}`;
+  const path = `artwork/${file}.${format}`;
+  const nightPath = night && `artwork/${night}`;
   const dimensions = imageVariants[path];
   const size =
     file === 'footer-orbital-sectors'
@@ -98,11 +107,6 @@ export function SectionBackdrop({ name, level, format = 'jpg' }) {
         ? '(max-width: 900px) calc(100vw - 32px), 604px'
         : '(max-width: 700px) calc(100vw - 32px), (max-width: 1296px) calc(100vw - 64px), 1232px';
   return html`<picture class=${`section-backdrop ${night ? 'has-night-art' : ''}`} aria-hidden="true">${night && html`<source media=${dark ? 'all' : 'not all'} srcset=${responsiveSources(nightPath) || assetUrl(nightPath)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading="lazy" decoding="async"/></picture>`;
-}
-
-export function ProgressBar({ value, max = 100, label = '', className = '' }) {
-  const percent = Math.max(0, Math.min(100, max ? (value / max) * 100 : 0));
-  return html`<div class=${`progress-track ${className}`} role="progressbar" aria-label=${label} aria-valuemin="0" aria-valuemax=${max} aria-valuenow=${value}><span style=${{ width: `${percent}%` }} /></div>`;
 }
 
 const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });

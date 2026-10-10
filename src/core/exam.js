@@ -3,6 +3,12 @@ import { BANK_VERSION, DOMAINS } from '../data/meta.js';
 const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 export const copy = (value) => JSON.parse(JSON.stringify(value));
 export const emptyResponse = (question) => (question.type === 'match' ? {} : []);
+export const QUESTION_SECONDS = (60 * 60) / 50;
+
+export function questionSecondsLeft(attempt, id, now = Date.now()) {
+  const deadline = attempt.timing?.deadlines[id];
+  return deadline ? Math.max(0, Math.ceil((Date.parse(deadline) - now) / 1000)) : null;
+}
 
 export function isValidResponse(question, response, complete = false) {
   if (!question) return false;
@@ -44,7 +50,14 @@ export function connectPair(question, response, leftId, rightId) {
 
 export const sessionKey = (level, mode = 'exam') => `${mode}:${level}`;
 
-export function makeAttempt(level, questions, mode = 'exam', ids = null, now = new Date().toISOString()) {
+export function makeAttempt(
+  level,
+  questions,
+  mode = 'exam',
+  ids = null,
+  now = new Date().toISOString(),
+  timed = false,
+) {
   if (![1, 2, 3].includes(Number(level)) || !['exam', 'mistakes'].includes(mode))
     throw new Error('Неизвестный режим теста.');
   const all = questions.filter((q) => q.level === Number(level));
@@ -63,21 +76,31 @@ export function makeAttempt(level, questions, mode = 'exam', ids = null, now = n
     answers: {},
     drafts: {},
     bookmarks: [],
+    ...(timed && {
+      timing: {
+        secondsPerQuestion: QUESTION_SECONDS,
+        deadlines: { [questionIds[0]]: new Date(Date.parse(now) + QUESTION_SECONDS * 1000).toISOString() },
+      },
+    }),
   };
 }
 
-export function setDraft(attempt, question, response) {
+export function setDraft(attempt, question, response, now = new Date().toISOString()) {
   if (attempt.completedAt || attempt.answers[question.id] || !attempt.questionIds.includes(question.id)) return attempt;
+  if (questionSecondsLeft(attempt, question.id, Date.parse(now)) === 0)
+    return expireTimedQuestions(attempt, [question], now);
   if (!isValidResponse(question, response)) return attempt;
   return {
     ...attempt,
     drafts: { ...attempt.drafts, [question.id]: copy(response) },
-    updatedAt: new Date().toISOString(),
+    updatedAt: now,
   };
 }
 
 export function submitAnswer(attempt, question, response, now = new Date().toISOString()) {
   if (attempt.completedAt || attempt.answers[question.id]) return attempt;
+  if (questionSecondsLeft(attempt, question.id, Date.parse(now)) === 0)
+    return expireTimedQuestions(attempt, [question], now);
   if (!attempt.questionIds.includes(question.id) || !isValidResponse(question, response, true)) return attempt;
   const drafts = { ...attempt.drafts };
   delete drafts[question.id];
@@ -92,13 +115,54 @@ export function submitAnswer(attempt, question, response, now = new Date().toISO
   };
 }
 
-export function moveCursor(attempt, cursor) {
+export function moveCursor(attempt, cursor, now = new Date().toISOString()) {
   if (attempt.completedAt || !Number.isInteger(cursor)) return attempt;
+  const nextCursor = Math.max(0, Math.min(attempt.questionIds.length - 1, cursor));
+  const id = attempt.questionIds[nextCursor];
+  const startTimer = attempt.timing && !attempt.answers[id] && !attempt.timing.deadlines[id];
+  if (attempt.timing && nextCursor === attempt.cursor && !startTimer) return attempt;
   return {
     ...attempt,
-    cursor: Math.max(0, Math.min(attempt.questionIds.length - 1, cursor)),
-    updatedAt: new Date().toISOString(),
+    cursor: nextCursor,
+    updatedAt: now,
+    ...(startTimer && {
+      timing: {
+        ...attempt.timing,
+        deadlines: {
+          ...attempt.timing.deadlines,
+          [id]: new Date(Date.parse(now) + QUESTION_SECONDS * 1000).toISOString(),
+        },
+      },
+    }),
   };
+}
+
+export function expireTimedQuestions(attempt, questions, now = new Date().toISOString()) {
+  if (!attempt.timing || attempt.completedAt) return attempt;
+  const bank = new Map(questions.map((q) => [q.id, q]));
+  let next = attempt;
+  for (const [id, deadline] of Object.entries(attempt.timing.deadlines)) {
+    const question = bank.get(id);
+    if (!question || next.answers[id] || Date.parse(now) < Date.parse(deadline)) continue;
+    const drafts = { ...next.drafts };
+    delete drafts[id];
+    next = {
+      ...next,
+      drafts,
+      updatedAt: now,
+      answers: {
+        ...next.answers,
+        [id]: { response: emptyResponse(question), correct: false, submittedAt: deadline, timedOut: true },
+      },
+    };
+  }
+  const currentId = attempt.questionIds[attempt.cursor];
+  if (!attempt.answers[currentId] && next.answers[currentId]?.timedOut) {
+    const indices = attempt.questionIds.map((_, index) => (attempt.cursor + 1 + index) % attempt.questionIds.length);
+    const following = indices.find((index) => !next.answers[attempt.questionIds[index]]);
+    if (following !== undefined) next = moveCursor(next, following, now);
+  }
+  return next;
 }
 
 export function toggleBookmark(attempt, questionId) {

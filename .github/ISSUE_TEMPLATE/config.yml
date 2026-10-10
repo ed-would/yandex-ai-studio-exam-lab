@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Приватное сообщение об уязвимости
+    url: https://github.com/ed-would/yandex-ai-studio-exam-lab/blob/main/SECURITY.md
+    about: Каналы для сообщений о безопасности описаны в SECURITY.md; не публикуйте уязвимости в Issues.

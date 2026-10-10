@@ -1,0 +1,27 @@
+{
+  "generated_with": "Built-in imagegen",
+  "selected_source": "../abstract-logos/01-vortex.png",
+  "size": [
+    64,
+    64
+  ],
+  "background": "transparent",
+  "variants": [
+    {
+      "file": "docs/design-lab/logos/glyphs/vortex-black-64.png",
+      "color": "#000000",
+      "prompt": "Use case: precise-object-edit / logo-brand. EDIT the supplied chosen five-lobed vortex logo into a clean MONOCHROME GLYPH, preserving the exact recognizable five-lobed outer contour, clockwise curling petal geometry, rotation, central vortex and compact proportions. This is the monochrome version of that exact brand mark, not a redesign. Convert the dimensional folds into FIVE substantial solid curved lobes separated by a few broad clean TRANSPARENT curved channels following the original deep fold valleys, so the spiral remains recognizable at 16-64px. Smooth precise vector-like closed shapes with generous negative-space grooves, no hairlines or microdetail. No additional petals, rings, props, letters or borders. Flat filled glyph only: remove ALL 3D lighting, depth, shading, material texture, gradients, shadows, outlines and color variations. All visible foreground must be one exact solid color, antialias edges with alpha only. GENUINELY TRANSPARENT background and transparent negative cuts, not white/black painted background. Square canvas, mark about 85% canvas with balanced padding, entire mark visible. One glyph only, no labels or size samples. Foreground must be PURE BLACK #000000 only."
+    },
+    {
+      "file": "docs/design-lab/logos/glyphs/vortex-white-64.png",
+      "color": "#FFFFFF",
+      "prompt": "Edit target: the supplied FLAT BLACK five-lobed vortex glyph, NOT the earlier 3D logo. Perform ONLY an exact foreground recolor: every visible black lobe becomes PURE WHITE #FFFFFF (RGB 255,255,255). Preserve its SAME exact silhouette, five lobes, curved transparent grooves, rotation, proportions, placement and alpha transparency. Do not redraw, change geometry, add detail, apply shading or texture, or interpret it as a 3D object. White must be a single solid full-intensity pure white, never off-white/gray; opacity fully opaque inside the lobes, antialias via alpha at edges only. Maintain genuinely transparent background and negative space. This is a clean flat monochrome white brand glyph for 64px icon export, a simple exact black-to-white color replacement. No black background, checkerboard, gradients, shadow, labels, outline or extra colors."
+    },
+    {
+      "file": "public/favicon.png",
+      "source": "../../../favicon.png",
+      "method": "Existing selected vortex favicon export"
+    }
+  ],
+  "export": "64×64 PNG; shared alpha mask from the imagegen black glyph; foreground RGB normalized to exact #000000/#FFFFFF without changing geometry."
+}

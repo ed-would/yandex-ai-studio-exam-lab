@@ -19,7 +19,7 @@
     root.style.colorScheme = theme;
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', theme === 'dark' ? '#17151d' : '#00515a');
+      ?.setAttribute('content', theme === 'dark' ? '#17151d' : '#ffffff');
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
       button.setAttribute('aria-label', theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему');
       button.setAttribute('aria-pressed', String(theme === 'dark'));
