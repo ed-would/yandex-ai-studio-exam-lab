@@ -1,0 +1,25 @@
+name: Исправление учебного материала
+description: Неточность вопроса, ключа, объяснения или ссылки на источник.
+title: '[Content]: '
+body:
+  - type: input
+    id: question
+    attributes:
+      label: ID вопроса и уровень
+      description: Например, ID из банка; для общей памятки укажите раздел.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Неточность и предлагаемое исправление
+      description: Объясните, что неверно и как должно быть сформулировано.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Первичный источник
+      description: Прямая ссылка на официальную документацию или программу и дата проверки. Не прикладывайте закрытые экзаменационные задания.
+    validations:
+      required: true

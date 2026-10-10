@@ -67,7 +67,7 @@ export function MatchQuestion({ question, response, locked, onChange }) {
       setLines(
         Object.entries(response)
           .map(([left, right]) => {
-            const a = el.querySelector(`[data-left="${left}"]`)?.getBoundingClientRect();
+            const a = el.querySelector(`[data-left="${left}"]`)?.closest('.match-row').getBoundingClientRect();
             const b = el.querySelector(`[data-right="${right}"]`)?.getBoundingClientRect();
             if (!a || !b) return null;
             return {
@@ -135,8 +135,42 @@ export function MatchQuestion({ question, response, locked, onChange }) {
     );
   }
 
-  return html`<div class="match-question"><p class="answer-instruction">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</p><div class="match-hint"><${Icon} name="link" size=${16}/><span>${locked ? 'Сохранены твои пары. Правильные соответствия — в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-count">${Object.keys(response).length} / ${question.left.length}</span></div>
-    <div class="match-board" ref=${board}>
+  function selectMobile(left, right) {
+    if (locked) return;
+    if (!right) {
+      disconnect(left);
+      return;
+    }
+    const next = connectPair(question, response, left, right);
+    onChange((current) => connectPair(question, current, left, right));
+    setArmed(null);
+    const leftText = question.left.find((item) => item.id === left)?.text;
+    const rightText = question.right.find((item) => item.id === right)?.text;
+    setMessage(
+      next[left]
+        ? `Связь создана: ${leftText} — ${rightText}. Установлено ${Object.keys(next).length} из ${question.left.length} связей.`
+        : `Связь удалена: ${leftText} — ${rightText}.`,
+    );
+  }
+
+  return html`<div class="match-question"><p class="answer-instruction"><span class="match-desktop-copy">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</span><span class="match-mobile-copy">Для каждого термина выбери соответствие в списке. Полное определение появится под полем.</span></p><div class="match-hint"><${Icon} name="link" size=${16}/><span><span class="match-desktop-copy">${locked ? 'Сохранены твои пары. Правильные соответствия — в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-mobile-copy">${locked ? 'Сохранены твои пары. Правильные соответствия — в разборе ниже.' : 'Чтобы удалить пару, выбери «Без соответствия».'}</span></span><span class="match-count">${Object.keys(response).length} / ${question.left.length}</span></div>
+    <div class="match-mobile-list" aria-label="Сопоставление по строкам">
+      ${question.left.map((item, index) => {
+        const rightId = response[item.id];
+        const selected = question.right.find((right) => right.id === rightId);
+        const status = locked && rightId ? (question.pairs[item.id] === rightId ? 'is-correct' : 'is-wrong') : '';
+        const definitionId = `match-definition-${question.id}-${item.id}`;
+        return html`<div class=${`match-mobile-row ${status}`} key=${item.id}>
+          <span class="match-mobile-term"><span class="node-number">${index + 1}</span>${item.text}</span>
+          <select class="match-mobile-select" aria-label=${`Соответствие для: ${item.text}`} aria-describedby=${selected ? definitionId : undefined} value=${rightId || ''} disabled=${locked} onChange=${(event) => selectMobile(item.id, event.currentTarget.value)}>
+            <option value="">Без соответствия</option>
+            ${question.right.map((right, rightIndex) => html`<option key=${right.id} value=${right.id}>${LETTERS[rightIndex]}. ${right.text}</option>`)}
+          </select>
+          ${selected ? html`<p class="match-mobile-definition" id=${definitionId}><span class="sr-only">Выбрано определение: </span>${selected.text}</p>` : html`<p class="match-mobile-empty" aria-hidden="true">Пара ещё не выбрана</p>`}
+        </div>`;
+      })}
+    </div>
+    <div class="match-board match-board-desktop" ref=${board}>
       <svg class="match-lines" aria-hidden="true">${lines.map((line) => html`<path class=${locked ? (line.correct ? 'line-correct' : 'line-wrong') : ''} d=${`M${line.x1} ${line.y1} C${line.x1 + 22} ${line.y1},${line.x2 - 22} ${line.y2},${line.x2} ${line.y2}`} fill="none" stroke-width="2"/>`)}</svg>
       <div class="match-column"><div class="column-heading">Элементы</div>${question.left.map((item, index) => {
         const rightId = response[item.id];
@@ -182,6 +216,7 @@ export function Feedback({ question, answer, review = false }) {
   const ref = useRef(null);
   const correct = Boolean(answer) && evaluate(question, answer.response);
   const missing = !answer;
+  const timedOut = answer?.timedOut;
   useEffect(() => {
     if (review) return;
     ref.current?.focus({ preventScroll: true });
@@ -191,15 +226,15 @@ export function Feedback({ question, answer, review = false }) {
     });
   }, [question.id, review]);
   return html`<section class=${`feedback ${correct ? 'correct' : 'incorrect'} ${review ? 'review-feedback' : ''}`} ref=${ref} tabindex="-1" aria-label="Разбор ответа">
-    <div class="feedback-heading" role=${review ? undefined : 'status'}><span class="feedback-icon"><${Icon} name=${correct ? 'check' : missing ? 'info' : 'close'} size=${23}/></span><div><h3>${correct ? 'Верно. Хорошая работа.' : missing ? 'Ответ не был проверен' : 'Есть что разобрать'}</h3><p>${correct ? '1 балл за задание.' : missing ? '0 баллов. Непроверенное задание считается пропущенным.' : '0 баллов. Первый ответ сохранён и уже не изменится.'}</p></div><span class="feedback-points">${correct ? '+1' : '0'}</span></div>
+    <div class="feedback-heading" role=${review ? undefined : 'status'}><span class="feedback-icon"><${Icon} name=${correct ? 'check' : timedOut ? 'clock' : missing ? 'info' : 'close'} size=${23}/></span><div><h3>${correct ? 'Верно. Хорошая работа.' : timedOut ? 'Время вышло' : missing ? 'Ответ не был проверен' : 'Есть что разобрать'}</h3><p>${correct ? '1 балл за задание.' : timedOut ? '0 баллов. За 72 секунды ответ не был проверен. Вопрос засчитан как ошибка; изменить ответ нельзя.' : missing ? '0 баллов. Непроверенное задание считается пропущенным.' : '0 баллов. Первый ответ сохранён и уже не изменится.'}</p></div><span class="feedback-points">${correct ? '+1' : '0'}</span></div>
     <p class="main-explanation">${question.explanation}</p>
     <div class="takeaway"><${Icon} name="spark" size=${19}/><div><span>Запомнить</span><p>${question.takeaway}</p></div></div>
     <details class="accordion accordion--inline reasoning-details" open=${!correct || review}><summary>Почему варианты верны или неверны<${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="reasoning-copy"><${ExplanationDetails} question=${question} response=${answer?.response}/></div></div></div></details>
-    <div class="feedback-sources"><span class="eyebrow">Разобраться глубже</span><${SourceLinks} sources=${question.sources}/></div>
+    <div class=${`feedback-sources theme-${question.level}`}><div class="feedback-sources-header"><span class="feedback-sources-icon"><${Icon} name="book" size=${18}/></span><h4>Разобраться глубже</h4></div><${SourceLinks} sources=${question.sources}/></div>
   </section>`;
 }
 
 export function ReviewItem({ question, answer, number, bookmarked = false }) {
   const status = answer ? (evaluate(question, answer.response) ? 'correct' : 'incorrect') : 'unanswered';
-  return html`<details class=${`accordion accordion--surface accordion--review review-item status-${status}`}><summary><span class="review-number">${String(number).padStart(2, '0')}</span><span class="review-question"><span class="review-topic">${domainById(question.domain).short} · ${typeNames[question.type]}</span><strong>${question.prompt}</strong></span><span class=${`review-status ${status}`}><${Icon} name=${status === 'correct' ? 'check' : status === 'incorrect' ? 'close' : 'clock'} size=${16}/><span>${status === 'correct' ? 'Верно' : status === 'incorrect' ? 'Ошибка' : 'Пропущено'}</span></span>${bookmarked && html`<${Icon} name="bookmark" size=${16}/>`}<${Icon} name="chevron" size=${17}/></summary><div class="details-content"><div class="details-content-inner"><${Feedback} question=${question} answer=${answer} review=${true}/></div></div></details>`;
+  return html`<details class=${`accordion accordion--surface accordion--review review-item status-${status}`}><summary><span class="review-number">${String(number).padStart(2, '0')}</span><span class="review-question"><span class="review-topic">${domainById(question.domain).short} · ${typeNames[question.type]}</span><strong>${question.prompt}</strong></span><span class=${`review-status ${status}`}><${Icon} name=${answer?.timedOut ? 'clock' : status === 'correct' ? 'check' : status === 'incorrect' ? 'close' : 'clock'} size=${16}/><span>${answer?.timedOut ? 'Время вышло' : status === 'correct' ? 'Верно' : status === 'incorrect' ? 'Ошибка' : 'Пропущено'}</span></span>${bookmarked && html`<${Icon} name="bookmark" size=${16}/>`}<${Icon} name="chevron" size=${17}/></summary><div class="details-content"><div class="details-content-inner"><${Feedback} question=${question} answer=${answer} review=${true}/></div></div></details>`;
 }

@@ -3,12 +3,33 @@
   "version": "1.0.0",
   "private": true,
   "description": "Независимый русскоязычный тренажёр по программе экзамена «Основы работы с ИИ»: 180 вопросов, 6 доменов, 3 уровня.",
+  "license": "MIT",
+  "author": "Ed Would (https://github.com/ed-would)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ed-would/yandex-ai-studio-exam-lab.git"
+  },
+  "homepage": "https://github.com/ed-would/yandex-ai-studio-exam-lab#readme",
+  "bugs": {
+    "url": "https://github.com/ed-would/yandex-ai-studio-exam-lab/issues"
+  },
+  "keywords": [
+    "yandex-ai-studio",
+    "ai-literacy",
+    "generative-ai",
+    "exam-preparation",
+    "quiz",
+    "russian",
+    "preact",
+    "vite"
+  ],
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:results": "vite --host 127.0.0.1 --port 4178 --strictPort --mode results-preview",
     "build": "npm run validate && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "npm run lint:js && npm run lint:css && npm run format:check",

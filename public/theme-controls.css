@@ -1,10 +1,44 @@
 :root {
   --page-bg: #fff;
-  --surface: #fff;
-  --surface-raised: #f0edf4;
-  --surface-glass: #fffffff0;
+  --surface: #f0edf4;
+  --surface-raised: #e8e2f0;
+  --surface-glass: #f0edf4f0;
   --text: #25212b;
-  --focus: #7650bf;
+  --level-1-accent: #465c16;
+  --level-1-soft: #e6efa9;
+  --level-1-pale: #f5f7e5;
+  --level-2-accent: #005b64;
+  --level-2-soft: #d6efeb;
+  --level-2-pale: #edf8f6;
+  --level-3-accent: #6841ab;
+  --level-3-soft: #e9dcfb;
+  --level-3-pale: #f5effc;
+  --ui-accent: var(--level-3-accent);
+  --ui-accent-strong: var(--level-3-accent);
+  --ui-accent-soft: var(--surface-raised);
+  --ui-accent-pale: var(--surface);
+  --ui-gradient: none;
+  --ui-text-fill: currentColor;
+  --ui-action-gradient: var(--ui-gradient);
+  --ui-action-bg: var(--level-3-accent);
+  --ui-action-ink: #fff;
+  --ui-action-border: var(--line);
+  --ui-action-hover-bg: var(--level-3-accent);
+  --ui-action-hover-ink: #fff;
+  --ui-action-active-bg: var(--level-3-accent);
+  --ui-action-active-ink: #fff;
+  --accent: var(--ui-accent);
+  --accent-soft: var(--ui-accent-soft);
+  --accent-pale: var(--ui-accent-pale);
+  --action-gradient: var(--ui-action-gradient);
+  --action-bg: var(--ui-action-bg);
+  --action-ink: var(--ui-action-ink);
+  --action-border: var(--ui-action-border);
+  --action-hover-bg: var(--ui-action-hover-bg);
+  --action-hover-ink: var(--ui-action-hover-ink);
+  --action-active-bg: var(--ui-action-active-bg);
+  --action-active-ink: var(--ui-action-active-ink);
+  --focus: var(--ui-accent);
   --control-ink: #fff;
   --success-text: #267045;
   --success-bg: #e8f3e9;
@@ -24,10 +58,41 @@ html[data-theme='dark'] {
   --text: #f2edf8;
   --muted: #b9b0c5;
   --line: #494152;
-  --accent: #93d7d0;
-  --accent-soft: #273f40;
-  --accent-pale: #242f33;
-  --focus: #c4a8f4;
+  --level-1-accent: #d3e38c;
+  --level-1-soft: #343c27;
+  --level-1-pale: #292e24;
+  --level-2-accent: #93d7d0;
+  --level-2-soft: #273f40;
+  --level-2-pale: #242f33;
+  --level-3-accent: #c5a8f2;
+  --level-3-soft: #3b304d;
+  --level-3-pale: #2e273d;
+  --ui-accent: var(--ink, #f2edf8);
+  --ui-accent-strong: var(--ink, #f2edf8);
+  --ui-accent-soft: var(--surface-raised);
+  --ui-accent-pale: var(--surface);
+  --ui-gradient: linear-gradient(110deg, var(--level-1-accent), var(--level-2-accent) 50%, var(--level-3-accent));
+  --ui-text-fill: transparent;
+  --ui-action-gradient: var(--ui-gradient);
+  --ui-action-bg: var(--level-1-accent);
+  --ui-action-ink: #172327;
+  --ui-action-border: var(--line);
+  --ui-action-hover-bg: var(--level-1-accent);
+  --ui-action-hover-ink: #172327;
+  --ui-action-active-bg: var(--level-1-accent);
+  --ui-action-active-ink: #172327;
+  --accent: var(--ui-accent);
+  --accent-soft: var(--ui-accent-soft);
+  --accent-pale: var(--ui-accent-pale);
+  --action-gradient: var(--ui-action-gradient);
+  --action-bg: var(--ui-action-bg);
+  --action-ink: var(--ui-action-ink);
+  --action-border: var(--ui-action-border);
+  --action-hover-bg: var(--ui-action-hover-bg);
+  --action-hover-ink: var(--ui-action-hover-ink);
+  --action-active-bg: var(--ui-action-active-bg);
+  --action-active-ink: var(--ui-action-active-ink);
+  --focus: var(--ui-accent);
   --control-ink: #172327;
   --success-text: #9cddb1;
   --success-bg: #20372e;
@@ -37,7 +102,19 @@ html[data-theme='dark'] {
   --info-bg: #222b3a;
   --info-line: #455875;
 }
+.ui-icon-gradient > stop:nth-child(1) {
+  stop-color: var(--level-1-accent);
+}
+.ui-icon-gradient > stop:nth-child(2) {
+  stop-color: var(--level-2-accent);
+}
+.ui-icon-gradient > stop:nth-child(3) {
+  stop-color: var(--level-3-accent);
+}
 .theme-toggle {
+  --accent: var(--ui-accent);
+  --accent-soft: var(--ui-accent-soft);
+  --accent-pale: var(--ui-accent-pale);
   display: inline-grid;
   place-items: center;
   flex-shrink: 0;
@@ -92,13 +169,13 @@ html[data-theme='dark'] .theme-moon {
 }
 @media (hover: hover) and (pointer: fine) {
   .theme-toggle:hover {
-    color: var(--accent, #00515a);
-    background-color: var(--accent-pale, #f0edf4);
-    border-color: var(--accent, #00515a);
+    color: var(--ui-accent, #25212b);
+    background-color: var(--ui-accent-pale, #f0edf4);
+    border-color: var(--ui-accent, #25212b);
   }
 }
 .theme-toggle:active {
-  background-color: var(--accent-soft, #e9dcfb);
+  background-color: var(--ui-accent-soft, #e8e2f0);
   transform: scale(0.94);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -113,6 +190,21 @@ html[data-theme='dark'] .theme-moon {
   }
 }
 @media print {
+  :root,
+  html[data-theme='dark'] {
+    --level-1-accent: #465c16;
+    --level-1-soft: #e6efa9;
+    --level-1-pale: #f5f7e5;
+    --level-2-accent: #005b64;
+    --level-2-soft: #d6efeb;
+    --level-2-pale: #edf8f6;
+    --level-3-accent: #6841ab;
+    --level-3-soft: #e9dcfb;
+    --level-3-pale: #f5effc;
+    --surface: #fff;
+    --surface-raised: #f0edf4;
+    --surface-glass: #fff;
+  }
   .theme-toggle {
     display: none;
   }

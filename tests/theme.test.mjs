@@ -11,7 +11,7 @@ function setup(t, { dark = false, saved = null, blocked = false } = {}) {
   const window = new Window({ url: 'https://example.test/trainer/' });
   const document = window.document;
   t.after(() => window.close());
-  document.head.innerHTML = '<meta name="theme-color" content="#00515a">';
+  document.head.innerHTML = '<meta name="theme-color" content="#ffffff">';
   document.body.innerHTML = '<button data-theme-toggle><svg><path/></svg></button>';
   const system = new window.EventTarget();
   system.matches = dark;
@@ -45,7 +45,7 @@ test('тема применяется до рендера: выбор польз
     assert.equal(document.documentElement.style.colorScheme, expected);
     assert.equal(button.getAttribute('aria-pressed'), String(expected === 'dark'));
     assert.match(button.getAttribute('aria-label'), expected === 'dark' ? /светлую/ : /тёмную/);
-    assert.equal(document.querySelector('meta').content, expected === 'dark' ? '#17151d' : '#00515a');
+    assert.equal(document.querySelector('meta').content, expected === 'dark' ? '#17151d' : '#ffffff');
   }
 });
 

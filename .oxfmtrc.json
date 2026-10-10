@@ -19,10 +19,8 @@
     "vendor/**",
     "public/images/**",
     "public/fonts/**",
-    "public/third-party-notices.txt",
     "package-lock.json",
     "README.md",
-    "THIRD_PARTY_NOTICES.md",
     "src/data/domain-*.json"
   ]
 }

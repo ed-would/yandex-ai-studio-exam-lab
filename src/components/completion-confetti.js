@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'preact/hooks';
 import { html } from './ui.js';
 
-const COLORS = ['#78b5ab', '#b79aca', '#d4df92', '#005b64', '#e8d9f5', '#ffffff'];
+const COLORS = [
+  'var(--ui-accent)',
+  'var(--ui-action-bg)',
+  'var(--ui-accent-soft)',
+  'var(--ui-accent-strong)',
+  'var(--muted)',
+  'var(--ink)',
+];
 
 export function CompletionConfetti({ enabled, onConsumed, vivid = false }) {
   const [play] = useState(enabled);

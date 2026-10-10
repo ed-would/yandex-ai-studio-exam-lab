@@ -1,5 +1,5 @@
 import { APP_NAME, BANK_VERSION } from '../data/meta.js';
-import { copy, evaluate, isValidResponse, sessionKey } from './exam.js';
+import { copy, evaluate, isValidResponse, QUESTION_SECONDS, sessionKey } from './exam.js';
 
 export const SCHEMA_VERSION = 1;
 export const MAX_BACKUP_BYTES = 10 * 1024 * 1024;
@@ -66,13 +66,45 @@ export function validateState(value, questions) {
       throw new Error('Некорректное состояние ответа.');
     if (new Set(a.bookmarks).size !== a.bookmarks.length || a.bookmarks.some((id) => !a.questionIds.includes(id)))
       throw new Error('Некорректные закладки.');
+    let timing;
+    if (a.timing !== undefined) {
+      if (
+        !record(a.timing) ||
+        a.timing.secondsPerQuestion !== QUESTION_SECONDS ||
+        !record(a.timing.deadlines) ||
+        !Object.keys(a.timing.deadlines).length ||
+        Object.entries(a.timing.deadlines).some(
+          ([id, deadline]) =>
+            !a.questionIds.includes(id) ||
+            !validDate(deadline) ||
+            Date.parse(deadline) < Date.parse(a.startedAt) + QUESTION_SECONDS * 1000 ||
+            Date.parse(deadline) > Date.parse(a.updatedAt) + QUESTION_SECONDS * 1000,
+        ) ||
+        (!completed && !a.answers[a.questionIds[a.cursor]] && !a.timing.deadlines[a.questionIds[a.cursor]])
+      )
+        throw new Error('Некорректное состояние таймера.');
+      timing = {
+        secondsPerQuestion: QUESTION_SECONDS,
+        deadlines: Object.fromEntries(
+          Object.entries(a.timing.deadlines).map(([id, deadline]) => [id, new Date(deadline).toISOString()]),
+        ),
+      };
+    }
     const answers = {};
     for (const [id, answer] of Object.entries(a.answers)) {
+      const timedOut = answer?.timedOut === true;
+      const responseValid = timedOut
+        ? isValidResponse(bank.get(id), answer.response) && Object.keys(answer.response).length === 0
+        : isValidResponse(bank.get(id), answer?.response, true);
       if (
         !a.questionIds.includes(id) ||
         !record(answer) ||
-        !isValidResponse(bank.get(id), answer.response, true) ||
-        !validDate(answer.submittedAt)
+        !responseValid ||
+        !validDate(answer.submittedAt) ||
+        (answer.timedOut !== undefined && !timedOut) ||
+        (timedOut && (!timing?.deadlines[id] || Date.parse(answer.submittedAt) !== Date.parse(timing.deadlines[id]))) ||
+        (timing &&
+          (!timing.deadlines[id] || (!timedOut && Date.parse(answer.submittedAt) >= Date.parse(timing.deadlines[id]))))
       )
         throw new Error('Некорректный сохранённый ответ.');
       // Балл всегда пересчитывается из ответа, а не берётся на веру из импортированного файла.
@@ -80,11 +112,17 @@ export function validateState(value, questions) {
         response: copy(answer.response),
         submittedAt: new Date(answer.submittedAt).toISOString(),
         correct: evaluate(bank.get(id), answer.response),
+        ...(timedOut && { timedOut: true }),
       };
     }
     const drafts = {};
     for (const [id, response] of Object.entries(a.drafts)) {
-      if (!a.questionIds.includes(id) || a.answers[id] || !isValidResponse(bank.get(id), response))
+      if (
+        !a.questionIds.includes(id) ||
+        a.answers[id] ||
+        !isValidResponse(bank.get(id), response) ||
+        (timing && !timing.deadlines[id])
+      )
         throw new Error('Некорректный черновик.');
       drafts[id] = copy(response);
     }
@@ -103,6 +141,7 @@ export function validateState(value, questions) {
       answers,
       drafts,
       bookmarks: [...a.bookmarks],
+      ...(timing && { timing }),
     };
   };
   const sessions = {};
@@ -124,7 +163,7 @@ export function readState(storage, key, questions) {
   try {
     if (!storage) throw new Error('Хранилище браузера недоступно.');
     raw = storage.getItem(key);
-    const saved = raw ? JSON.parse(raw) : null;
+    const saved = raw === null ? null : JSON.parse(raw);
     if (record(saved) && typeof saved.bankVersion === 'string' && saved.bankVersion !== BANK_VERSION) {
       return {
         state: freshState(),
@@ -134,16 +173,47 @@ export function readState(storage, key, questions) {
         raw,
       };
     }
-    return { state: raw ? validateState(saved, questions) : freshState(), warning: '', protected: false, raw };
+    return { state: raw === null ? freshState() : validateState(saved, questions), warning: '', protected: false, raw };
   } catch {
     return {
       state: freshState(),
-      warning: raw
-        ? 'Сохранённые данные не удалось прочитать. Они сохранены без изменений. Скачай исходную копию, затем сбрось данные или импортируй совместимую копию.'
-        : 'Браузер не разрешил доступ к сохранениям. Тест работает, но прогресс останется только в открытой вкладке.',
-      protected: Boolean(raw),
+      warning:
+        raw !== null
+          ? 'Сохранённые данные не удалось прочитать. Они сохранены без изменений. Скачай исходную копию, затем сбрось данные или импортируй совместимую копию.'
+          : 'Браузер не разрешил доступ к сохранениям. Тест работает, но прогресс останется только в открытой вкладке.',
+      protected: raw !== null,
       raw,
     };
+  }
+}
+
+const tabProgressKey = (key) => `${key}:tab-progress`;
+
+export function readTabProgress(tabStorage, key, sourceRaw, questions) {
+  try {
+    if (!tabStorage) return null;
+    const raw = tabStorage.getItem(tabProgressKey(key));
+    if (!raw) return null;
+    const payload = JSON.parse(raw);
+    if (!record(payload) || payload.sourceRaw !== sourceRaw) {
+      tabStorage.removeItem(tabProgressKey(key));
+      return null;
+    }
+    return validateState(payload.state, questions);
+  } catch {
+    return null;
+  }
+}
+
+export function writeTabProgress(tabStorage, key, sourceRaw, state) {
+  try {
+    if (!tabStorage) return { ok: false };
+    const cacheKey = tabProgressKey(key);
+    if (state === null) tabStorage.removeItem(cacheKey);
+    else tabStorage.setItem(cacheKey, JSON.stringify({ sourceRaw, state }));
+    return { ok: true };
+  } catch {
+    return { ok: false };
   }
 }
 
@@ -152,7 +222,7 @@ export function writeState(storage, key, state, expectedRevision = null) {
     if (!storage) throw new Error('Хранилище недоступно');
     if (expectedRevision !== null) {
       const existing = storage.getItem(key);
-      const revision = existing ? JSON.parse(existing).revision : 0;
+      const revision = existing === null ? 0 : JSON.parse(existing).revision;
       if (revision !== expectedRevision)
         return {
           ok: false,

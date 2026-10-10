@@ -3,261 +3,271 @@
     "width": 256,
     "height": 256,
     "variants": [
-      [64, "optimized/brand/trainer-abstract-64.webp"],
-      [128, "optimized/brand/trainer-abstract-128.webp"],
-      [256, "optimized/brand/trainer-abstract-256.webp"]
+      [64, "brand/trainer-abstract-64-optimized.webp"],
+      [128, "brand/trainer-abstract-128-optimized.webp"],
+      [256, "brand/trainer-abstract-256-optimized.webp"]
     ]
   },
-  "generated/hero-ribbon-expanded.webp": {
+  "artwork/hero-ribbon-expanded.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/hero-ribbon-expanded-384.webp"],
-      [768, "optimized/generated/hero-ribbon-expanded-768.webp"],
-      [1152, "optimized/generated/hero-ribbon-expanded-1152.webp"],
-      [1536, "generated/hero-ribbon-expanded.webp"]
+      [384, "artwork/hero-ribbon-expanded-384-optimized.webp"],
+      [768, "artwork/hero-ribbon-expanded-768-optimized.webp"],
+      [1152, "artwork/hero-ribbon-expanded-1152-optimized.webp"],
+      [1536, "artwork/hero-ribbon-expanded.webp"]
     ]
   },
-  "generated/foundations.jpg": {
+  "artwork/foundations.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/foundations-384.webp"],
-      [1536, "generated/foundations.jpg"]
+      [384, "artwork/foundations-384-optimized.webp"],
+      [1536, "artwork/foundations.jpg"]
     ]
   },
-  "generated/applied.jpg": {
+  "artwork/applied.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/applied-384.webp"],
-      [1536, "generated/applied.jpg"]
+      [384, "artwork/applied-384-optimized.webp"],
+      [1536, "artwork/applied.jpg"]
     ]
   },
-  "generated/systems.jpg": {
+  "artwork/systems.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/systems-384.webp"],
-      [1536, "generated/systems.jpg"]
+      [384, "artwork/systems-384-optimized.webp"],
+      [1536, "artwork/systems.jpg"]
     ]
   },
-  "generated/progress/level-1-foundations.png": {
+  "artwork/level-1-foundations.png": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/progress/level-1-foundations-128.webp"],
-      [256, "optimized/generated/progress/level-1-foundations-256.webp"],
-      [512, "optimized/generated/progress/level-1-foundations-512.webp"],
-      [768, "optimized/generated/progress/level-1-foundations-768.webp"],
-      [1254, "optimized/generated/progress/level-1-foundations-1254.webp"]
+      [128, "artwork/level-1-foundations-128-optimized.webp"],
+      [256, "artwork/level-1-foundations-256-optimized.webp"],
+      [512, "artwork/level-1-foundations-512-optimized.webp"],
+      [768, "artwork/level-1-foundations-768-optimized.webp"],
+      [1254, "artwork/level-1-foundations-1254-optimized.webp"]
     ]
   },
-  "generated/progress/level-2-application.png": {
+  "artwork/level-2-application.png": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/progress/level-2-application-128.webp"],
-      [256, "optimized/generated/progress/level-2-application-256.webp"],
-      [512, "optimized/generated/progress/level-2-application-512.webp"],
-      [768, "optimized/generated/progress/level-2-application-768.webp"],
-      [1254, "optimized/generated/progress/level-2-application-1254.webp"]
+      [128, "artwork/level-2-application-128-optimized.webp"],
+      [256, "artwork/level-2-application-256-optimized.webp"],
+      [512, "artwork/level-2-application-512-optimized.webp"],
+      [768, "artwork/level-2-application-768-optimized.webp"],
+      [1254, "artwork/level-2-application-1254-optimized.webp"]
     ]
   },
-  "generated/progress/level-3-expert.png": {
+  "artwork/level-3-expert.png": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/progress/level-3-expert-128.webp"],
-      [256, "optimized/generated/progress/level-3-expert-256.webp"],
-      [512, "optimized/generated/progress/level-3-expert-512.webp"],
-      [768, "optimized/generated/progress/level-3-expert-768.webp"],
-      [1254, "optimized/generated/progress/level-3-expert-1254.webp"]
+      [128, "artwork/level-3-expert-128-optimized.webp"],
+      [256, "artwork/level-3-expert-256-optimized.webp"],
+      [512, "artwork/level-3-expert-512-optimized.webp"],
+      [768, "artwork/level-3-expert-768-optimized.webp"],
+      [1254, "artwork/level-3-expert-1254-optimized.webp"]
     ]
   },
-  "generated/dark/footer-night.webp": {
+  "artwork/footer-night.webp": {
     "width": 1942,
     "height": 809,
     "variants": [
-      [384, "optimized/generated/dark/footer-night-384.webp"],
-      [768, "optimized/generated/dark/footer-night-768.webp"],
-      [1152, "optimized/generated/dark/footer-night-1152.webp"],
-      [1942, "generated/dark/footer-night.webp"]
+      [384, "artwork/footer-night-384-optimized.webp"],
+      [768, "artwork/footer-night-768-optimized.webp"],
+      [1152, "artwork/footer-night-1152-optimized.webp"],
+      [1942, "artwork/footer-night.webp"]
     ]
   },
-  "generated/dark/hero-night.webp": {
+  "artwork/hero-night.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/dark/hero-night-384.webp"],
-      [768, "optimized/generated/dark/hero-night-768.webp"],
-      [1152, "optimized/generated/dark/hero-night-1152.webp"],
-      [1536, "generated/dark/hero-night.webp"]
+      [384, "artwork/hero-night-384-optimized.webp"],
+      [768, "artwork/hero-night-768-optimized.webp"],
+      [1152, "artwork/hero-night-1152-optimized.webp"],
+      [1536, "artwork/hero-night.webp"]
     ]
   },
-  "generated/dark/progress-night.png": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "optimized/generated/dark/progress-night-384.png"],
-      [768, "optimized/generated/dark/progress-night-768.png"],
-      [1152, "optimized/generated/dark/progress-night-1152.png"],
-      [1536, "generated/dark/progress-night.png"]
-    ]
-  },
-  "generated/dark/level-1.webp": {
+  "artwork/level-1.webp": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/dark/level-1-128.webp"],
-      [256, "optimized/generated/dark/level-1-256.webp"],
-      [512, "optimized/generated/dark/level-1-512.webp"],
-      [768, "optimized/generated/dark/level-1-768.webp"],
-      [1254, "generated/dark/level-1.webp"]
+      [128, "artwork/level-1-foundations-128-optimized.webp"],
+      [256, "artwork/level-1-foundations-256-optimized.webp"],
+      [512, "artwork/level-1-foundations-512-optimized.webp"],
+      [768, "artwork/level-1-foundations-768-optimized.webp"],
+      [1254, "artwork/level-1.webp"]
     ]
   },
-  "generated/dark/level-2.webp": {
+  "artwork/level-2.webp": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/dark/level-2-128.webp"],
-      [256, "optimized/generated/dark/level-2-256.webp"],
-      [512, "optimized/generated/dark/level-2-512.webp"],
-      [768, "optimized/generated/dark/level-2-768.webp"],
-      [1254, "generated/dark/level-2.webp"]
+      [128, "artwork/level-2-application-128-optimized.webp"],
+      [256, "artwork/level-2-application-256-optimized.webp"],
+      [512, "artwork/level-2-application-512-optimized.webp"],
+      [768, "artwork/level-2-application-768-optimized.webp"],
+      [1254, "artwork/level-2-1254-optimized.webp"]
     ]
   },
-  "generated/dark/level-3.webp": {
+  "artwork/level-3.webp": {
     "width": 1254,
     "height": 1254,
     "variants": [
-      [128, "optimized/generated/dark/level-3-128.webp"],
-      [256, "optimized/generated/dark/level-3-256.webp"],
-      [512, "optimized/generated/dark/level-3-512.webp"],
-      [768, "optimized/generated/dark/level-3-768.webp"],
-      [1254, "generated/dark/level-3.webp"]
+      [128, "artwork/level-3-expert-128-optimized.webp"],
+      [256, "artwork/level-3-expert-256-optimized.webp"],
+      [512, "artwork/level-3-expert-512-optimized.webp"],
+      [768, "artwork/level-3-expert-768-optimized.webp"],
+      [1254, "artwork/level-3-1254-optimized.webp"]
     ]
   },
-  "generated/dark/levels-night.webp": {
+  "artwork/levels-night.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/dark/levels-night-384.webp"],
-      [768, "optimized/generated/dark/levels-night-768.webp"],
-      [1152, "optimized/generated/dark/levels-night-1152.webp"],
-      [1536, "generated/dark/levels-night.webp"]
+      [384, "artwork/levels-night-384-optimized.webp"],
+      [768, "artwork/levels-night-768-optimized.webp"],
+      [1152, "artwork/levels-night-1152-optimized.webp"],
+      [1536, "artwork/levels-night.webp"]
     ]
   },
-  "generated/backgrounds/geometry/studio-01-three-trajectories.webp": {
+  "artwork/study-night.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/studio-01-three-trajectories-1152.webp"],
-      [1536, "generated/backgrounds/geometry/studio-01-three-trajectories.webp"]
+      [384, "artwork/study-night-384-optimized.webp"],
+      [768, "artwork/study-night-768-optimized.webp"],
+      [1152, "artwork/study-night-1152-optimized.webp"],
+      [1536, "artwork/study-night.webp"]
     ]
   },
-  "generated/backgrounds/geometry/footer-orbital-sectors.webp": {
+  "artwork/progress-night.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/progress-night-384-optimized.webp"],
+      [768, "artwork/progress-night-768-optimized.webp"],
+      [1152, "artwork/progress-night-1152-optimized.webp"],
+      [1536, "artwork/progress-night-1536-optimized.webp"]
+    ]
+  },
+  "artwork/studio-01-three-trajectories.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/studio-01-three-trajectories-384-optimized.webp"],
+      [768, "artwork/studio-01-three-trajectories-768-optimized.webp"],
+      [1152, "artwork/studio-01-three-trajectories-1152-optimized.webp"],
+      [1536, "artwork/studio-01-three-trajectories.webp"]
+    ]
+  },
+  "artwork/footer-orbital-sectors.webp": {
     "width": 1942,
     "height": 809,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/footer-orbital-sectors-1152.webp"],
-      [1942, "generated/backgrounds/geometry/footer-orbital-sectors.webp"]
+      [384, "artwork/footer-orbital-sectors-384-optimized.webp"],
+      [768, "artwork/footer-orbital-sectors-768-optimized.webp"],
+      [1152, "artwork/footer-orbital-sectors-1152-optimized.webp"],
+      [1942, "artwork/footer-orbital-sectors.webp"]
     ]
   },
-  "generated/backgrounds/geometry/practice-folded-paths.webp": {
+  "artwork/practice-folded-paths.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/practice-folded-paths-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/practice-folded-paths-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/practice-folded-paths-1152.webp"],
-      [1536, "generated/backgrounds/geometry/practice-folded-paths.webp"]
+      [384, "artwork/practice-folded-paths-384-optimized.webp"],
+      [768, "artwork/practice-folded-paths-768-optimized.webp"],
+      [1152, "artwork/practice-folded-paths-1152-optimized.webp"],
+      [1536, "artwork/practice-folded-paths.webp"]
     ]
   },
-  "generated/backgrounds/geometry/progress-prismatic-weave.webp": {
+  "artwork/progress-prismatic-weave.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/progress-prismatic-weave-1152.webp"],
-      [1536, "generated/backgrounds/geometry/progress-prismatic-weave.webp"]
+      [384, "artwork/progress-prismatic-weave-384-optimized.webp"],
+      [768, "artwork/progress-prismatic-weave-768-optimized.webp"],
+      [1152, "artwork/progress-prismatic-weave-1152-optimized.webp"],
+      [1536, "artwork/progress-prismatic-weave.webp"]
     ]
   },
-  "generated/backgrounds/geometry/study-phase-rosettes.jpg": {
+  "artwork/study-phase-rosettes.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/study-phase-rosettes-384.webp"],
-      [1536, "generated/backgrounds/geometry/study-phase-rosettes.jpg"]
+      [384, "artwork/study-phase-rosettes-384-optimized.webp"],
+      [1536, "artwork/study-phase-rosettes.jpg"]
     ]
   },
-  "generated/backgrounds/geometry/level-1-triangles.jpg": {
+  "artwork/level-1-triangles.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/level-1-triangles-384.webp"],
-      [1536, "generated/backgrounds/geometry/level-1-triangles.jpg"]
+      [384, "artwork/level-1-triangles-384-optimized.webp"],
+      [1536, "artwork/level-1-triangles.jpg"]
     ]
   },
-  "generated/backgrounds/geometry/level-2-woven-orbits.jpg": {
+  "artwork/level-2-woven-orbits.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/level-2-woven-orbits-384.webp"],
-      [1536, "generated/backgrounds/geometry/level-2-woven-orbits.jpg"]
+      [384, "artwork/level-2-woven-orbits-384-optimized.webp"],
+      [1536, "artwork/level-2-woven-orbits.jpg"]
     ]
   },
-  "generated/backgrounds/geometry/level-3-prisms.jpg": {
+  "artwork/level-3-prisms.jpg": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/level-3-prisms-384.webp"],
-      [1536, "generated/backgrounds/geometry/level-3-prisms.jpg"]
+      [384, "artwork/level-3-prisms-384-optimized.webp"],
+      [1536, "artwork/level-3-prisms.jpg"]
     ]
   },
-  "generated/backgrounds/geometry/studio-02-lilac-phase.webp": {
+  "artwork/studio-02-lilac-phase.webp": {
     "width": 1774,
     "height": 887,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/studio-02-lilac-phase-1152.webp"],
-      [1774, "generated/backgrounds/geometry/studio-02-lilac-phase.webp"]
+      [384, "artwork/studio-02-lilac-phase-384-optimized.webp"],
+      [768, "artwork/studio-02-lilac-phase-768-optimized.webp"],
+      [1152, "artwork/studio-02-lilac-phase-1152-optimized.webp"],
+      [1774, "artwork/studio-02-lilac-phase.webp"]
     ]
   },
-  "generated/backgrounds/geometry/studio-03-mint-intersections.webp": {
+  "artwork/studio-03-mint-intersections.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/studio-03-mint-intersections-1152.webp"],
-      [1536, "generated/backgrounds/geometry/studio-03-mint-intersections.webp"]
+      [384, "artwork/studio-03-mint-intersections-384-optimized.webp"],
+      [768, "artwork/studio-03-mint-intersections-768-optimized.webp"],
+      [1152, "artwork/studio-03-mint-intersections-1152-optimized.webp"],
+      [1536, "artwork/studio-03-mint-intersections.webp"]
     ]
   },
-  "generated/backgrounds/geometry/studio-04-citron-arcades.webp": {
+  "artwork/studio-04-citron-arcades.webp": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/studio-04-citron-arcades-1152.webp"],
-      [1536, "generated/backgrounds/geometry/studio-04-citron-arcades.webp"]
+      [384, "artwork/studio-04-citron-arcades-384-optimized.webp"],
+      [768, "artwork/studio-04-citron-arcades-768-optimized.webp"],
+      [1152, "artwork/studio-04-citron-arcades-1152-optimized.webp"],
+      [1536, "artwork/studio-04-citron-arcades.webp"]
     ]
   },
-  "generated/backgrounds/geometry/studio-05-rose-hourglass.webp": {
+  "artwork/studio-05-rose-hourglass.webp": {
     "width": 1774,
     "height": 887,
     "variants": [
-      [384, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-384.webp"],
-      [768, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-768.webp"],
-      [1152, "optimized/generated/backgrounds/geometry/studio-05-rose-hourglass-1152.webp"],
-      [1774, "generated/backgrounds/geometry/studio-05-rose-hourglass.webp"]
+      [384, "artwork/studio-05-rose-hourglass-384-optimized.webp"],
+      [768, "artwork/studio-05-rose-hourglass-768-optimized.webp"],
+      [1152, "artwork/studio-05-rose-hourglass-1152-optimized.webp"],
+      [1774, "artwork/studio-05-rose-hourglass.webp"]
     ]
   }
 }

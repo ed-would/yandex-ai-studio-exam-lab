@@ -1,4 +1,9 @@
 /* Палитра ночной практики: те же акценты, глубокие нейтральные поверхности. */
+:root {
+  --lilac-accent: var(--level-3-accent);
+  --lilac-soft: var(--level-3-soft);
+  --lilac-pale: var(--level-3-pale);
+}
 picture.generative-art,
 picture.section-backdrop {
   display: block;
@@ -25,7 +30,32 @@ picture.section-backdrop {
   color: var(--error-text);
 }
 @media screen {
+  html[data-theme='dark'] .study-page {
+    --accent: var(--lilac-accent);
+    --accent-soft: var(--lilac-soft);
+    --accent-pale: var(--lilac-pale);
+    --source-accent: var(--lilac-accent);
+  }
+  html:not([data-theme='dark']) .results-page .coaching-more {
+    color: var(--muted);
+  }
+  html:not([data-theme='dark']) .timer-option input:not(:checked) + .timer-switch {
+    background: color-mix(in srgb, var(--muted) 24%, var(--surface-raised));
+  }
+  html:not([data-theme='dark']) .history-list-section :is(.empty-state, .history-table-wrap) {
+    background: var(--surface);
+  }
+  @media (max-width: 768px) {
+    html:not([data-theme='dark']) .history-list-section .history-table-wrap {
+      background: transparent;
+    }
+  }
   html[data-theme='dark'] {
+    --lilac-accent: var(--level-3-accent);
+    --lilac-soft: var(--level-3-soft);
+    --lilac-pale: var(--level-3-pale);
+    --accent-soft: var(--ui-accent-soft);
+    --accent-pale: var(--ui-accent-pale);
     background: var(--page-bg);
     color: var(--ink);
   }
@@ -45,7 +75,6 @@ picture.section-backdrop {
   }
   html[data-theme='dark']
     :is(
-      .overview-number small,
       .question-counter small,
       .question-topic,
       .answer-instruction,
@@ -72,14 +101,12 @@ picture.section-backdrop {
       .skipped-note p,
       .competency-caption small,
       .competency-map-caption,
-      .scoring-info p,
       .filter-pills button,
-      .rationale-symbol.neutral,
-      .scoring-info summary
+      .rationale-symbol.neutral
     ) {
     color: var(--muted);
   }
-  html[data-theme='dark'] :is(.study-nav button.active strong, .guide-index) {
+  html[data-theme='dark'] :is(.study-nav button.active strong, .study-nav button.active > .icon, .guide-index) {
     color: var(--accent);
   }
   html[data-theme='dark'] :is(.preparation-steps h3, .skipped-note strong, .history-title strong) {
@@ -127,28 +154,20 @@ picture.section-backdrop {
   html[data-theme='dark'] .choice-indicator > span {
     background: var(--control-ink);
   }
-  html[data-theme='dark'] .theme-1:not(.results-page),
-  html[data-theme='dark'] .outcome-excellent {
-    --accent: #d3e38c;
-    --accent-soft: #343c27;
-    --accent-pale: #292e24;
+  html[data-theme='dark'] .theme-1 {
+    --accent: var(--level-1-accent);
+    --accent-soft: var(--level-1-soft);
+    --accent-pale: var(--level-1-pale);
   }
-  html[data-theme='dark'] .theme-2:not(.results-page),
-  html[data-theme='dark'] .outcome-confident {
-    --accent: #93d7d0;
-    --accent-soft: #273f40;
-    --accent-pale: #242f33;
+  html[data-theme='dark'] .theme-2 {
+    --accent: var(--level-2-accent);
+    --accent-soft: var(--level-2-soft);
+    --accent-pale: var(--level-2-pale);
   }
-  html[data-theme='dark'] .theme-3:not(.results-page),
-  html[data-theme='dark'] .outcome-close {
-    --accent: #c5a8f2;
-    --accent-soft: #3b304d;
-    --accent-pale: #2e273d;
-  }
-  html[data-theme='dark'] .outcome-starting {
-    --accent: #edb5c8;
-    --accent-soft: #402c3a;
-    --accent-pale: #30232e;
+  html[data-theme='dark'] .theme-3 {
+    --accent: var(--lilac-accent);
+    --accent-soft: var(--lilac-soft);
+    --accent-pale: var(--lilac-pale);
   }
   html[data-theme='dark'] .site-header {
     background: var(--surface-glass);
@@ -161,16 +180,16 @@ picture.section-backdrop {
     color: var(--muted);
   }
   html[data-theme='dark'] :is(.hero, .hero-visual) {
-    background: #25212f;
+    background: #27212f;
   }
   html[data-theme='dark'] .hero-visual::after {
-    background: linear-gradient(90deg, #25212f, transparent 28%);
+    background: linear-gradient(90deg, #27212f, transparent 28%);
   }
   html[data-theme='dark'] .hero-art-caption {
     color: var(--ink);
     background: var(--surface-glass);
   }
-  html[data-theme='dark'] :is(.hero-copy h1, .overview-number, .level-card h3, .domain-row strong, .how-step h3) {
+  html[data-theme='dark'] :is(.hero-copy h1, .level-card h3, .domain-row strong, .how-step h3) {
     color: var(--ink);
   }
   html[data-theme='dark'] .how-panel h2 {
@@ -179,17 +198,24 @@ picture.section-backdrop {
   html[data-theme='dark'] .practice-note > .icon {
     color: var(--accent);
   }
-  html[data-theme='dark'] :is(.overview-strip > div, .overview-personal, .level-metrics, .domain-row) {
+  html[data-theme='dark'] :is(.level-metrics, .domain-row) {
     border-color: var(--line);
   }
   html[data-theme='dark'] :is(.level-card, .stats-card) {
     background: var(--accent-pale);
     border-color: var(--line);
   }
-  html[data-theme='dark']
-    :is(.level-card .badge, .stats-card .badge, .domain-icon, .topic-tags > button, .empty-symbol, .modal-symbol) {
+  html[data-theme='dark'] :is(.level-card .badge, .stats-card .badge, .domain-icon, .topic-tags > button) {
     color: var(--accent);
     background: var(--accent-soft);
+  }
+  html[data-theme='dark'] :is(.empty-symbol, .modal-symbol) {
+    color: var(--ui-accent);
+    background: var(--ui-accent-soft);
+  }
+  html[data-theme='dark'] ::selection {
+    color: var(--ink);
+    background: var(--ui-accent-soft);
   }
   html[data-theme='dark'] .topic-tags > button {
     border-color: color-mix(in srgb, var(--accent) 14%, transparent);
@@ -251,6 +277,15 @@ picture.section-backdrop {
     --footer-line: #486061;
     --footer-ink: #e4f1eb;
     --footer-muted: #c0d3d2;
+    --footer-action-bg: #304d4b;
+    --footer-action-ink: #e4f2eb;
+    --footer-action-border: #5e7c77;
+    --footer-action-hover-bg: #3a5d59;
+    --footer-action-hover-ink: #eff8f3;
+    --footer-action-hover-border: #779a93;
+    --footer-action-active-bg: #456a64;
+    --footer-action-active-ink: #f4faf7;
+    --footer-action-active-border: #8bad9f;
   }
   html[data-theme='dark'] .footer-platform .platform-mark img {
     filter: none;
@@ -317,22 +352,28 @@ picture.section-backdrop {
     border-color: var(--accent);
   }
   html[data-theme='dark'] :is(.choice.is-correct, .question-dot.correct, .match-node.is-correct) {
-    background: var(--success-bg);
+    background: var(--surface-raised);
     border-color: #6bba87;
     color: var(--success-text);
   }
   html[data-theme='dark'] :is(.choice.is-wrong, .question-dot.incorrect, .match-node.is-wrong) {
-    background: var(--error-bg);
+    background: var(--surface-raised);
     border-color: #d38c80;
     color: var(--error-text);
+  }
+  html[data-theme='dark'] .question-dot.correct {
+    background: var(--success-bg);
+  }
+  html[data-theme='dark'] .question-dot.incorrect {
+    background: var(--error-bg);
   }
   html[data-theme='dark'] .question-dot.draft {
     background: #42392b;
     color: #eed299;
     border-color: #b89e65;
   }
-  html[data-theme='dark'] .question-dot.current {
-    outline-color: var(--accent);
+  html[data-theme='dark'] .question-map .question-dot.current {
+    border-color: var(--info-text);
   }
   html[data-theme='dark'] .match-node:disabled {
     color: var(--ink);
@@ -369,12 +410,15 @@ picture.section-backdrop {
     color: var(--error-text);
   }
   html[data-theme='dark'] :is(.feedback.correct, .feedback.correct .takeaway) {
-    background: var(--success-bg);
+    background: var(--surface-raised);
     border-color: #52745e;
   }
   html[data-theme='dark'] :is(.feedback.incorrect, .feedback.incorrect .takeaway) {
-    background: var(--error-bg);
+    background: var(--surface-raised);
     border-color: #75505b;
+  }
+  html[data-theme='dark'] :is(.feedback.correct, .feedback.incorrect) .takeaway {
+    background: var(--surface);
   }
   html[data-theme='dark']
     .feedback.correct
@@ -412,9 +456,6 @@ picture.section-backdrop {
   }
   html[data-theme='dark']
     :is(
-      .outcome-context,
-      .outcome-description,
-      .outcome-delta,
       .outcome-facts > div > span,
       .outcome-facts small,
       .coaching-section > .section-heading p,
@@ -438,28 +479,28 @@ picture.section-backdrop {
     background: conic-gradient(var(--accent) var(--score), #ffffff20 0);
     box-shadow: none;
   }
-  html[data-theme='dark']
-    :is(.score-number, .competency-caption a, .review-question, .history-score, .coaching-card h3) {
+  html[data-theme='dark'] :is(.score-number, .competency-caption a, .review-question, .coaching-card h3) {
     color: var(--ink);
   }
   html[data-theme='dark'] .results-page .score-orbit > div > span:last-child {
     color: var(--muted);
   }
-  html[data-theme='dark'] :is(.preparation-plan, .coaching-clear, .coaching-takeaway, .scoring-info) {
+  html[data-theme='dark'] :is(.preparation-plan, .coaching-clear, .coaching-takeaway) {
     background: var(--accent-pale);
     border-color: var(--line);
   }
-  html[data-theme='dark'] :is(.progress-track, .competency-row .progress-track) {
-    background: var(--surface-raised);
+  html:not([data-theme='dark']) .scoring-info {
+    --ui-accent: var(--info-text);
+    --line: var(--info-line);
+    background: var(--info-bg);
   }
-  html[data-theme='dark'] .competency-strong .progress-track > span {
-    background: #81c9a8;
+  html[data-theme='dark'] .scoring-info {
+    --accent: var(--info-text);
+    --line: var(--info-line);
+    background: var(--info-bg);
   }
-  html[data-theme='dark'] .competency-weak .progress-track > span {
-    background: #d69bae;
-  }
-  html[data-theme='dark'] .competency-partial .progress-track > span {
-    background: #c5a8f2;
+  html[data-theme='dark'] .scoring-info-icon {
+    background: color-mix(in srgb, var(--info-text) 12%, var(--info-bg));
   }
   html[data-theme='dark']
     :is(
@@ -519,9 +560,18 @@ picture.section-backdrop {
     background: var(--surface-raised);
     border-color: var(--line);
   }
+  html[data-theme='dark'] .review-item .feedback.review-feedback {
+    background: var(--surface-raised);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .feedback.review-feedback .takeaway {
+    background: var(--surface);
+    border-color: var(--line);
+  }
   html[data-theme='dark'] :is(.button.primary, .level-button) {
-    color: var(--control-ink);
-    background: var(--accent);
+    color: var(--action-ink);
+    background: var(--action-bg);
+    border-color: var(--action-border);
   }
   html[data-theme='dark'] .button.secondary {
     color: var(--ink);
@@ -538,6 +588,11 @@ picture.section-backdrop {
   html[data-theme='dark'] :is(.text-button.danger-text, .stats-card-footer .text-button) {
     color: var(--error-text);
   }
+  html[data-theme='dark']
+    .outcome-hero
+    :is(.outcome-context, .outcome-description, .outcome-delta, .outcome-goal, .outcome-actions .text-button) {
+    color: var(--text);
+  }
   html[data-theme='dark'] :is(a[href], button, summary, select, input):focus-visible,
   html[data-theme='dark'] :is(.choice, .import-button, .source-search):has(input:focus-visible) {
     outline-color: var(--focus);
@@ -548,9 +603,18 @@ picture.section-backdrop {
     border: 1px solid var(--line);
   }
   @media (hover: hover) and (pointer: fine) {
+    html[data-theme='dark'] .home-lower .domain-row:hover strong {
+      color: var(--accent);
+    }
+    html[data-theme='dark'] .home-lower a.domain-row:hover {
+      background: color-mix(in srgb, var(--accent-soft) 88%, var(--accent));
+    }
+    html:not([data-theme='dark']) .study-page .study-nav button:not(.active):hover {
+      background: color-mix(in srgb, var(--accent-soft) 80%, var(--accent-pale));
+    }
     html[data-theme='dark'] :is(.button.primary, .level-button):not(:disabled):hover {
-      background: color-mix(in srgb, var(--accent) 88%, white);
-      color: var(--control-ink);
+      background: var(--action-hover-bg);
+      color: var(--action-hover-ink);
     }
     html[data-theme='dark'] .button.secondary:not(:disabled):hover,
     html[data-theme='dark']
@@ -599,8 +663,8 @@ picture.section-backdrop {
     }
   }
   html[data-theme='dark'] :is(.button.primary, .level-button):not(:disabled):active {
-    background: color-mix(in srgb, var(--accent) 78%, #fff);
-    color: var(--control-ink);
+    background: var(--action-active-bg);
+    color: var(--action-active-ink);
   }
   html[data-theme='dark'] .button.secondary:not(:disabled):active,
   html[data-theme='dark']
@@ -618,6 +682,9 @@ picture.section-backdrop {
     color: var(--ink);
     background: var(--accent-soft);
   }
+  html[data-theme='dark'] .home-lower a.domain-row:active {
+    background: var(--accent-soft);
+  }
   html[data-theme='dark'] .button.danger:active {
     color: #27191e;
     background: #fff0e8;
@@ -631,7 +698,7 @@ picture.section-backdrop {
   }
   @media (max-width: 700px) {
     html[data-theme='dark'] .hero-visual::after {
-      background: linear-gradient(180deg, #25212f, transparent 25%);
+      background: linear-gradient(180deg, #27212f, transparent 25%);
     }
   }
 }
@@ -645,9 +712,13 @@ picture.section-backdrop {
     --text: #25212b;
     --muted: #68636f;
     --line: #e4e0e9;
-    --accent: #00515a;
-    --accent-soft: #e1efef;
-    --accent-pale: #eff8f7;
+    --ui-accent: var(--ink);
+    --ui-accent-strong: var(--ink);
+    --ui-accent-soft: var(--surface-raised);
+    --ui-accent-pale: var(--surface);
+    --accent: var(--ui-accent);
+    --accent-soft: var(--ui-accent-soft);
+    --accent-pale: var(--ui-accent-pale);
     --control-ink: #fff;
     --success-text: #267045;
     --success-bg: #e8f3e9;
@@ -658,7 +729,7 @@ picture.section-backdrop {
     color: #25212b;
   }
   html[data-theme='dark'] .source-links a {
-    color: #00515a !important;
+    color: var(--accent) !important;
   }
   html[data-theme='dark'] .reasoning-details > summary {
     color: #25212b !important;
@@ -686,36 +757,132 @@ picture.section-backdrop {
 }
 
 @media screen {
-  html:not([data-theme='dark']) .footer-meta .button.secondary {
-    color: #174b49;
-    background-color: #b9d5cb;
-    border: 1px solid #8fb5a9;
-  }
-  html[data-theme='dark'] .footer-meta .button.secondary {
-    color: #e4f2eb;
-    background-color: #304d4b;
-    border: 1px solid #5e7c77;
+  html .footer-meta .button.secondary {
+    color: var(--footer-action-ink);
+    background-color: var(--footer-action-bg);
+    border: 1px solid var(--footer-action-border);
   }
   @media (hover: hover) and (pointer: fine) {
-    html:not([data-theme='dark']) .footer-meta .button.secondary:not(:disabled):hover {
-      color: #123f3e;
-      background-color: #abccbf;
-      border-color: #7ba393;
-    }
-    html[data-theme='dark'] .footer-meta .button.secondary:not(:disabled):hover {
-      color: #eff8f3;
-      background-color: #3a5d59;
-      border-color: #779a93;
+    html .footer-meta .button.secondary:not(:disabled):hover {
+      color: var(--footer-action-hover-ink);
+      background-color: var(--footer-action-hover-bg);
+      border-color: var(--footer-action-hover-border);
     }
   }
-  html:not([data-theme='dark']) .footer-meta .button.secondary:not(:disabled):active {
-    color: #103a39;
-    background-color: #9fbfb3;
-    border-color: #739b8d;
+  html .footer-meta .button.secondary:not(:disabled):active {
+    color: var(--footer-action-active-ink);
+    background-color: var(--footer-action-active-bg);
+    border-color: var(--footer-action-active-border);
   }
-  html[data-theme='dark'] .footer-meta .button.secondary:not(:disabled):active {
-    color: #f4faf7;
-    background-color: #456a64;
-    border-color: #8bad9f;
+}
+
+/* Иконка действия всегда наследует цвет подписи, включая вложенные обёртки. */
+:is(button, a[href], .button, [role='option'], .timer-option, summary)
+  :is(.icon, .study-nav-icon, .official-resource-icon, .domain-icon, .timer-option-icon, .scoring-info-icon) {
+  color: inherit !important;
+}
+
+/* Общий акцент: экспертный цвет в светлой теме, составной градиент в тёмной. */
+@media screen {
+  html[data-theme] .button.primary,
+  html[data-theme] .button.primary:not(:disabled):hover,
+  html[data-theme] .button.primary:not(:disabled):active {
+    background-image: var(--action-gradient);
+  }
+  html[data-theme] .button.primary:not(:disabled):hover {
+    filter: var(--action-hover-filter);
+  }
+  html[data-theme] .button.primary:not(:disabled):active {
+    filter: var(--action-active-filter);
+  }
+  .primary-nav .nav-label::after,
+  .local-status i:not(.status-warning),
+  .live-dot {
+    background-image: var(--ui-gradient);
+  }
+  .timer-option input:checked + .timer-switch {
+    background-image: var(--ui-action-gradient);
+  }
+  .timer-option input:checked + .timer-switch::after {
+    background-color: var(--ui-action-ink);
+  }
+  @supports (background-clip: text) {
+    :is(
+      .text-button:not(.danger-text):not(.study-page .text-button):not(.stats-card-footer .text-button),
+      .source-links:not(.study-page .source-links) a,
+      .breadcrumb a,
+      .competency-caption a,
+      .primary-nav a.active .nav-label,
+      .primary-nav a:focus-visible .nav-label
+    ) {
+      color: var(--ui-accent);
+      background-image: var(--ui-gradient);
+      background-clip: text;
+      -webkit-text-fill-color: var(--ui-text-fill);
+      html[data-theme='dark'] & .icon {
+        stroke: var(--icon-gradient);
+      }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .primary-nav a:hover .nav-label {
+        color: var(--ui-accent);
+        background-image: var(--ui-gradient);
+        background-clip: text;
+        -webkit-text-fill-color: var(--ui-text-fill);
+      }
+    }
+  }
+}
+@media (forced-colors: active) {
+  .icon {
+    stroke: currentColor !important;
+  }
+  :is(.text-button, .ui-link-label, .source-links a, .breadcrumb a, .competency-caption a, .primary-nav .nav-label) {
+    background-image: none !important;
+    color: LinkText !important;
+    -webkit-text-fill-color: LinkText !important;
+  }
+  html[data-theme] .button.primary,
+  html[data-theme] .button.primary:not(:disabled):hover,
+  html[data-theme] .button.primary:not(:disabled):active {
+    background-image: none;
+    color: ButtonText;
+    -webkit-text-fill-color: ButtonText;
+    background-color: ButtonFace;
+    border-color: ButtonText;
+    filter: none;
+  }
+  .progress-track > span,
+  .primary-nav .nav-label::after,
+  .local-status i,
+  .live-dot,
+  .timer-option input:checked + .timer-switch {
+    background-image: none;
+    background-color: Highlight;
+  }
+}
+@media print {
+  :root,
+  html[data-theme='dark'],
+  .theme-1:not(.results-page),
+  .theme-2:not(.results-page),
+  .theme-3:not(.results-page) {
+    --ui-gradient: none;
+    --ui-action-gradient: none;
+    --ui-action-bg: var(--surface-raised);
+    --ui-action-ink: var(--ink);
+    --ui-action-border: var(--line);
+    --ui-action-hover-bg: var(--surface-raised);
+    --ui-action-hover-ink: var(--ink);
+    --ui-action-active-bg: var(--surface-raised);
+    --ui-action-active-ink: var(--ink);
+    --action-gradient: none;
+    --action-bg: var(--ui-action-bg);
+    --action-ink: var(--ui-action-ink);
+    --action-border: var(--ui-action-border);
+    --action-hover-bg: var(--ui-action-hover-bg);
+    --action-hover-ink: var(--ui-action-hover-ink);
+    --action-active-bg: var(--ui-action-active-bg);
+    --action-active-ink: var(--ui-action-active-ink);
   }
 }
