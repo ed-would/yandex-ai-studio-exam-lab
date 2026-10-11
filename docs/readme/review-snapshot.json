@@ -161,123 +161,123 @@
       "sha256": "61c30b167341b55fe61d9cc013c5a4a4d8d0a89e39ec48564dee0162a8a346b6"
     },
     {
-      "path": "assets/readme/source/bank-map-mobile.export.png",
+      "path": "assets/readme-generation-attempts/source/bank-map-mobile.export.png",
       "sha256": "b1e6465abd8fe828dd4eb89e2585931d1776c37fd2348c811a5df45572698b3d"
     },
     {
-      "path": "assets/readme/source/bank-map.artwork.png",
+      "path": "assets/readme-generation-attempts/source/bank-map.artwork.png",
       "sha256": "dafca4b2b51aee6feff302e41db94b097a7b88b7b78b415e33d97e519b8be1f0"
     },
     {
-      "path": "assets/readme/source/bank-map.export.png",
+      "path": "assets/readme-generation-attempts/source/bank-map.export.png",
       "sha256": "546ca69649b116961840f5258761c031db3153043b8c1eac3a692ee6ecc2073e"
     },
     {
-      "path": "assets/readme/source/bank-map.expressive-artwork.png",
+      "path": "assets/readme-generation-attempts/source/bank-map.expressive-artwork.png",
       "sha256": "b35b4108f0f5279e62093a777ee6e3a1cb33ad8d5173deeaed53b59781382d1b"
     },
     {
-      "path": "assets/readme/source/bank-map.expressive-mobile-artwork.png",
+      "path": "assets/readme-generation-attempts/source/bank-map.expressive-mobile-artwork.png",
       "sha256": "e2776ee0e4b6ed6911c17bd2c9016ac6f21903aa0eece8290bcf3c22ca332405"
     },
     {
-      "path": "assets/readme/source/bank-map.expressive-mobile.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/bank-map.expressive-mobile.prompt.txt",
       "sha256": "2b28b1d43fd0d3dce17dad28e024d0e7bb49146acff1e55defa0c9e025cba3eb"
     },
     {
-      "path": "assets/readme/source/bank-map.expressive.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/bank-map.expressive.prompt.txt",
       "sha256": "c5f12a16eb8318da94e561a6911880d2b9a2fc71b4f1b324ab158d951de1484a"
     },
     {
-      "path": "assets/readme/source/bank-map.layout.html",
+      "path": "assets/readme-generation-attempts/source/bank-map.layout.html",
       "sha256": "1b83bc64699a68bf4cdf0a8e412ada8e46b620ae930be7b92a317d3185b8bc29"
     },
     {
-      "path": "assets/readme/source/bank-map.png",
+      "path": "assets/readme-generation-attempts/source/bank-map.png",
       "sha256": "dcd4cb20cd7014a2c4ef6240881517b5c2a2cad5669900fddbd64a7cccb8d0cf"
     },
     {
-      "path": "assets/readme/source/bank-map.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/bank-map.prompt.txt",
       "sha256": "960565241f4bc2d865222f3798a31dfebcabb4cf0ef4fbb223782b1451e2acc1"
     },
     {
-      "path": "assets/readme/source/hero-mobile.export.png",
+      "path": "assets/readme-generation-attempts/source/hero-mobile.export.png",
       "sha256": "78a0678dc22331f15d6d478f085b99417f74e7d13746ab73dbee55687534920a"
     },
     {
-      "path": "assets/readme/source/hero.export.png",
+      "path": "assets/readme-generation-attempts/source/hero.export.png",
       "sha256": "16dbb5490a195cac848e351a1b7952d2f34a758fe81c18e5c98b51f0017124b9"
     },
     {
-      "path": "assets/readme/source/hero.expressive-artwork.png",
+      "path": "assets/readme-generation-attempts/source/hero.expressive-artwork.png",
       "sha256": "909265c72185ca0d8a8442c1dd30c59aa48eb1388649b6584fa2f46eb6e6182f"
     },
     {
-      "path": "assets/readme/source/hero.expressive.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/hero.expressive.prompt.txt",
       "sha256": "c76d9a5bfa1e45235611448ef077b22367d9b708473656a9de98883b1bf38a5d"
     },
     {
-      "path": "assets/readme/source/hero.layout.html",
+      "path": "assets/readme-generation-attempts/source/hero.layout.html",
       "sha256": "0d68b40a0971f5d2a6fffd43d5e8a3b228e1dd512cbf67dfdd96eb4bc0980bce"
     },
     {
-      "path": "assets/readme/source/hero.png",
+      "path": "assets/readme-generation-attempts/source/hero.png",
       "sha256": "2e3a044e4a2d9cf0bd5eb5af859965a7b5c032ce3fec53aac277bb56b0504964"
     },
     {
-      "path": "assets/readme/source/hero.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/hero.prompt.txt",
       "sha256": "e72dc676c74491c473830aea0b38fab1c8c0d4be29beba5cae4b8af75785b584"
     },
     {
-      "path": "assets/readme/source/history/initial-manifest.json",
+      "path": "assets/readme-generation-attempts/source/history/initial-manifest.json",
       "sha256": "b41ddaba4ab4e7b5f513e57dfdff5a68d8afa5c1cc8ebdb1eae584c993e93a2a"
     },
     {
-      "path": "assets/readme/source/learning-cycle-mobile.export.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle-mobile.export.png",
       "sha256": "408036ba4de5f217ff65943e8d3903de066c9976229cbd923397515dcf21f3a1"
     },
     {
-      "path": "assets/readme/source/learning-cycle.artwork.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.artwork.png",
       "sha256": "c0448795934eded1413c943b70205b96c90f7beecc3458f899dd14f7a65b0d99"
     },
     {
-      "path": "assets/readme/source/learning-cycle.export.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.export.png",
       "sha256": "a9f31f49abd755fdec986bcafe6a9356fe994b1bfd9520d7bc5b7f9025819c3b"
     },
     {
-      "path": "assets/readme/source/learning-cycle.expressive-artwork.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.expressive-artwork.png",
       "sha256": "9372b6c93d4c12f5c24174350f7cc5bec34a47deb20547439e25307b5fbde156"
     },
     {
-      "path": "assets/readme/source/learning-cycle.expressive-mobile-artwork.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.expressive-mobile-artwork.png",
       "sha256": "0b0104d6b921833b575f0b215fbbd5911416cb3d153ed8ad1f6ae676fbb8a0cc"
     },
     {
-      "path": "assets/readme/source/learning-cycle.expressive-mobile.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.expressive-mobile.prompt.txt",
       "sha256": "611f3d66851d638655596b010fff519560dad19ca1bbe075518d9442fe53a2db"
     },
     {
-      "path": "assets/readme/source/learning-cycle.expressive.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.expressive.prompt.txt",
       "sha256": "5f3a72edc18f374782e5991504a01786d83e274a9243c8a501e8c834b892867b"
     },
     {
-      "path": "assets/readme/source/learning-cycle.layout.html",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.layout.html",
       "sha256": "4ce9fa42deac93411146ee4ba61f884c307a0e31e2bdbabc46cde73cb58a48ae"
     },
     {
-      "path": "assets/readme/source/learning-cycle.png",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.png",
       "sha256": "fdc892fb61949abbed875f64ad4e88609193acb9b417af53c8cf4e29853ab9e8"
     },
     {
-      "path": "assets/readme/source/learning-cycle.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/learning-cycle.prompt.txt",
       "sha256": "4393f07b8e51abec4c4d9f420249b22a9d104eb9fa16081b4ebe2bf492b0dad4"
     },
     {
-      "path": "assets/readme/source/manifest.json",
+      "path": "assets/readme-generation-attempts/source/manifest.json",
       "sha256": "dd74c76d23091da8401fb518bb0eb53084352bb91e8b04b66efe6b22f2fcc1ba"
     },
     {
-      "path": "assets/readme/source/typography-correction.prompt.txt",
+      "path": "assets/readme-generation-attempts/source/typography-correction.prompt.txt",
       "sha256": "9ef0098c5871be60e4a6aa0b961d91465708dd61efe8ced25527f04410ed819f"
     },
     {

@@ -86,7 +86,7 @@ export function Results({
         <span class="achievement-label"><${Icon} name=${outcome.icon} size=${21}/>${outcome.achievement}</span>
         <h1 id="outcome-title">${outcome.title}</h1>
         <p class="outcome-description">${outcome.description}</p>
-        ${delta !== null && html`<p class=${`outcome-delta ${delta > 0 ? 'improved' : ''}`}><${Icon} name=${delta > 0 ? 'chart' : 'clock'} size=${17}/>${delta > 0 ? '+' : ''}${formatPercent(delta)} п. п. к предыдущей полной попытке</p>`}
+        ${delta !== null && html`<p class=${`outcome-delta ${delta > 0 ? 'improved' : ''}`}><${Icon} name=${delta > 0 ? 'chart' : 'clock'} size=${17}/>${delta > 0 ? '+' : ''}${formatPercent(delta)}% к предыдущей полной попытке</p>`}
         ${primary.action && html`<${TimerOption} enabled=${timed} onChange=${onTimedChange}/>`}
         <div class="outcome-actions">${
           primary.href

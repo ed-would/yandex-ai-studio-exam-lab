@@ -1,0 +1,25 @@
+{
+  "route": "QUICK",
+  "scope": "Two desktop question-format illustrations; preserve hero, other README sections and clean mobile variants",
+  "criteria": [
+    "No stray purple or teal decorative circles",
+    "Three separated illustration and caption groups",
+    "Captions directly below corresponding art",
+    "Quiet background under text",
+    "Same Unbounded/Arial brand typography",
+    "Counts 72/72/36",
+    "Four radio holes with one selected",
+    "Five checkboxes with two selected",
+    "Three matching cords with unique endpoints",
+    "Both light and dark theme palettes"
+  ],
+  "sourceReadmeSha256": "beace95b669bcd4e6818e6fec0f9c5acb80d808a928c1d3d7a9f26665a366a03",
+  "sourceArtworkSha256": {
+    "light": "15df906944fb63699bc6de1d06681cb3f9fb4356f32cace08664a80aa94350d3",
+    "dark": "d062502430d2f288bdd3280222d5e0eabcac1b52067bfc8599d2e8756b2fb4c7"
+  },
+  "reviewerSlots": 0,
+  "reviewRecheckBudget": 0,
+  "ownership": "Root writes; banner_evidence read-only",
+  "validation": "Visual inspection of rendered PNGs, Playwright MCP image decode and layout checks, README byte comparison outside desktop image references"
+}

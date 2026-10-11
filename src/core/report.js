@@ -8,6 +8,13 @@ const esc = (value) =>
   );
 
 export function createHtmlReport(attempt, questions, theme = 'light') {
+  // Standalone export mirrors level primitives and the test fill opacity rules.
+  const palettes = {
+    1: ['#465c16', '#e6efa9', '#f5f7e5', '#d3e38c', '#343c27', '#292e24'],
+    2: ['#005b64', '#d6efeb', '#edf8f6', '#93d7d0', '#273f40', '#242f33'],
+    3: ['#6841ab', '#e9dcfb', '#f5effc', '#c5a8f2', '#3b304d', '#2e273d'],
+  };
+  const palette = palettes[attempt.level];
   const score = scoreAttempt(attempt, questions);
   const bank = new Map(questions.map((q) => [q.id, q]));
   const blocks = attempt.questionIds
@@ -22,14 +29,14 @@ export function createHtmlReport(attempt, questions, theme = 'light') {
           .map((left) => {
             const right = q.right.find((r) => r.id === q.pairs[left.id]);
             const chosen = q.right.find((r) => r.id === answer?.response[left.id]);
-            return `<li><strong>${esc(left.text)} → ${esc(right.text)}</strong><p>Твой ответ: ${esc(chosen?.text || 'не дан')}.</p><p>${esc(q.pairExplanations[left.id])}</p></li>`;
+            return `<li><strong>${esc(left.text)} → ${esc(right.text)}</strong><p class="${chosen?.id === right.id ? 'ok' : 'bad'}">Твой ответ: ${esc(chosen?.text || 'не дан')}.</p><p>${esc(q.pairExplanations[left.id])}</p></li>`;
           })
           .join('');
       } else {
         answers = q.options
           .map(
             (option) =>
-              `<li><strong>${esc(option.text)}</strong><p>${q.correct.includes(option.id) ? 'Верный вариант' : 'Неверный вариант'}${answer?.response.includes(option.id) ? ' · твой выбор' : ''}.</p><p>${esc(option.explanation)}</p></li>`,
+              `<li><strong>${esc(option.text)}</strong><p class="${q.correct.includes(option.id) ? 'ok' : 'bad'}">${q.correct.includes(option.id) ? 'Верный вариант' : 'Неверный вариант'}${answer?.response.includes(option.id) ? ' · твой выбор' : ''}.</p><p>${esc(option.explanation)}</p></li>`,
           )
           .join('');
       }
@@ -39,5 +46,19 @@ export function createHtmlReport(attempt, questions, theme = 'light') {
         .join(' · ')}</div></article>`;
     })
     .join('');
-  return `<!doctype html><html lang="ru" data-theme="${theme === 'dark' ? 'dark' : 'light'}"><head><meta name="color-scheme" content="${theme === 'dark' ? 'dark' : 'light'}"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Разбор · ${esc(APP_NAME)}</title><style>body{max-width:900px;margin:40px auto;padding:0 24px;font:16px/1.65 system-ui,sans-serif;color:#172b2b;background:#f7f7f4}h1{font-size:38px;line-height:1.2}h2{font-size:21px;line-height:1.4}header,article{background:white;border:1px solid #dddeda;border-radius:20px;padding:28px;margin:20px 0}header strong{font-size:30px}aside{background:#f0edf4;padding:14px;border-radius:10px}.meta{color:#62716c;font-size:13px}.ok{color:#17633c}.bad{color:#a4382a}li{margin:20px 0}li p{margin:3px 0}a{color:#6841ab;overflow-wrap:anywhere;text-underline-offset:.2em;transition:color 160ms ease}a:focus-visible{outline:3px solid #6841ab;outline-offset:3px}@media(hover:hover) and (pointer:fine){a:hover{color:#6841ab;text-decoration-thickness:2px}}a:active{color:#6841ab;text-decoration-thickness:2px}@supports (-webkit-background-clip:text){:root{--report-gradient:none;--report-text-fill:currentColor}html[data-theme=dark]{--report-gradient:linear-gradient(110deg,#d3e38c,#93d7d0 50%,#c5a8f2);--report-text-fill:transparent}a{background-image:var(--report-gradient);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:var(--report-text-fill)}}@media(prefers-reduced-motion:reduce){a{transition:none}}.sources{font-size:13px}footer{font-size:13px;color:#626b68}html[data-theme=dark] body{color:#f2edf8;background:#17151d}html[data-theme=dark] header,html[data-theme=dark] article{background:#24212d;border-color:#494152}html[data-theme=dark] aside{background:#302b3a}html[data-theme=dark] .meta,html[data-theme=dark] footer{color:#b9b0c5}html[data-theme=dark] .ok{color:#9cddb1}html[data-theme=dark] .bad{color:#f1b3a4}html[data-theme=dark] a{color:#f2edf8}html[data-theme=dark] a:focus-visible{outline-color:#f2edf8}@media(hover:hover) and (pointer:fine){html[data-theme=dark] a:hover{color:#f2edf8}}html[data-theme=dark] a:active{color:white}@media(forced-colors:active){a{background-image:none!important;color:LinkText!important;-webkit-text-fill-color:LinkText!important}}@media screen and (max-width:570px){body{margin:16px auto;padding:0 16px}h1{font-size:26px}header,article{padding:16px;margin:16px 0;border-radius:16px}header strong{font-size:24px}ul{padding-left:20px}}@media print{a{background-image:none!important;background-clip:initial;-webkit-background-clip:initial;-webkit-text-fill-color:currentColor!important;color:#25212b!important}html[data-theme=dark] body,html[data-theme=dark] header,html[data-theme=dark] article,html[data-theme=dark] aside{color:#172b2b;background:white}html[data-theme=dark] .meta,html[data-theme=dark] footer{color:#62716c}html[data-theme=dark] a{color:#25212b}html[data-theme=dark] .ok{color:#17633c}html[data-theme=dark] .bad{color:#a4382a}body{background:white;padding:0;font-size:11pt}article{break-inside:avoid;border:0;border-bottom:1px solid #ccc;border-radius:0;padding:16px 0}header{border:0;padding:0}}</style></head><body><header><div class="meta">${esc(APP_NAME)} · СОХРАНЁННЫЙ РАЗБОР</div><h1>${esc(levelById(attempt.level).name)} · уровень ${attempt.level}</h1><p>${attempt.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'}</p><strong>${score.correct} / ${score.total} · ${score.percent}%</strong><p>Верно: ${score.correct}. Ошибки: ${score.wrong}. Пропущено: ${score.unanswered}.</p><p>Завершено: ${esc(attempt.completedAt)}. Версия вопросов: ${BANK_VERSION}.</p></header>${blocks}<footer>Независимые авторские задания по <a href="${PROGRAM_URL}">программе «Основы работы с ИИ»</a>. Этот результат не является официальной оценкой Яндекса. В файле сохранены исходные ответы и полный разбор.</footer></body></html>`;
+  return `<!doctype html><html lang="ru" data-theme="${theme === 'dark' ? 'dark' : 'light'}"><head><meta name="color-scheme" content="${theme === 'dark' ? 'dark' : 'light'}"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Разбор · ${esc(APP_NAME)}</title><style>
+:root{--accent:${palette[0]};--fill-soft:${palette[1]};--fill-pale:${palette[2]};--surface-opacity:25%;--raised-opacity:18%;--inset-opacity:8%;--soft:color-mix(in srgb,var(--fill-soft) var(--raised-opacity),transparent);--pale:color-mix(in srgb,var(--fill-pale) var(--surface-opacity),transparent);--inset-fill:color-mix(in srgb,var(--fill-soft) var(--inset-opacity),transparent);--inset:linear-gradient(var(--inset-fill),var(--inset-fill)),var(--canvas);--ink:#25212b;--muted:#68636f;--success:#267045;--error:#d32f2f;--canvas:#fff;--line:color-mix(in srgb,var(--accent) 22%,var(--pale))}
+html[data-theme=dark]{--accent:${palette[3]};--fill-soft:${palette[4]};--fill-pale:${palette[5]};--inset-opacity:60%;--ink:#f2edf8;--muted:#b9b0c5;--success:#74d680;--error:#ff5c5c;--canvas:#17151d}
+body{max-width:900px;margin:40px auto;padding:0 24px;font:16px/1.65 system-ui,sans-serif;color:var(--ink);background:var(--canvas)}
+h1{font-size:38px;line-height:1.2}h2{font-size:21px;line-height:1.4}
+header,article{background:var(--pale);border:1px solid var(--line);border-radius:20px;padding:28px;margin:20px 0}article{background:var(--soft)}header strong{font-size:30px;color:var(--accent)}
+aside{background:var(--inset);padding:14px;border:1px solid var(--line);border-radius:10px}aside b{color:var(--accent)}
+.meta{color:var(--muted);font-size:13px}.ok{color:var(--success)}.bad{color:var(--error)}li{margin:20px 0}li p{margin:3px 0}
+a{color:var(--accent);overflow-wrap:anywhere;text-underline-offset:.2em;transition:color 160ms ease,background-color 160ms ease}a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(hover:hover) and (pointer:fine){a:hover{background:var(--soft);text-decoration-thickness:2px}}a:active{background:var(--soft);text-decoration-thickness:2px}
+@media(prefers-reduced-motion:reduce){a{transition:none}}.sources{font-size:13px}footer{font-size:13px;color:var(--muted)}
+@media(forced-colors:active){a{color:LinkText!important}a:focus-visible{outline-color:Highlight}}
+@media screen and (max-width:570px){body{margin:16px auto;padding:0 16px}h1{font-size:26px}header,article{padding:16px;margin:16px 0;border-radius:16px}header strong{font-size:24px}ul{padding-left:20px}}
+@media print{:root,html[data-theme=dark]{--accent:${palette[0]};--fill-soft:${palette[1]};--fill-pale:${palette[2]};--inset-opacity:8%;--ink:#25212b;--muted:#68636f;--success:#267045;--error:#d32f2f;--canvas:#fff}body{padding:0;font-size:11pt}article{break-inside:avoid;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:16px 0}header{border:0;padding:0}}
+</style></head><body><header><div class="meta">${esc(APP_NAME)} · СОХРАНЁННЫЙ РАЗБОР</div><h1>${esc(levelById(attempt.level).name)} · уровень ${attempt.level}</h1><p>${attempt.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'}</p><strong>${score.correct} / ${score.total} · ${score.percent.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}%</strong><p>Верно: ${score.correct}. Ошибки: ${score.wrong}. Пропущено: ${score.unanswered}.</p><p>Завершено: ${esc(attempt.completedAt)}. Версия вопросов: ${BANK_VERSION}.</p></header>${blocks}<footer>Независимые авторские задания по <a href="${PROGRAM_URL}">программе «Основы работы с ИИ»</a>. Этот результат не является официальной оценкой Яндекса. В файле сохранены исходные ответы и полный разбор.</footer></body></html>`;
 }

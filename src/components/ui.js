@@ -38,17 +38,17 @@ const PATHS = {
 };
 
 export function Icon({ name = 'spark', size = 20, className = '' }) {
-  const gradientId = `icon-gradient-${useId()}`;
-  return html`<svg class=${`icon ${className}`} data-icon=${name} style=${{ '--icon-gradient': `url(#${gradientId})` }} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient class="ui-icon-gradient" id=${gradientId} gradientUnits="userSpaceOnUse" x1="-2.4" y1="6.72" x2="26.4" y2="17.28"><stop offset="0%"/><stop offset="50%"/><stop offset="100%"/></linearGradient></defs>${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
+  return html`<svg class=${`icon ${className}`} data-icon=${name} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
 }
 
 export function TimerOption({ enabled = false, onChange }) {
   const id = useId();
-  return html`<label class="timer-option" for=${id}><span class="timer-option-icon"><${Icon} name="clock" size=${23}/></span><span class="timer-option-copy"><strong>Таймер для новых попыток</strong><small>Включи перед стартом. 1:12 на вопрос, затем 0 баллов и следующий вопрос. У «Продолжить» режим не меняется.</small></span><input id=${id} type="checkbox" role="switch" checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/><span class="timer-switch" aria-hidden="true"/></label>`;
+  return html`<label class="timer-option" for=${id}><span class="timer-option-icon"><${Icon} name="clock" size=${24}/></span><span class="timer-option-copy"><strong>Таймер для новых попыток</strong><small>Включи перед стартом. 1:12 на вопрос, затем 0 баллов и следующий вопрос. У «Продолжить» режим не меняется.</small></span><input id=${id} type="checkbox" role="switch" checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/><span class="timer-switch" aria-hidden="true"/></label>`;
 }
 
 export function Wordmark() {
-  return html`<span class="wordmark"><span class="brand-symbol"><img src=${assetUrl('brand/trainer-abstract.png')} srcset=${responsiveSources('brand/trainer-abstract.png')} sizes="52px" alt="" width="256" height="256"/></span><span class="wordmark-text"><span>${APP_NAME}</span><small class="wordmark-tagline">${APP_TAGLINE}</small></span></span>`;
+  const [firstWord, ...remainingWords] = APP_NAME.split(' ');
+  return html`<span class="wordmark"><span class="brand-symbol"><img src=${assetUrl('brand/trainer-abstract.png')} srcset=${responsiveSources('brand/trainer-abstract.png')} sizes="52px" alt="" width="256" height="256"/></span><span class="wordmark-text"><span class="wordmark-title"><span>${firstWord}</span>${' '}<span>${remainingWords.join(' ')}</span></span><small class="wordmark-tagline">${APP_TAGLINE}</small></span></span>`;
 }
 
 export function ThemeToggle() {
@@ -119,7 +119,7 @@ export function SectionBackdrop({ name, level, format = 'jpg', sizes }) {
   return html`<picture class=${`section-backdrop ${night ? 'has-night-art' : ''}`} aria-hidden="true">${night && html`<source media=${dark ? 'all' : 'not all'} srcset=${responsiveSources(nightPath) || assetUrl(nightPath)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading="lazy" decoding="async"/></picture>`;
 }
 
-const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
+const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
 const dateFormat = new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric',
   month: 'short',
@@ -136,7 +136,7 @@ export function SourceLinks({ sources = [], compact = false }) {
   return html`<div class=${`source-links ${compact ? 'compact' : ''}`}>${unique.map((source) => html`<a href=${source.url} target="_blank" rel="noopener noreferrer">${source.title}<${Icon} name="external" size=${14}/><span class="sr-only"> (откроется в новой вкладке)</span></a>`)}</div>`;
 }
 
-export function Modal({ title, children, confirmText = 'Подтвердить', onConfirm, onClose, dangerous = false }) {
+export function Modal({ title, children, confirmText = 'Подтвердить', onConfirm, onClose, dangerous = false, level }) {
   const ref = useRef(null);
   const id = useId();
   useEffect(() => {
@@ -175,11 +175,11 @@ export function Modal({ title, children, confirmText = 'Подтвердить',
   }, []);
   return html`<div class="modal-backdrop" onClick=${(event) => {
     if (event.target === event.currentTarget) onClose();
-  }}><section class="modal" role="dialog" aria-modal="true" aria-labelledby=${id} ref=${ref}><div class="modal-symbol"><${Icon} name=${dangerous ? 'trash' : 'info'} size=${28}/></div><h2 id=${id}>${title}</h2><div class="modal-copy">${children}</div><div class="modal-actions"><button class="button secondary" onClick=${onClose}>Отмена</button><button class=${`button ${dangerous ? 'danger' : 'primary'}`} onClick=${onConfirm}>${confirmText}</button></div></section></div>`;
+  }}><section class=${`modal${level ? ` theme-${level}` : ''}`} role="dialog" aria-modal="true" aria-labelledby=${id} ref=${ref}><div class="modal-heading"><div class="modal-symbol"><${Icon} name=${dangerous ? 'trash' : 'info'} size=${28}/></div><h2 id=${id}>${title}</h2></div><div class="modal-copy">${children}</div><div class="modal-actions"><button class="button secondary" onClick=${onClose}>Отмена</button><button class=${`button ${dangerous ? 'danger' : 'primary'}`} onClick=${onConfirm}>${confirmText}</button></div></section></div>`;
 }
 
-export function EmptyState({ icon = 'book', title, children, backdrop }) {
-  return html`<div class="empty-state">${backdrop}<span class="empty-symbol"><${Icon} name=${icon} size=${30}/></span><h3>${title}</h3><div>${children}</div></div>`;
+export function EmptyState({ icon = 'book', title, children, backdrop, className = '' }) {
+  return html`<div class=${`empty-state ${className}`}>${backdrop}<div class="empty-state-heading"><span class="empty-symbol"><${Icon} name=${icon} size=${30}/></span><h3>${title}</h3></div><div>${children}</div></div>`;
 }
 
 export function downloadFile(name, content, type = 'application/json;charset=utf-8') {

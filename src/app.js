@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { APP_NAME, DOMAINS, PROGRAM_URL, TRAINING_TARGET } from './data/meta.js';
 import {
   completeSession,
@@ -102,6 +102,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
   const [warning, setWarning] = useState(initialWarning);
   const [dismissedWarning, setDismissedWarning] = useState('');
   const [route, setRoute] = useState(routeFromHash);
+  const previousRoute = useRef(route);
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState('');
   const [timed, setTimed] = useState(false);
@@ -280,8 +281,9 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     };
     if (existing)
       setModal({
+        level: Number(level),
         title: 'Начать новую попытку?',
-        body: `Незавершённая попытка уровня ${level} будет заменена. Уже проверено ${Object.keys(existing.answers).length} из ${existing.questionIds.length} вопросов. История завершённых попыток сохранится.`,
+        body: html`Незавершённая попытка уровня ${level} будет заменена.<br/>Уже проверено ${Object.keys(existing.answers).length} из ${existing.questionIds.length} вопросов.<br/>История завершённых попыток сохранится.`,
         confirmText: 'Начать заново',
         onConfirm: launch,
       });
@@ -290,6 +292,16 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
   const currentLevel = Number(route.id);
   const currentKey = sessionKey(currentLevel, route.page === 'mistakes' ? 'mistakes' : 'exam');
   const attempt = state.sessions[currentKey];
+  useLayoutEffect(() => {
+    const previous = previousRoute.current;
+    previousRoute.current = route;
+    if (previous.page === route.page && previous.id === route.id) return;
+    if (window.location.hash === '#levels' || (['exam', 'mistakes'].includes(route.page) && attempt)) return;
+    const main = document.getElementById('main-content');
+    const heading = main?.querySelector('h1');
+    heading?.setAttribute('tabindex', '-1');
+    (heading || main)?.focus({ preventScroll: true });
+  }, [route.page, route.id]);
   function isAttemptVisible(skey, id) {
     const currentRoute = routeFromHash();
     const active = liveState.current.sessions[skey];
@@ -385,6 +397,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     };
     if (remaining)
       setModal({
+        level: current.level,
         title: 'Завершить тест досрочно?',
         body: `Осталось ${remaining} непроверенных заданий. За них будет 0 баллов, даже если вариант уже выбран, но кнопка «Проверить» не нажата. Разбор будет доступен для всех вопросов.`,
         confirmText: 'Завершить и посмотреть балл',
@@ -394,6 +407,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
   }
   function clearScores(level = null) {
     setModal({
+      level,
       title: level ? `Очистить уровень ${level}?` : 'Очистить все результаты?',
       body: level
         ? 'Будут удалены все завершённые и незавершённые попытки этого уровня, включая работу над ошибками. Другие уровни сохранятся.'
@@ -438,22 +452,23 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     downloadFile('ai-basics-exam-trainer-backup.json', JSON.stringify(makeBackup(liveState.current), null, 2));
   const result = route.page === 'results' ? state.history.find((a) => a.id === route.id) : null;
   const navActive = ['exam', 'mistakes', 'results', 'home'].includes(route.page) ? 'home' : route.page;
+  const hasOriginal = driver.current.raw !== null;
 
   return html`<div class="app-shell"><a class="skip-link" href="#main-content" onClick=${(event) => {
     event.preventDefault();
     document.getElementById('main-content')?.focus();
     document.getElementById('main-content')?.scrollIntoView?.({ block: 'start' });
-  }}>Перейти к содержимому</a><header class="site-header"><div class="header-inner"><a class="brand-link" href="#/" aria-label=${`${APP_NAME}: главная`}><${Wordmark}/></a><nav class="primary-nav" aria-label="Основная навигация"><a class=${navActive === 'home' ? 'active' : ''} href="#/" aria-current=${navActive === 'home' ? 'page' : undefined}><span class="nav-label">Тесты</span></a><a class=${navActive === 'history' ? 'active' : ''} href="#/history" aria-current=${navActive === 'history' ? 'page' : undefined}><span class="nav-label">Прогресс</span></a><a class=${navActive === 'study' ? 'active' : ''} href="#/study" aria-current=${navActive === 'study' ? 'page' : undefined}><span class="nav-label">Материалы</span></a></nav><span class="local-status"><i class=${warning ? 'status-warning' : ''}/>${warning ? 'Проверь сохранение' : 'Прогресс на устройстве'}</span><${ThemeToggle}/></div></header>
-    ${warning && warning !== dismissedWarning && html`<div class="storage-warning" role="alert"><span class="storage-warning-icon"><${Icon} name="info" size=${22}/></span><div class="storage-warning-body"><p>${warning}</p><div class="storage-warning-actions" role="group" aria-label="Действия с сохранениями">${driver.current.conflict && html`<button class="button primary small" onClick=${reloadFromStorage}><${Icon} name="refresh" size=${16}/>Обновить данные</button>`}<button class=${`button ${driver.current.conflict ? 'secondary' : 'primary'} small`} onClick=${driver.current.raw ? () => downloadFile('ai-basics-exam-trainer-original-data.json', driver.current.raw) : backup}><${Icon} name="download" size=${16}/>${driver.current.raw ? 'Скачать исходную копию' : 'Скачать копию'}</button><a class="button secondary small" href="#/history"><${Icon} name="sliders" size=${16}/>Управление данными</a>${driver.current.raw && html`<button class="text-button" onClick=${backup}>Скачать текущий прогресс<${Icon} name="download" size=${15}/></button>`}</div></div><button class="button secondary icon-button storage-warning-close" type="button" aria-label="Скрыть сообщение" title="Скрыть сообщение" onClick=${() => setDismissedWarning(warning)}><${Icon} name="close" size=${20}/></button></div>`}
+  }}>Перейти к содержимому</a><header class="site-header"><div class="header-inner"><a class="brand-link" href="#/" aria-label=${`${APP_NAME}: главная`}><${Wordmark}/></a><nav class="primary-nav" aria-label="Основная навигация"><a class=${navActive === 'home' ? 'active' : ''} href="#/" aria-current=${navActive === 'home' ? 'page' : undefined}><span class="nav-label">Тесты</span></a><a class=${navActive === 'history' ? 'active' : ''} href="#/history" aria-current=${navActive === 'history' ? 'page' : undefined}><span class="nav-label">Прогресс</span></a><a class=${navActive === 'study' ? 'active' : ''} href="#/study" aria-current=${navActive === 'study' ? 'page' : undefined}><span class="nav-label">Материалы</span></a></nav>${warning && html`<span class="local-status"><i class="status-warning"/>Проверь сохранение</span>`}<${ThemeToggle}/></div></header>
+    ${warning && warning !== dismissedWarning && html`<div class="storage-warning" role="alert"><span class="storage-warning-icon"><${Icon} name="info" size=${22}/></span><div class="storage-warning-body"><p>${warning}</p><div class="storage-warning-actions" role="group" aria-label="Действия с сохранениями">${driver.current.conflict && html`<button class="button primary small" onClick=${reloadFromStorage}><${Icon} name="refresh" size=${16}/>Обновить данные</button>`}<button class=${`button ${driver.current.conflict ? 'secondary' : 'primary'} small`} onClick=${hasOriginal ? () => downloadFile('ai-basics-exam-trainer-original-data.json', driver.current.raw) : backup}><${Icon} name="download" size=${16}/>${hasOriginal ? 'Скачать исходную копию' : 'Скачать копию'}</button><a class="button secondary small" href="#/history"><${Icon} name="sliders" size=${16}/>Управление данными</a>${hasOriginal && html`<button class="text-button" onClick=${backup}>Скачать текущий прогресс<${Icon} name="download" size=${15}/></button>`}</div></div><button class="button secondary icon-button storage-warning-close" type="button" aria-label="Скрыть сообщение" title="Скрыть сообщение" onClick=${() => setDismissedWarning(warning)}><${Icon} name="close" size=${20}/></button></div>`}
     <main id="main-content" tabindex="-1">
       ${route.page === 'home' && html`<${Home} state=${state} questions=${questions} timed=${timed} onTimedChange=${setTimed} onStart=${(level) => begin(level, 'exam', null, true)} onRestart=${(level) => begin(level)}/>`}
       ${['exam', 'mistakes'].includes(route.page) && (attempt ? html`<${ExamPage} key=${attempt.id} attempt=${attempt} questions=${questions} blocked=${driver.current.conflict} onDraft=${(q, response) => updateAttempt((a) => setDraft(a, q, typeof response === 'function' ? response(a.drafts[q.id] || emptyResponse(q)) : response))} onAnswer=${(q, response) => updateAttempt((a) => submitAnswer(a, q, response))} onMove=${(index) => updateAttempt((a) => moveCursor(a, index))} onBookmark=${(id) => updateAttempt((a) => toggleBookmark(a, id))} onFinish=${finish}/>` : html`<div class="page"><${EmptyState} title="Нет незавершённой попытки" icon="book"><p>Выбери уровень на главной, чтобы начать тест.</p><a class="button primary" href="#/">К тестам<${Icon} name="arrow" size=${17}/></a></${EmptyState}></div>`)}
-      ${route.page === 'results' && (result ? html`<${Results} timed=${timed} onTimedChange=${setTimed} key=${result.id} celebrate=${celebration.current === result.id} onCelebrationConsumed=${consumeCelebration} attempt=${result} questions=${questions} state=${state} onRestart=${(level, resume = false) => begin(level, 'exam', null, resume)} onMistakes=${(a) => begin(a.level, 'mistakes', errorIds(a, questions))} onExportReport=${(a) => downloadFile(`ai-basics-exam-trainer-level-${a.level}-report.html`, createHtmlReport(a, questions, document.documentElement.dataset.theme), 'text/html;charset=utf-8')}/>` : html`<div class="page"><${EmptyState} title="Этот результат не найден" icon="search"><p>Возможно, он был удалён или получен в другом браузере. Восстанови резервную копию или открой историю.</p><a class="button primary" href="#/history">К истории</a></${EmptyState}></div>`)}
+      ${route.page === 'results' && (result ? html`<${Results} timed=${timed} onTimedChange=${setTimed} key=${result.id} celebrate=${celebration.current === result.id} onCelebrationConsumed=${consumeCelebration} attempt=${result} questions=${questions} state=${state} onRestart=${(level, resume = false) => begin(level, 'exam', null, resume)} onMistakes=${(a) => begin(a.level, 'mistakes', errorIds(a, questions))} onExportReport=${(a) => downloadFile(`ai-basics-exam-trainer-level-${a.level}-report.html`, createHtmlReport(a, questions, document.documentElement.dataset.theme), 'text/html;charset=utf-8')}/>` : html`<div class="page"><${EmptyState} className="missing-result-state" title="Этот результат не найден" icon="search" backdrop=${html`<${SectionBackdrop} name="history-lens-light" format="png" sizes="(max-width: 570px) calc(100vw - 32px), (max-width: 820px) calc(100vw - 44px), (max-width: 1296px) calc(100vw - 64px), 1232px"/>`}><p>Возможно, он был удалён или получен в другом браузере. Восстанови резервную копию или открой историю.</p><a class="button primary" href="#/history">К истории</a></${EmptyState}></div>`)}
       ${route.page === 'history' && html`<${History} state=${state} questions=${questions} hasProtectedData=${driver.current.protected && driver.current.raw !== null} onClearLevel=${clearScores} onClearAll=${() => clearScores()} onBackup=${backup} onImport=${importBackup}/>`}
       ${route.page === 'study' && html`<${Study} key=${route.id} questions=${questions} initialDomain=${Number(route.id) || 1}/>`}
     </main>
     <footer class="site-footer"><${SectionBackdrop} name="footer-orbital-sectors" format="webp"/><div class="footer-inner"><div class="footer-card"><div class="footer-intro"><span class="footer-title">${APP_NAME}</span><p>Независимый учебный проект для подготовки к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. Вопросы авторские; три уровня и учебная цель ${TRAINING_TARGET}% относятся к тренажёру.</p></div><div class="footer-exam-weights"><span class="footer-note-label">Веса доменов настоящего экзамена</span><div class="footer-weight-grid">${DOMAINS.map((domain) => html`<div><span>${domain.short}</span><strong>${domain.weight}%</strong></div>`)}</div></div><div class="footer-meta"><div class="footer-platform"><${PlatformMark}/><span class="footer-count">3 теста · 180 вопросов</span></div><a class="button secondary" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div></div></div></footer>
-    ${modal && html`<${Modal} title=${modal.title} confirmText=${modal.confirmText} dangerous=${modal.dangerous} onConfirm=${modal.onConfirm} onClose=${() => setModal(null)}><p>${modal.body}</p></${Modal}>`}
+    ${modal && html`<${Modal} title=${modal.title} confirmText=${modal.confirmText} dangerous=${modal.dangerous} level=${modal.level} onConfirm=${modal.onConfirm} onClose=${() => setModal(null)}><p>${modal.body}</p></${Modal}>`}
     ${toast && html`<div class="toast" role="status"><${Icon} name="info" size=${18}/>${toast}<button aria-label="Закрыть уведомление" onClick=${() => setToast('')}><${Icon} name="close" size=${16}/></button></div>`}
   </div>`;
 }

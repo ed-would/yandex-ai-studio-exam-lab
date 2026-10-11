@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { connectPair, evaluate } from '../core/exam.js';
 import { domainById } from '../data/meta.js';
 import { html, Icon, SourceLinks } from './ui.js';
+import { ProgressBar } from './progress-bar.js';
 
 export const typeNames = { single: 'Один ответ', multi: 'Мультивыбор', match: 'Сопоставление' };
 const LETTERS = 'АБВГД';
@@ -55,6 +56,7 @@ export function MatchQuestion({ question, response, locked, onChange }) {
   const [lines, setLines] = useState([]);
   const [message, setMessage] = useState('');
   const board = useRef(null);
+  const pairedCount = Object.keys(response).length;
   useEffect(() => {
     setArmed(null);
     setMessage('');
@@ -153,20 +155,18 @@ export function MatchQuestion({ question, response, locked, onChange }) {
     );
   }
 
-  return html`<div class="match-question"><p class="answer-instruction"><span class="match-desktop-copy">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</span><span class="match-mobile-copy">Для каждого термина выбери соответствие в списке. Полное определение появится под полем.</span></p><div class="match-hint"><${Icon} name="link" size=${16}/><span><span class="match-desktop-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-mobile-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : 'Чтобы удалить пару, выбери «Без соответствия».'}</span></span><span class="match-count">${Object.keys(response).length} / ${question.left.length}</span></div>
+  return html`<div class="match-question"><div class="match-guidance"><p class="match-instruction"><span class="match-desktop-copy">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</span><span class="match-mobile-copy">Для каждого термина выбери соответствие в списке.</span></p><div class="match-hint"><span><span class="match-desktop-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-mobile-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : 'Чтобы удалить пару, выбери «Без соответствия».'}</span></span></div></div>
+    <div class="match-status"><span>Сопоставлено пар</span><span class="match-count">${pairedCount} из ${question.left.length}</span><${ProgressBar} value=${pairedCount} max=${question.left.length} label="Сопоставлено пар"/></div>
     <div class="match-mobile-list" aria-label="Сопоставление по строкам">
       ${question.left.map((item, index) => {
         const rightId = response[item.id];
-        const selected = question.right.find((right) => right.id === rightId);
         const status = locked && rightId ? (question.pairs[item.id] === rightId ? 'is-correct' : 'is-wrong') : '';
-        const definitionId = `match-definition-${question.id}-${item.id}`;
         return html`<div class=${`match-mobile-row ${status}`} key=${item.id}>
           <span class="match-mobile-term"><span class="node-number">${index + 1}</span>${item.text}</span>
-          <select class="match-mobile-select" aria-label=${`Соответствие для: ${item.text}`} aria-describedby=${selected ? definitionId : undefined} value=${rightId || ''} disabled=${locked} onChange=${(event) => selectMobile(item.id, event.currentTarget.value)}>
+          <div class="match-mobile-field"><select class=${`match-mobile-select ${rightId ? 'paired' : ''}`} aria-label=${`Соответствие для: ${item.text}`} value=${rightId || ''} disabled=${locked} onChange=${(event) => selectMobile(item.id, event.currentTarget.value)}>
             <option value="">Без соответствия</option>
             ${question.right.map((right, rightIndex) => html`<option key=${right.id} value=${right.id}>${LETTERS[rightIndex]}. ${right.text}</option>`)}
-          </select>
-          ${selected ? html`<p class="match-mobile-definition" id=${definitionId}><span class="sr-only">Выбрано определение: </span>${selected.text}</p>` : html`<p class="match-mobile-empty" aria-hidden="true">Пара ещё не выбрана</p>`}
+          </select></div>
         </div>`;
       })}
     </div>
@@ -226,10 +226,10 @@ export function Feedback({ question, answer, review = false }) {
     });
   }, [question.id, review]);
   return html`<section class=${`feedback ${correct ? 'correct' : 'incorrect'} ${review ? 'review-feedback' : ''}`} ref=${ref} tabindex="-1" aria-label="Разбор ответа">
-    <div class="feedback-heading" role=${review ? undefined : 'status'}><span class="feedback-icon"><${Icon} name=${correct ? 'check' : timedOut ? 'clock' : missing ? 'info' : 'close'} size=${23}/></span><div><h3>${correct ? 'Верно. Хорошая работа.' : timedOut ? 'Время вышло' : missing ? 'Ответ не был проверен' : 'Есть что разобрать'}</h3><p>${correct ? '1 балл за задание.' : timedOut ? '0 баллов. За 72 секунды ответ не был проверен. Вопрос засчитан как ошибка; изменить ответ нельзя.' : missing ? '0 баллов. Непроверенное задание считается пропущенным.' : '0 баллов. Первый ответ сохранён и уже не изменится.'}</p></div><span class="feedback-points">${correct ? '+1' : '0'}</span></div>
+    <div class="feedback-heading" role=${review ? undefined : 'status'}><span class="feedback-icon"><${Icon} name=${correct ? 'check' : timedOut ? 'clock' : missing ? 'info' : 'close'} size=${24}/></span><div><h3>${correct ? 'Верно. Хорошая работа.' : timedOut ? 'Время вышло' : missing ? 'Ответ не был проверен' : 'Есть что разобрать'}</h3><p>${correct ? '1 балл за задание.' : timedOut ? '0 баллов. За 72 секунды ответ не был проверен. Вопрос засчитан как ошибка; изменить ответ нельзя.' : missing ? '0 баллов. Непроверенное задание считается пропущенным.' : '0 баллов. Первый ответ сохранён и уже не изменится.'}</p></div><span class="feedback-points">${correct ? '+1' : '0'}</span></div>
     <p class="main-explanation">${question.explanation}</p>
-    <div class="takeaway"><${Icon} name="spark" size=${19}/><div><span>Запомнить</span><p>${question.takeaway}</p></div></div>
-    <details class="accordion accordion--inline reasoning-details" open=${!correct || review}><summary>Почему варианты верны или неверны<${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="reasoning-copy"><${ExplanationDetails} question=${question} response=${answer?.response}/></div></div></div></details>
+    <div class=${`takeaway feedback-sources theme-${question.level}`}><div class="feedback-sources-header"><span class="feedback-sources-icon"><${Icon} name="spark" size=${18}/></span><h4>Запомнить</h4></div><p>${question.takeaway}</p></div>
+    <details class="accordion accordion--surface reasoning-details" open=${!correct || review}><summary><span class="scoring-info-icon"><${Icon} name="info" size=${20}/></span><span class="reasoning-label">Почему варианты верны или неверны</span><${Icon} name="chevron" size=${16}/></summary><div class="details-content"><div class="details-content-inner"><div class="reasoning-copy"><${ExplanationDetails} question=${question} response=${answer?.response}/></div></div></div></details>
     <div class=${`feedback-sources theme-${question.level}`}><div class="feedback-sources-header"><span class="feedback-sources-icon"><${Icon} name="book" size=${18}/></span><h4>Разобраться глубже</h4></div><${SourceLinks} sources=${question.sources}/></div>
   </section>`;
 }

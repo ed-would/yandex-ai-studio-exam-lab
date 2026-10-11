@@ -30,6 +30,19 @@ picture.section-backdrop {
   color: var(--error-text);
 }
 @media screen {
+  html:not([data-theme='dark']) .data-panel .button.secondary {
+    background: var(--surface-inset);
+  }
+  html[data-theme='dark']
+    :is(
+      .levels-section > .section-heading,
+      .levels-section > .timer-option,
+      .curriculum-panel .button.secondary,
+      .source-search,
+      .modal-actions .button.secondary
+    ) {
+    background: var(--surface-inset);
+  }
   html[data-theme='dark'] .study-page {
     --accent: var(--lilac-accent);
     --accent-soft: var(--lilac-soft);
@@ -38,6 +51,9 @@ picture.section-backdrop {
   }
   html:not([data-theme='dark']) .results-page .coaching-more {
     color: var(--muted);
+  }
+  html:not([data-theme='dark']) .results-page .coaching-card .competency-icon {
+    background: color-mix(in srgb, var(--test-fill-soft) 50%, var(--surface));
   }
   html:not([data-theme='dark']) .timer-option input:not(:checked) + .timer-switch {
     background: color-mix(in srgb, var(--muted) 24%, var(--surface-raised));
@@ -52,6 +68,9 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] {
     --lilac-accent: var(--level-3-accent);
+    --test-inset-opacity: 60%;
+    --surface-solid: var(--surface);
+    --surface-inset: var(--surface-raised);
     --lilac-soft: var(--level-3-soft);
     --lilac-pale: var(--level-3-pale);
     --accent-soft: var(--ui-accent-soft);
@@ -156,18 +175,12 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] .theme-1 {
     --accent: var(--level-1-accent);
-    --accent-soft: var(--level-1-soft);
-    --accent-pale: var(--level-1-pale);
   }
   html[data-theme='dark'] .theme-2 {
     --accent: var(--level-2-accent);
-    --accent-soft: var(--level-2-soft);
-    --accent-pale: var(--level-2-pale);
   }
   html[data-theme='dark'] .theme-3 {
-    --accent: var(--lilac-accent);
-    --accent-soft: var(--lilac-soft);
-    --accent-pale: var(--lilac-pale);
+    --accent: var(--level-3-accent);
   }
   html[data-theme='dark'] .site-header {
     background: var(--surface-glass);
@@ -209,8 +222,8 @@ picture.section-backdrop {
     color: var(--accent);
     background: var(--accent-soft);
   }
-  html[data-theme='dark'] :is(.empty-symbol, .modal-symbol) {
-    color: var(--ui-accent);
+  html[data-theme='dark'] .empty-symbol {
+    color: var(--accent);
     background: var(--ui-accent-soft);
   }
   html[data-theme='dark'] ::selection {
@@ -279,7 +292,7 @@ picture.section-backdrop {
     --footer-action-active-ink: #f4faf7;
     --footer-action-active-border: #8bad9f;
   }
-  html[data-theme='dark'] .footer-platform .platform-mark img {
+  html[data-theme='dark'] .platform-mark img {
     filter: none;
     opacity: 0.8;
   }
@@ -345,12 +358,12 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] :is(.choice.is-correct, .question-dot.correct, .match-node.is-correct) {
     background: var(--surface-raised);
-    border-color: #6bba87;
+    border-color: var(--success-text);
     color: var(--success-text);
   }
   html[data-theme='dark'] :is(.choice.is-wrong, .question-dot.incorrect, .match-node.is-wrong) {
     background: var(--surface-raised);
-    border-color: #d38c80;
+    border-color: var(--error-text);
     color: var(--error-text);
   }
   html[data-theme='dark'] .question-dot.correct {
@@ -360,12 +373,12 @@ picture.section-backdrop {
     background: var(--error-bg);
   }
   html[data-theme='dark'] .question-dot.draft {
-    background: #42392b;
-    color: #eed299;
-    border-color: #b89e65;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
   }
   html[data-theme='dark'] .question-map .question-dot.current {
-    border-color: var(--info-text);
+    border-color: var(--accent);
   }
   html[data-theme='dark'] .match-node:disabled {
     color: var(--ink);
@@ -391,7 +404,7 @@ picture.section-backdrop {
     stroke: var(--error-text);
   }
   html[data-theme='dark'] .disconnect {
-    background: var(--surface-raised);
+    background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface-solid);
     border-color: var(--line);
   }
   html[data-theme='dark'] :is(.pair-label, .match-letter, .match-number) {
@@ -401,31 +414,31 @@ picture.section-backdrop {
   html[data-theme='dark'] :is(.disconnect, .choice-status.wrong, .review-status.incorrect) {
     color: var(--error-text);
   }
-  html[data-theme='dark'] :is(.feedback.correct, .feedback.correct .takeaway) {
+  html[data-theme='dark'] .feedback.correct {
     background: var(--surface-raised);
-    border-color: #52745e;
+    border-color: var(--line);
   }
-  html[data-theme='dark'] :is(.feedback.incorrect, .feedback.incorrect .takeaway) {
+  html[data-theme='dark'] .feedback.incorrect {
     background: var(--surface-raised);
-    border-color: #75505b;
+    border-color: var(--line);
   }
   html[data-theme='dark'] :is(.feedback.correct, .feedback.incorrect) .takeaway {
-    background: var(--surface);
+    background: var(--surface-inset);
+    border-color: var(--line);
   }
-  html[data-theme='dark']
-    .feedback.correct
-    :is(.feedback-icon, .feedback-heading, .feedback-points, .reasoning-details > summary) {
+  html[data-theme='dark'] .feedback.correct :is(.feedback-icon, .feedback-heading, .feedback-points) {
     color: var(--success-text);
   }
-  html[data-theme='dark']
-    .feedback.incorrect
-    :is(.feedback-icon, .feedback-heading, .feedback-points, .reasoning-details > summary) {
+  html[data-theme='dark'] .feedback.incorrect :is(.feedback-icon, .feedback-heading, .feedback-points) {
     color: var(--error-text);
   }
   html[data-theme='dark']
     :is(.feedback, .feedback.correct, .feedback.incorrect)
-    :is(.main-explanation, .takeaway, .option-explanation p, .pair-explanation p, .your-answer, .explanation-meta) {
+    :is(.main-explanation, .takeaway p, .option-explanation p, .pair-explanation p, .explanation-meta) {
     color: var(--ink);
+  }
+  html[data-theme='dark'] .feedback.incorrect .your-answer {
+    color: var(--error-text);
   }
   html[data-theme='dark']
     :is(.rationale-symbol.correct, .review-status.correct, .choice-status.correct, .positive, .outcome-delta.improved) {
@@ -484,21 +497,13 @@ picture.section-backdrop {
     border-color: var(--line);
   }
   html:not([data-theme='dark']) .scoring-info {
-    --ui-accent: var(--info-text);
-    --line: var(--info-line);
-    background: var(--info-bg);
+    background: var(--surface);
   }
   html[data-theme='dark'] .scoring-info {
-    --accent: var(--info-text);
-    --ui-accent: var(--info-text);
-    --ui-accent-strong: var(--info-text);
-    --ui-accent-soft: var(--info-bg);
-    --ui-accent-pale: var(--info-bg);
-    --line: var(--info-line);
-    background: var(--info-bg);
+    background: var(--surface);
   }
   html[data-theme='dark'] .scoring-info-icon {
-    background: color-mix(in srgb, var(--info-text) 12%, var(--info-bg));
+    background: var(--accent-soft);
   }
   html[data-theme='dark']
     :is(
@@ -563,7 +568,7 @@ picture.section-backdrop {
     border-color: var(--line);
   }
   html[data-theme='dark'] .feedback.review-feedback .takeaway {
-    background: var(--surface);
+    background: var(--surface-inset);
     border-color: var(--line);
   }
   html[data-theme='dark'] :is(.button.primary, .level-button) {
@@ -578,7 +583,7 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] .button.danger {
     color: #27191e;
-    background: #f1b3a4;
+    background: var(--error-text);
   }
   html[data-theme='dark'] :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a) {
     color: var(--accent);
@@ -699,9 +704,9 @@ picture.section-backdrop {
   }
 }
 html[data-theme] .exam-topline > .exam-back-link {
-  color: var(--ui-neutral-link) !important;
+  color: var(--accent) !important;
   background-image: none !important;
-  -webkit-text-fill-color: var(--ui-neutral-link) !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 @media print {
   html[data-theme='dark'] {
@@ -723,17 +728,14 @@ html[data-theme] .exam-topline > .exam-back-link {
     --control-ink: #fff;
     --success-text: #267045;
     --success-bg: #e8f3e9;
-    --error-text: #9d392b;
-    --error-bg: #fff0eb;
+    --error-text: #d32f2f;
+    --error-bg: #fff1f1;
     color-scheme: light !important;
     background: #fff;
     color: #25212b;
   }
   html[data-theme='dark'] .source-links a {
     color: var(--accent) !important;
-  }
-  html[data-theme='dark'] .reasoning-details > summary {
-    color: #25212b !important;
   }
 }
 
@@ -779,9 +781,24 @@ html[data-theme] .exam-topline > .exam-back-link {
 
 /* Иконка действия всегда наследует цвет подписи, включая вложенные обёртки. */
 :is(button, a[href], .button, [role='option'], .timer-option, summary)
-  :is(.icon, .study-nav-icon, .official-resource-icon, .domain-icon, .timer-option-icon) {
+  :is(.icon, .study-nav-icon, .official-resource-icon, .domain-icon, .timer-option-icon, .scoring-info-icon) {
   color: inherit !important;
   stroke: currentColor !important;
+}
+
+html[data-theme] .home-lower .domain-icon,
+html[data-theme] .study-page .study-nav button.active:hover .study-nav-icon {
+  color: var(--accent) !important;
+}
+
+html[data-theme] .home-lower a.domain-row:is(:hover, :active) {
+  color: var(--accent);
+}
+html[data-theme] :is(.home-lower a.domain-row, .study-page .study-nav button) strong {
+  color: inherit !important;
+}
+html[data-theme] .accordion--score.scoring-info > summary {
+  color: var(--accent);
 }
 
 /* Общий акцент: экспертный цвет в светлой теме, составной градиент в тёмной. */
@@ -816,17 +833,13 @@ html[data-theme] .exam-topline > .exam-back-link {
       .source-links:not(.study-page .source-links) a,
       .breadcrumb a,
       .competency-caption a,
-      .exam-timing-note a,
       .primary-nav a.active .nav-label,
       .primary-nav a:focus-visible .nav-label
-    ) {
+    ):not(:has(.icon)) {
       color: var(--ui-accent);
       background-image: var(--ui-gradient);
       background-clip: text;
       -webkit-text-fill-color: var(--ui-text-fill);
-      html[data-theme='dark'] & .icon {
-        stroke: var(--icon-gradient);
-      }
     }
     @media (hover: hover) and (pointer: fine) {
       .primary-nav a:hover .nav-label {
@@ -891,7 +904,7 @@ html[data-theme] .exam-topline > .exam-back-link {
     --action-active-ink: var(--ui-action-active-ink);
   }
 }
-html[data-theme='dark'] .results-page .icon {
-  /* Result actions follow the selected test palette instead of the global UI gradient. */
+html[data-theme='dark'] :is(.theme-1, .theme-2, .theme-3) .icon {
+  /* Test actions and feedback follow their level palette. */
   stroke: currentColor !important;
 }
