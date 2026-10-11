@@ -1,0 +1,95 @@
+{
+  "route": "QUICK",
+  "part": "hero-dark-desktop-v4",
+  "previousRecord": "docs/readme/native-diagrams.json",
+  "priorIndependentReviews": {
+    "initial": 1,
+    "rechecksUsed": 1,
+    "maxRechecks": 1
+  },
+  "reviewBudgetForThisPart": 0,
+  "ownership": {
+    "root": "Single ImageGen scene, typography, candidate exports and manifest",
+    "production_notes": "CHECKS.md and concise single-asset provenance notes; no other edits"
+  },
+  "criteria": [
+    "One ImageGen scene with three recognisable test sculptures of equal apparent weight, height and distance; teal remains fully visible on the same forward plane",
+    "Small standalone five-petal header logo of about 54px paired with a larger 32px Unbounded trainer label",
+    "Left copy spreads through the height: header near top, main title, spaced body, three opaque pills near the lower portion",
+    "Exact local Unbounded and Arial, verified in browser; all copy exceeds 4.5:1 contrast",
+    "Only dark desktop hero candidate; README integration waits for user acceptance"
+  ],
+  "exclusions": [
+    "other banners",
+    "mobile and light versions",
+    "presentation changes",
+    "application code",
+    "README replacement before acceptance",
+    "commits and publication"
+  ],
+  "references": [
+    {
+      "path": "public/images/brand/trainer-abstract-256-optimized.webp",
+      "sha256": "942f39dc6dc9756abe6d5cec68798eb2e1e749c8fed30e5bf42ab2256bf304d7"
+    },
+    {
+      "path": "public/images/artwork/level-1-foundations-1254-optimized.webp",
+      "sha256": "31befd3e3a920fcbea90fe52a277918e7a96ebbb44d0e2bdbf78e9551bd82ec2"
+    },
+    {
+      "path": "public/images/artwork/level-2-application-1254-optimized.webp",
+      "sha256": "0c3ebdba23c3ae92f50ea6c229581bb495967cbbe66081675d70249bdad0afb1"
+    },
+    {
+      "path": "public/images/artwork/level-3-expert-1254-optimized.webp",
+      "sha256": "484ce572c96b35ff2e371de24948a3586d575cc4a5fedd3d6d17a16152a1cf99"
+    }
+  ],
+  "palette": {
+    "background": "#24212d",
+    "text": "#f2edf8",
+    "lime": "#d3e38c",
+    "teal": "#93d7d0",
+    "lilac": "#c5a8f2",
+    "pillBackgrounds": {
+      "lime": "#343c27",
+      "teal": "#273f40",
+      "lilac": "#3b304d"
+    }
+  },
+  "copy": {
+    "label": "Тренажёр компетенций ИИ",
+    "headline": [
+      "Основы",
+      "работы с ИИ"
+    ],
+    "body": [
+      "Практика перед экзаменом.",
+      "Разбор после каждого ответа."
+    ],
+    "facts": "180 вопросов · 3 уровня · 6 доменов"
+  },
+  "validation": [
+    "Inspect generated scene at full size and README desktop width",
+    "Confirm generated scene is the only image layer",
+    "Confirm local font loading and label fit using /pw",
+    "Check contrast, dimensions, byte size, prompt/hash provenance and git diff --check"
+  ],
+  "previousCandidate": "assets/readme/proposals/hero-dark-desktop-v3",
+  "userSteering": [
+    "All three test creatives have equal visual weight; second test must not disappear behind the others",
+    "Logo gets smaller and trainer name gets larger so header proportions match",
+    "Text rhythm gets more air, lower copy and fact pills fill the height more evenly",
+    "Regenerate whole scene with these changes; keep standalone logo and coherent generated test sculptures",
+    "Use opaque lime/teal/lilac pills for 180 questions, 3 levels and 6 domains"
+  ],
+  "typography": {
+    "headerFont": "Unbounded",
+    "headerLabelSize": 32,
+    "headlineSize": 80,
+    "weight": 450,
+    "bodyFont": "Arial",
+    "bodySize": 31,
+    "pillSize": 24
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "asset": "bank-map-v6",
+  "technique": "Generated unified raster art with editable native HTML/CSS typography. Raster is flattened; prompt is provenance, not editable layers. No object PNG overlays or SVG scene.",
+  "generation": [
+    {
+      "call": "desktop-dark-initial",
+      "tool": "built-in image_gen.imagegen",
+      "promptFile": "prompt-desktop-dark.txt",
+      "promptSha256": "f69b63ab564d696f3d0061ee3223e9b0410d139a6b828033b3fb5775070f16c2",
+      "referenceImages": [
+        "assets/readme/hero-family-v5/artwork-desktop-dark.png",
+        "public/images/artwork/level-1-foundations-1254-optimized.webp",
+        "public/images/artwork/level-2-application-1254-optimized.webp",
+        "public/images/artwork/level-3-expert-1254-optimized.webp"
+      ],
+      "transparentBackground": false,
+      "originalOutputPath": "/Users/23apples/.codex/generated_images/01a12af9-cff4-7f43-9ce1-0d81b43cc65d/exec-5a14d1f1-fa76-4121-a284-5f54adcf6b2c.png",
+      "workspaceRawOutput": "artwork-desktop-dark-raw.png",
+      "outputSha256": "c6ad55c904831c51e1a347d10310aa27f4ebedb88ef4a83e1194d80dcb02134c",
+      "width": 1672,
+      "height": 941,
+      "status": "superseded by bounded balance repair"
+    },
+    {
+      "call": "desktop-dark-balance",
+      "tool": "built-in image_gen.imagegen",
+      "promptFile": "prompt-desktop-dark-balance.txt",
+      "promptSha256": "8a38ee210a74d78129d2393f4c755c4d62425cbcb427729dcec9f92fc0994979",
+      "referenceImages": [
+        "assets/readme/bank-map-v6/artwork-desktop-dark-raw.png"
+      ],
+      "transparentBackground": false,
+      "originalOutputPath": "/Users/23apples/.codex/generated_images/01a12af9-cff4-7f43-9ce1-0d81b43cc65d/exec-10adc38b-cb80-407f-bf68-0d65ad7b6b2e.png",
+      "workspaceRawOutput": "artwork-desktop-dark-balanced.png",
+      "outputSha256": "881f7fc0b766a832ec120ee5e603dfb1096837e6cababaeb85a55417794fa9ff",
+      "width": 1672,
+      "height": 941,
+      "status": "balanced composition reference"
+    },
+    {
+      "call": "desktop-dark-pixel-shift",
+      "tool": "built-in image_gen.imagegen",
+      "promptFile": "prompt-desktop-dark-gaps.txt",
+      "promptSha256": "0f5918bd7f9c5d88dbff6db09a128de7be78f8897563a8a1e74c6d886d04654b",
+      "referenceImages": [
+        "assets/readme/bank-map-v6/artwork-desktop-dark-balanced.png"
+      ],
+      "transparentBackground": false,
+      "originalOutputPath": "/Users/23apples/.codex/generated_images/01a12af9-cff4-7f43-9ce1-0d81b43cc65d/exec-f7bc72ae-0e84-41bc-8bef-b15cc1202ceb.png",
+      "workspaceRawOutput": "artwork-desktop-dark-gaps-rejected.png",
+      "outputSha256": "1d4edbcd81fb2b7fe39d4d102b6de44fe3938ca07c8f693ce083323bd3137ae6",
+      "width": 1672,
+      "height": 941,
+      "status": "rejected: center moved farther than requested"
+    },
+    {
+      "call": "desktop-dark-equal-air",
+      "tool": "built-in image_gen.imagegen",
+      "promptFile": "prompt-desktop-dark-equal-air.txt",
+      "promptSha256": "cc9038650e7f54723c461015389354196a2d630e7db99c15ba4eee1af1e3d6b3",
+      "referenceImages": [
+        "assets/readme/bank-map-v6/artwork-desktop-dark-balanced.png"
+      ],
+      "transparentBackground": false,
+      "originalOutputPath": "/Users/23apples/.codex/generated_images/01a12af9-cff4-7f43-9ce1-0d81b43cc65d/exec-23500530-d08d-4c2e-bb4a-283052702dcb.png",
+      "workspaceRawOutput": "artwork-desktop-dark.png",
+      "outputSha256": "98ad51c2478baaba0b75bbdcb92d0b2d99fe31765c87396025bd481eebc34083",
+      "width": 1672,
+      "height": 941,
+      "status": "selected dark raw output; apparent balance accepted for root render"
+    },
+    {
+      "call": "desktop-light",
+      "tool": "built-in image_gen.imagegen",
+      "promptFile": "prompt-desktop-light.txt",
+      "promptSha256": "7686c4a2b69a99e09a90806df1bffa1ee942ba37f7537c2e030a8b759e705752",
+      "referenceImages": [
+        "assets/readme/bank-map-v6/artwork-desktop-dark.png",
+        "assets/readme/hero-family-v5/artwork-desktop-light.png"
+      ],
+      "transparentBackground": false,
+      "originalOutputPath": "/Users/23apples/.codex/generated_images/01a12af9-cff4-7f43-9ce1-0d81b43cc65d/exec-ea7a88e0-6930-4b3c-b7bf-ef59b44e2b51.png",
+      "workspaceRawOutput": "artwork-desktop-light.png",
+      "outputSha256": "face83ca8c6ab089d1f5f01dfb97e65e293709d1686308f55d8ba6216e45e72c",
+      "width": 1672,
+      "height": 941,
+      "status": "selected light raw output"
+    }
+  ],
+  "replacementSteps": "Edit the selected prompt, generate a new version with the listed reference images, inspect it, preserve its raw output as a versioned sibling, then update the two layout sources and let root render/verify through Playwright MCP.",
+  "fonts": [
+    "../../../public/fonts/unbounded-cyrillic-variable.woff2",
+    "../../../public/fonts/unbounded-latin-variable.woff2"
+  ],
+  "inspection": "Every local reference and selected output inspected through native view_image. Full scene also inspected from native ImageGen output. Browser typography and final export verification owned by root.",
+  "knownLimit": "Visible sculpture gaps are approximately 98 and 124 pixels in raw output. Root instructed that equal apparent weight and distinct silhouettes take priority over further pixel-perfect ImageGen gap tuning."
+}

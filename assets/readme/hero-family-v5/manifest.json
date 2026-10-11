@@ -1,0 +1,486 @@
+{
+  "part": "hero-family-v5",
+  "route": "QUICK",
+  "status": "Four final heroes integrated in README; root production checks passed",
+  "priorIndependentReviews": {
+    "initial": 1,
+    "rechecksUsed": 1,
+    "maxRechecks": 1
+  },
+  "reviewBudgetForThisPart": 0,
+  "generator": "Built-in ImageGen",
+  "imageGenerationCalls": 6,
+  "finalArtworkImageLayersPerHero": 1,
+  "references": [
+    {
+      "path": "public/images/brand/trainer-abstract-256-optimized.webp",
+      "sha256": "942f39dc6dc9756abe6d5cec68798eb2e1e749c8fed30e5bf42ab2256bf304d7"
+    },
+    {
+      "path": "public/images/artwork/level-1-foundations-1254-optimized.webp",
+      "sha256": "31befd3e3a920fcbea90fe52a277918e7a96ebbb44d0e2bdbf78e9551bd82ec2"
+    },
+    {
+      "path": "public/images/artwork/level-2-application-1254-optimized.webp",
+      "sha256": "0c3ebdba23c3ae92f50ea6c229581bb495967cbbe66081675d70249bdad0afb1"
+    },
+    {
+      "path": "public/images/artwork/level-3-expert-1254-optimized.webp",
+      "sha256": "484ce572c96b35ff2e371de24948a3586d575cc4a5fedd3d6d17a16152a1cf99"
+    }
+  ],
+  "parentArtwork": {
+    "path": "assets/readme/proposals/hero-dark-desktop-v4/artwork.png",
+    "sha256": "7d5245c7dd1e48dcd20d41adadc19834ca1fa1f48d07f0df7c7a78e13f1d7cf7"
+  },
+  "prompts": [
+    "prompt-desktop-dark.txt",
+    "prompt-desktop-spacing.txt",
+    "prompt-desktop-clearance.txt",
+    "prompt-desktop-light.txt",
+    "prompt-mobile-dark.txt",
+    "prompt-mobile-light.txt"
+  ],
+  "generation": [
+    {
+      "prompt": "prompt-desktop-dark.txt",
+      "input": "assets/readme/proposals/hero-dark-desktop-v4/artwork.png",
+      "output": "artwork-desktop-dark-first-pass.png",
+      "selection": "superseded by equal-gap correction"
+    },
+    {
+      "prompt": "prompt-desktop-spacing.txt",
+      "input": "artwork-desktop-dark-first-pass.png",
+      "output": "artwork-desktop-dark.png",
+      "selection": "final dark artwork"
+    },
+    {
+      "prompt": "prompt-desktop-clearance.txt",
+      "input": "artwork-desktop-dark-spacing.png",
+      "output": "artwork-desktop-dark-clearance-alternative.png",
+      "selection": "rejected: test forms became too small"
+    },
+    {
+      "prompt": "prompt-desktop-light.txt",
+      "input": "artwork-desktop-dark.png",
+      "output": "artwork-desktop-light.png",
+      "selection": "final"
+    },
+    {
+      "prompt": "prompt-mobile-dark.txt",
+      "input": "artwork-desktop-dark.png",
+      "output": "artwork-mobile-dark.png",
+      "selection": "final portrait recomposition"
+    },
+    {
+      "prompt": "prompt-mobile-light.txt",
+      "input": "artwork-mobile-dark.png",
+      "output": "artwork-mobile-light.png",
+      "selection": "final portrait light counterpart"
+    }
+  ],
+  "typography": {
+    "headingFamily": "local Unbounded",
+    "headingWeight": 450,
+    "bodyFamily": "system Arial as on site",
+    "desktop": {
+      "labelPx": 32,
+      "headlinePx": 72,
+      "bodyPx": 31,
+      "pillPx": 24
+    },
+    "mobile": {
+      "labelPx": 40,
+      "headlinePx": 94,
+      "bodyPx": 40,
+      "pillPx": 34
+    },
+    "mobileDarkLabel": "#f2edf8 for contrast on upper light reflection"
+  },
+  "editability": "Artwork is flattened raster and revised through ImageGen prompts. Exact text and opaque pill labels remain editable in four .layout.html sources; export through Playwright MCP and encode WebP.",
+  "repairs": [
+    {
+      "kind": "repair",
+      "issue": "Unequal gap widths after initial spacing edit",
+      "change": "Fine-tuned gallery spacing via ImageGen",
+      "proof": "Visual inspection at desktop delivery width"
+    },
+    {
+      "kind": "repair",
+      "issue": "Original 80px headline overlapped shifted lime sculpture; minimum contrast 1.14",
+      "change": "Kept larger sculpture scene; 72px headline with extra lower margin preserves body and pill height",
+      "proof": "desktop-dark minimum text contrast 5.98"
+    },
+    {
+      "kind": "repair",
+      "issue": "Mobile dark lilac trainer label minimum contrast 3.60 on bright reflection",
+      "change": "Used existing neutral dark-theme text #f2edf8",
+      "proof": "mobile label minimum contrast 6.41"
+    },
+    {
+      "kind": "focused-check",
+      "issue": "Immediate currentSrc observation raced browser source selection",
+      "change": "Wait for currentSrc matching expected source before decode and measurements",
+      "proof": "Six width/theme combinations and fallback passed"
+    }
+  ],
+  "validation": {
+    "fontAndLayout": "layout-proofs.json",
+    "contrast": "contrast-proofs.json",
+    "mediaSelection": "media-proof.json",
+    "visualWidths": [
+      960,
+      375,
+      320
+    ],
+    "all32TextFragmentsAbove4_5": true,
+    "minimumTextContrast": 5.37,
+    "READMEBodyUnchanged": true,
+    "readmeSHA256": "030bc93b81716334844849c18773906c35ddf09d41949ab638eab21df1203553",
+    "fourReferenceHashesMatch": true,
+    "allPathsContained": true,
+    "publishedGitHub": "not checked; local browser behavior and primary-source support recorded in github-media.md",
+    "nativeGitHubMobile": "not checked; portrait light fallback configured"
+  },
+  "delivery": [
+    {
+      "file": "hero-desktop-dark.webp",
+      "png": "hero-desktop-dark.png",
+      "width": 1600,
+      "height": 700
+    },
+    {
+      "file": "hero-desktop-light.webp",
+      "png": "hero-desktop-light.png",
+      "width": 1600,
+      "height": 700
+    },
+    {
+      "file": "hero-mobile-dark.webp",
+      "png": "hero-mobile-dark.png",
+      "width": 900,
+      "height": 1300
+    },
+    {
+      "file": "hero-mobile-light.webp",
+      "png": "hero-mobile-light.png",
+      "width": 900,
+      "height": 1300
+    }
+  ],
+  "scope": "Only hero family, README header and graphics provenance; no other infographics, presentations, application code, commits or publication",
+  "files": {
+    "artwork-desktop-dark-clearance-alternative.png": {
+      "bytes": 1694260,
+      "sha256": "8bd094cbccdf1339388678960fb5cfb6bcb68712d88cf9f7e82786c895f8762b",
+      "format": "PNG",
+      "width": 1891,
+      "height": 831,
+      "mode": "RGB"
+    },
+    "artwork-desktop-dark-first-pass.png": {
+      "bytes": 1745215,
+      "sha256": "4082822ce2a2dc64d54aa8b07370b0b497f50103276e07f5f5cb14b84df0f4c4",
+      "format": "PNG",
+      "width": 1894,
+      "height": 830,
+      "mode": "RGB"
+    },
+    "artwork-desktop-dark-spacing.png": {
+      "bytes": 1735056,
+      "sha256": "65fb63c040777fca32c60356b1cd887c2884c448d0270247e4ded07fb01722c5",
+      "format": "PNG",
+      "width": 1893,
+      "height": 831,
+      "mode": "RGB"
+    },
+    "artwork-desktop-dark.png": {
+      "bytes": 1735056,
+      "sha256": "65fb63c040777fca32c60356b1cd887c2884c448d0270247e4ded07fb01722c5",
+      "format": "PNG",
+      "width": 1893,
+      "height": 831,
+      "mode": "RGB"
+    },
+    "artwork-desktop-light.png": {
+      "bytes": 1641374,
+      "sha256": "a6b7c1c16a54ca0840e3e14b15445de82e65a33c9a4330c0e5d4fbb2e7e3411c",
+      "format": "PNG",
+      "width": 1891,
+      "height": 831,
+      "mode": "RGB"
+    },
+    "artwork-mobile-dark.png": {
+      "bytes": 1724666,
+      "sha256": "3eec06998fb72a26f6c89f9ba7df6cfa7231882ef471afec4d2d1e80b038a9e1",
+      "format": "PNG",
+      "width": 1044,
+      "height": 1507,
+      "mode": "RGB"
+    },
+    "artwork-mobile-light.png": {
+      "bytes": 1642394,
+      "sha256": "27174bb2053d5b745b90d83ab22ee0a51063167f4717a4e0e6775f4368dae16b",
+      "format": "PNG",
+      "width": 1044,
+      "height": 1507,
+      "mode": "RGB"
+    },
+    "background-desktop-dark.png": {
+      "bytes": 1084539,
+      "sha256": "d4d8be7e7302b4244b9d80d996527f7555d9fc42f2a54680c37e0a2613974e08",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "background-desktop-light.png": {
+      "bytes": 1004363,
+      "sha256": "6c2911d760a3a4d1293ccf4435efc9ada4e43d252fd20d68df05941aea95d2ac",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "background-mobile-dark.png": {
+      "bytes": 1074419,
+      "sha256": "fe3e3c7df0c07ba9dd8e33128c9bcd4d35ef2ce6be479127653d032a7a3df803",
+      "format": "PNG",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "background-mobile-light.png": {
+      "bytes": 1014634,
+      "sha256": "b1700dc5eccc91412018fb4963ed7504cd3faf5473640c4cc309ec97df49bcb3",
+      "format": "PNG",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "brief.json": {
+      "bytes": 4583,
+      "sha256": "e2b68eae1146950a0e31cafbc3d3db1b299a0bc9117fab55aae7d1e70918efdb"
+    },
+    "comparison.png": {
+      "bytes": 1016317,
+      "sha256": "589cf4650a321ff60bf0f1583ce1914bfb76c8c69eb532e822ad1ec2a2340e4d",
+      "format": "PNG",
+      "width": 1600,
+      "height": 1008,
+      "mode": "RGB"
+    },
+    "contrast-desktop-dark-type-overlap.json": {
+      "bytes": 886,
+      "sha256": "0a43b2af6fe6027cbaf3360932a29d17b2bdf308aeb20040a70a8812999b05df"
+    },
+    "contrast-desktop-dark.json": {
+      "bytes": 886,
+      "sha256": "0a43b2af6fe6027cbaf3360932a29d17b2bdf308aeb20040a70a8812999b05df"
+    },
+    "contrast-mobile-before-repair.json": {
+      "bytes": 2065,
+      "sha256": "1894600639ffd997bb5b019bb183b2ecdfba517aa5d7a589fa69939bfc718bb2"
+    },
+    "contrast-proofs.json": {
+      "bytes": 3518,
+      "sha256": "38d32104bf27700fa093eb13e001abbfe21a506b9508313cb4ca02c70b78c21b"
+    },
+    "desktop-dark.layout.html": {
+      "bytes": 3213,
+      "sha256": "4393716bb09e93c7c122cdca368a04c44cad4cb88724c8e9f877b0d261be3259"
+    },
+    "desktop-light.layout.html": {
+      "bytes": 3215,
+      "sha256": "0eb25026ba0dc91237417b5c046cdb2d06397102c33ee046aa780113be079de9"
+    },
+    "github-media.md": {
+      "bytes": 2834,
+      "sha256": "dc93e169016efe615199c9fe5e07c9cdfb93ff35a418e6f4982214f275a206cd"
+    },
+    "hero-desktop-dark-type-overlap.png": {
+      "bytes": 1117672,
+      "sha256": "471d68ee389f8c8a313539fcd8531ab249b391baa8387005be0da6833929ba20",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-desktop-dark.png": {
+      "bytes": 1119546,
+      "sha256": "32773f68a28f9a4d656e322ef14c861a2ddcb4cba19cc754a48162d6ebb8de43",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-desktop-dark.webp": {
+      "bytes": 123026,
+      "sha256": "dddc5eea2c4a782896eb57f8761e9a926d4e68bad5d9f6decd7f2a88a6d2babe",
+      "format": "WEBP",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-desktop-light.png": {
+      "bytes": 1043116,
+      "sha256": "037ab7b5a650495ea884d7135476627bc7520eadd89024b75362910d4eb5f527",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-desktop-light.webp": {
+      "bytes": 109678,
+      "sha256": "647fcfd10095086cef8c603180eba7617001c1e3a335dc106988fc16abf48779",
+      "format": "WEBP",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-mobile-dark-label-contrast.png": {
+      "bytes": 1111797,
+      "sha256": "4bc7173355b870d985ab25e949c39d8f8bfef2097e771c10a8cb671aac6d0d04",
+      "format": "PNG",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "hero-mobile-dark.png": {
+      "bytes": 1111919,
+      "sha256": "13af20b52fa525492c95f51d60c30b1eb2253a1fe1c84f4c6d606fbbe8d91d0f",
+      "format": "PNG",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "hero-mobile-dark.webp": {
+      "bytes": 132954,
+      "sha256": "eaf17657944c872e5618d9c7c3c04f9502b2cb156b8ce2a2751f9a0bd00e89e7",
+      "format": "WEBP",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "hero-mobile-light.png": {
+      "bytes": 1052232,
+      "sha256": "480a50cca9b658dc1a2e23b8b4bf594fc11cf365af15e792ea530ea78273ca46",
+      "format": "PNG",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "hero-mobile-light.webp": {
+      "bytes": 123084,
+      "sha256": "c5838327b80e21c2ad936150a161ad2d94830307d19a2d69cf6a1d0d26cbdb70",
+      "format": "WEBP",
+      "width": 900,
+      "height": 1300,
+      "mode": "RGB"
+    },
+    "integration-preview.html": {
+      "bytes": 1313,
+      "sha256": "7435bb3b03fb62764a82c852cdc18db721bffab7fd5e3ccbf45c10423624fde1"
+    },
+    "layout-desktop-dark.json": {
+      "bytes": 4042,
+      "sha256": "96b9df63532ed13d9c2db89a0127b37692f8e9cabb9369251a46999fbd70faa2"
+    },
+    "layout-mobile-dark-final.json": {
+      "bytes": 4046,
+      "sha256": "afb87411b14059aa9f3cccd36f9c870ffac37c741c70af4d30d1bbcd530c5b34"
+    },
+    "layout-proofs.json": {
+      "bytes": 17637,
+      "sha256": "f279c99e007526494f90b3ef8398d98eb217d5b0613f217e53f958adc0c11cb8"
+    },
+    "media-proof.json": {
+      "bytes": 4049,
+      "sha256": "5b89cf6282be4ddfbf0237def85354357a43e8508259f68cb25dda28c0389416"
+    },
+    "mobile-dark.layout.html": {
+      "bytes": 3252,
+      "sha256": "8930abf8b336049f91cd3d521e3f81bd84e8c87479d4fa948747b0ecc7e7016e"
+    },
+    "mobile-light.layout.html": {
+      "bytes": 3254,
+      "sha256": "c873ec79edc2f2053513b46279d4401ba8cc63f70b70f8ba03688e49f9545f3a"
+    },
+    "preview-desktop-dark-960.png": {
+      "bytes": 475304,
+      "sha256": "8e6d899fb30ecc282fffd0caf11e81403ec6cbc6200ea1646b9d9d271a71aea9",
+      "format": "PNG",
+      "width": 960,
+      "height": 420,
+      "mode": "RGB"
+    },
+    "preview-desktop-light-960.png": {
+      "bytes": 442785,
+      "sha256": "4edb6495d9929b8b3a7e76458e2cbf2ec1de69b1721b5f7324fafad41216871a",
+      "format": "PNG",
+      "width": 960,
+      "height": 420,
+      "mode": "RGB"
+    },
+    "preview-mobile-dark-320.png": {
+      "bytes": 196422,
+      "sha256": "64cc976ccad99438195248df40512229aad341f7ae864b2da23a44f2cac1b590",
+      "format": "PNG",
+      "width": 320,
+      "height": 463,
+      "mode": "RGB"
+    },
+    "preview-mobile-dark-375.png": {
+      "bytes": 257786,
+      "sha256": "bbd882666ae3c7e726d930f0a73b84879e55bfacabba6ad88c7e83172f186818",
+      "format": "PNG",
+      "width": 375,
+      "height": 542,
+      "mode": "RGB"
+    },
+    "preview-mobile-light-320.png": {
+      "bytes": 187727,
+      "sha256": "982f79428f9393d8ff8dc8ed3884abde77c9668a67b300d33ee331cf83c05d98",
+      "format": "PNG",
+      "width": 320,
+      "height": 463,
+      "mode": "RGB"
+    },
+    "preview-mobile-light-375.png": {
+      "bytes": 246453,
+      "sha256": "c8c65aac80e232f447f65d4dc399765047e7691edb88eb244d21547a9f5495fe",
+      "format": "PNG",
+      "width": 375,
+      "height": 542,
+      "mode": "RGB"
+    },
+    "preview.html": {
+      "bytes": 1763,
+      "sha256": "a2de25f16ee9aec31909a87f2c19b9a571fd96a2a3d7b4d88bc3947276962623"
+    },
+    "prompt-desktop-clearance.txt": {
+      "bytes": 1201,
+      "sha256": "f21ccc971a0f20b9310c16be2f510c7946e8775573067a1784150fe9bdf246f1"
+    },
+    "prompt-desktop-dark.txt": {
+      "bytes": 1345,
+      "sha256": "62594a7d8c6722671218c5ef7e9592cb638d8078db4e94815d3ff0337b9a18d4"
+    },
+    "prompt-desktop-light.txt": {
+      "bytes": 1370,
+      "sha256": "beb5fc6db77412bafd6e3ca473e1a4d27e53c390f46005e25fb936a68866e01c"
+    },
+    "prompt-desktop-spacing.txt": {
+      "bytes": 982,
+      "sha256": "8e46782f0a20a96eae4e3170cc499dc11d5af49143560b2ac1b964d20aa03639"
+    },
+    "prompt-mobile-dark.txt": {
+      "bytes": 1947,
+      "sha256": "900d0dacc3bf9f906178bcaaba58e2f106946acb487313041b67a4bd8af91d4f"
+    },
+    "prompt-mobile-light.txt": {
+      "bytes": 1210,
+      "sha256": "cd20cb158653d59c60d2977dddf252c86561653168bee555b2a41371f7f16d41"
+    }
+  }
+}

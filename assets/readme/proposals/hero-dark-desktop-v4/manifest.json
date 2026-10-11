@@ -1,0 +1,150 @@
+{
+  "status": "Root production checks passed; awaiting user design acceptance",
+  "part": "hero-dark-desktop-v4",
+  "route": "QUICK",
+  "priorIndependentReviews": {
+    "initial": 1,
+    "rechecksUsed": 1,
+    "maxRechecks": 1
+  },
+  "reviewBudgetForThisPart": 0,
+  "generator": "Built-in ImageGen",
+  "imageGenerationCalls": 2,
+  "generationSteps": [
+    {
+      "operation": "Regenerate entire scene",
+      "prompt": "prompt.txt",
+      "references": [
+        {
+          "path": "public/images/brand/trainer-abstract-256-optimized.webp",
+          "sha256": "942f39dc6dc9756abe6d5cec68798eb2e1e749c8fed30e5bf42ab2256bf304d7"
+        },
+        {
+          "path": "public/images/artwork/level-1-foundations-1254-optimized.webp",
+          "sha256": "31befd3e3a920fcbea90fe52a277918e7a96ebbb44d0e2bdbf78e9551bd82ec2"
+        },
+        {
+          "path": "public/images/artwork/level-2-application-1254-optimized.webp",
+          "sha256": "0c3ebdba23c3ae92f50ea6c229581bb495967cbbe66081675d70249bdad0afb1"
+        },
+        {
+          "path": "public/images/artwork/level-3-expert-1254-optimized.webp",
+          "sha256": "484ce572c96b35ff2e371de24948a3586d575cc4a5fedd3d6d17a16152a1cf99"
+        }
+      ],
+      "output": "artwork-first-pass.png"
+    },
+    {
+      "operation": "Redraw spacing and shrink header logo in same scene",
+      "prompt": "prompt-adjustment.txt",
+      "references": [
+        "artwork-first-pass.png"
+      ],
+      "output": "artwork.png"
+    }
+  ],
+  "composition": "One generated image layer; logo, all test forms, ground, light and shadows are in artwork.png. No source PNG/WebP creatives pasted on top. Exact text and three opaque pills typeset in preview.html.",
+  "type": {
+    "heading": "Local Unbounded variable WOFF2, weight 450",
+    "trainerLabel": "32px Unbounded",
+    "headline": "80px Unbounded",
+    "body": "31px system Arial, as in project",
+    "pills": "24px Arial, weight 700"
+  },
+  "delivery": {
+    "file": "hero-dark-desktop.webp",
+    "losslessPreview": "hero-dark-desktop.png",
+    "width": 1600,
+    "height": 700,
+    "theme": "dark",
+    "target": "desktop only"
+  },
+  "palette": {
+    "background": "#24212d",
+    "text": "#f2edf8",
+    "lime": "#d3e38c",
+    "teal": "#93d7d0",
+    "lilac": "#c5a8f2",
+    "pillBackgrounds": {
+      "lime": "#343c27",
+      "teal": "#273f40",
+      "lilac": "#3b304d"
+    }
+  },
+  "validation": {
+    "fontLoading": "passed via Playwright MCP",
+    "imageLayers": 1,
+    "copyFits": true,
+    "minimumTextContrast": 5.98,
+    "allTextAbove4_5": true,
+    "visualWidths": [
+      1600,
+      960
+    ],
+    "nativeGitHubRendering": "not performed; raster candidate only",
+    "auxiliaryPreviewConsole": "favicon.ico 404 only; fonts and artwork loaded"
+  },
+  "integration": "README unchanged pending user acceptance; no other banners or presentations updated",
+  "files": {
+    "artwork-first-pass.png": {
+      "bytes": 1790146,
+      "sha256": "15eaf6a33361f3fd97ec2fc9495421567ecf20df8d9e919b269f6fe873f15e24",
+      "format": "PNG",
+      "width": 1896,
+      "height": 830,
+      "mode": "RGB"
+    },
+    "artwork.png": {
+      "bytes": 1764664,
+      "sha256": "7d5245c7dd1e48dcd20d41adadc19834ca1fa1f48d07f0df7c7a78e13f1d7cf7",
+      "format": "PNG",
+      "width": 1895,
+      "height": 830,
+      "mode": "RGB"
+    },
+    "hero-dark-desktop.png": {
+      "bytes": 1128853,
+      "sha256": "31e3fa64d2e9043009776a9c47c78fd76cd1ebf52604fb08c6bfa5a7c037c28f",
+      "format": "PNG",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "hero-dark-desktop.webp": {
+      "bytes": 127248,
+      "sha256": "21e1639f042712d15d89403642be954afe902b3570638121e0b9ba9565d0bea5",
+      "format": "WEBP",
+      "width": 1600,
+      "height": 700,
+      "mode": "RGB"
+    },
+    "desktop-preview-960.png": {
+      "bytes": 477634,
+      "sha256": "21a1df41afe6be3d9afa84d4df4131251e583e6ec0b0bd207ccd6a9071fd5ebf",
+      "format": "PNG",
+      "width": 960,
+      "height": 420,
+      "mode": "RGB"
+    },
+    "prompt.txt": {
+      "bytes": 3742,
+      "sha256": "18324c027f19fd15975db47d798a1bea1b140b5d6712118d540ddb107fb05f01"
+    },
+    "prompt-adjustment.txt": {
+      "bytes": 2155,
+      "sha256": "432dfa4283bc38771a8d4a6aae4bfbb51c0a64dd6cdce439adf251856d952db0"
+    },
+    "preview.html": {
+      "bytes": 3201,
+      "sha256": "9207bdb9e57bcd655b8d3dea9cf5b4f7c00619584c735019b17e3b4fe64e036a"
+    },
+    "layout-proof.json": {
+      "bytes": 4029,
+      "sha256": "25840bb81fdd8009cd47097667a2f31eb7d535efb439a335e998f1f6bf99b7b8"
+    },
+    "contrast.json": {
+      "bytes": 1316,
+      "sha256": "fe3f0491c6c95bcf541c6d135a1e42e201d1277f225d21b5193070455218c32b"
+    }
+  }
+}

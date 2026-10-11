@@ -1,0 +1,126 @@
+{
+  "dark": [
+    {
+      "text": "180 авторских вопросов",
+      "minContrast": 10.06,
+      "corePixels": 19288
+    },
+    {
+      "text": "Три теста по 60 вопросов",
+      "minContrast": 13.15,
+      "corePixels": 1730
+    },
+    {
+      "text": "Базовый",
+      "minContrast": 12.4,
+      "corePixels": 1675
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 8.31,
+      "corePixels": 1042
+    },
+    {
+      "text": "Продвинутый",
+      "minContrast": 9.94,
+      "corePixels": 2516
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 6.88,
+      "corePixels": 1042
+    },
+    {
+      "text": "Экспертный",
+      "minContrast": 7.42,
+      "corePixels": 2129
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 5.98,
+      "corePixels": 1023
+    },
+    {
+      "text": "6 доменов",
+      "minContrast": 5.98,
+      "corePixels": 2418
+    },
+    {
+      "text": "×",
+      "minContrast": 5.98,
+      "corePixels": 140
+    },
+    {
+      "text": "10 вопросов",
+      "minContrast": 5.98,
+      "corePixels": 2700
+    },
+    {
+      "text": "на каждом уровне",
+      "minContrast": 5.98,
+      "corePixels": 1040
+    }
+  ],
+  "light": [
+    {
+      "text": "180 авторских вопросов",
+      "minContrast": 11.84,
+      "corePixels": 19050
+    },
+    {
+      "text": "Три теста по 60 вопросов",
+      "minContrast": 12.27,
+      "corePixels": 1617
+    },
+    {
+      "text": "Базовый",
+      "minContrast": 5.56,
+      "corePixels": 1646
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 6.17,
+      "corePixels": 999
+    },
+    {
+      "text": "Продвинутый",
+      "minContrast": 5.86,
+      "corePixels": 2465
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 6.49,
+      "corePixels": 999
+    },
+    {
+      "text": "Экспертный",
+      "minContrast": 5.09,
+      "corePixels": 2110
+    },
+    {
+      "text": "60 вопросов",
+      "minContrast": 5.49,
+      "corePixels": 999
+    },
+    {
+      "text": "6 доменов",
+      "minContrast": 5.49,
+      "corePixels": 2374
+    },
+    {
+      "text": "×",
+      "minContrast": 5.49,
+      "corePixels": 130
+    },
+    {
+      "text": "10 вопросов",
+      "minContrast": 5.49,
+      "corePixels": 2649
+    },
+    {
+      "text": "на каждом уровне",
+      "minContrast": 5.49,
+      "corePixels": 986
+    }
+  ]
+}

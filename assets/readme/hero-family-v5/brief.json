@@ -1,0 +1,116 @@
+{
+  "route": "QUICK",
+  "part": "hero-family-v5",
+  "previousRecord": "docs/readme/native-diagrams.json",
+  "priorIndependentReviews": {
+    "initial": 1,
+    "rechecksUsed": 1,
+    "maxRechecks": 1
+  },
+  "reviewBudgetForThisPart": 0,
+  "ownership": {
+    "root": "All ImageGen artwork, typography sources, four raster exports, README hero integration, ASSETS entry, manifest and final verification",
+    "production_notes": "Only hero-family-v5/CHECKS.md skeleton; root owns final verdicts after return",
+    "github_research": "Read-only primary-source research for picture/source media support; no writes or implementation"
+  },
+  "criteria": [
+    "Equal visible gaps between all three distinct test silhouettes, same apparent weight and ground plane",
+    "Preserve accepted compact logo, enlarged Unbounded label and airy copy rhythm",
+    "Desktop dark and light, plus separately generated mobile dark and light scenes",
+    "Opaque palette-specific pills, exact project Unbounded and Arial, all copy contrast >=4.5",
+    "GitHub-safe theme/width image selection with verified support and explicit limitation if needed"
+  ],
+  "exclusions": [
+    "other infographics",
+    "presentations",
+    "application code",
+    "commits and publication"
+  ],
+  "references": [
+    {
+      "path": "public/images/brand/trainer-abstract-256-optimized.webp",
+      "sha256": "942f39dc6dc9756abe6d5cec68798eb2e1e749c8fed30e5bf42ab2256bf304d7"
+    },
+    {
+      "path": "public/images/artwork/level-1-foundations-1254-optimized.webp",
+      "sha256": "31befd3e3a920fcbea90fe52a277918e7a96ebbb44d0e2bdbf78e9551bd82ec2"
+    },
+    {
+      "path": "public/images/artwork/level-2-application-1254-optimized.webp",
+      "sha256": "0c3ebdba23c3ae92f50ea6c229581bb495967cbbe66081675d70249bdad0afb1"
+    },
+    {
+      "path": "public/images/artwork/level-3-expert-1254-optimized.webp",
+      "sha256": "484ce572c96b35ff2e371de24948a3586d575cc4a5fedd3d6d17a16152a1cf99"
+    }
+  ],
+  "palette": {
+    "background": "#24212d",
+    "text": "#f2edf8",
+    "lime": "#d3e38c",
+    "teal": "#93d7d0",
+    "lilac": "#c5a8f2",
+    "pillBackgrounds": {
+      "lime": "#343c27",
+      "teal": "#273f40",
+      "lilac": "#3b304d"
+    },
+    "light": {
+      "background": "#f0edf4",
+      "text": "#25212b",
+      "label": "#6841ab",
+      "pillInk": [
+        "#465c16",
+        "#005b64",
+        "#6841ab"
+      ],
+      "pillFill": [
+        "#e6efa9",
+        "#d6efeb",
+        "#e9dcfb"
+      ]
+    }
+  },
+  "copy": {
+    "label": "Тренажёр компетенций ИИ",
+    "headline": [
+      "Основы",
+      "работы с ИИ"
+    ],
+    "body": [
+      "Практика перед экзаменом.",
+      "Разбор после каждого ответа."
+    ],
+    "facts": "180 вопросов · 3 уровня · 6 доменов"
+  },
+  "validation": [
+    "Inspect each generated scene and final hero at desktop 1600/960 and mobile 375/320 display widths",
+    "Playwright MCP font/loading/layout proofs and picture currentSrc checks for four combinations",
+    "Actual text contrast against rendered background with pills preserved >=4.5",
+    "Verify contained local references, hashes, dimensions, sizes and git diff --check"
+  ],
+  "previousCandidate": "assets/readme/proposals/hero-dark-desktop-v4",
+  "userSteering": [
+    "All three test creatives have equal visual weight; second test must not disappear behind the others",
+    "Logo gets smaller and trainer name gets larger so header proportions match",
+    "Text rhythm gets more air, lower copy and fact pills fill the height more evenly",
+    "Regenerate whole scene with these changes; keep standalone logo and coherent generated test sculptures",
+    "Use opaque lime/teal/lilac pills for 180 questions, 3 levels and 6 domains"
+  ],
+  "typography": {
+    "headerFont": "Unbounded",
+    "headerLabelSize": 32,
+    "headlineSize": 72,
+    "weight": 450,
+    "bodyFont": "Arial",
+    "bodySize": 31,
+    "pillSize": 24
+  },
+  "userAcceptance": "User accepted v4 direction and authorized a spacing repair plus desktop light and two mobile themes.",
+  "snapshot": {
+    "README.md": "b43ec86dbe753bf1284987e05ca35fcb3e629cf9787983f4f07fd8ef949ec430",
+    "v4Artwork": "7d5245c7dd1e48dcd20d41adadc19834ca1fa1f48d07f0df7c7a78e13f1d7cf7"
+  },
+  "planBudgetForThisPart": 0,
+  "productionDecision": "Spacing scene retained for full sculpture weight; headline uses 72px with 73px lower margin to preserve body/pill positions and avoid lime silhouette. Uniform downscale alternative rejected as too small."
+}

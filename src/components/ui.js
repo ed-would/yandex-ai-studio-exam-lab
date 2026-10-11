@@ -70,7 +70,7 @@ export function Art({ variant = 1, hero = false, progress = false, compact = fal
   const dark = useTheme() === 'dark';
   const file = hero
     ? 'hero-ribbon-expanded.webp'
-    : progress
+    : progress || compact
       ? `level-${variant}-${['foundations', 'application', 'expert'][variant - 1] || 'foundations'}.png`
       : `${['foundations', 'applied', 'systems'][variant - 1] || 'foundations'}.jpg`;
   const path = `artwork/${file}`;
@@ -87,25 +87,35 @@ export function Art({ variant = 1, hero = false, progress = false, compact = fal
   return html`<picture class=${`generative-art art-${variant} ${hero ? 'art-hero' : ''} ${progress ? 'art-progress' : ''}`}>${useNightArt && html`<source media="all" srcset=${responsiveSources(night) || assetUrl(night)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading=${hero ? 'eager' : 'lazy'} decoding="async" fetchpriority=${hero ? 'high' : 'auto'}/></picture>`;
 }
 
-export function SectionBackdrop({ name, level, format = 'jpg' }) {
+export function SectionBackdrop({ name, level, format = 'jpg', sizes }) {
   const dark = useTheme() === 'dark';
   const file =
-    name || ['level-1-triangles', 'level-2-woven-orbits', 'level-3-prisms'][level - 1] || 'level-1-triangles';
+    name || ['level-1-triangles', 'level-2-woven-orbits-v2', 'level-3-prisms'][level - 1] || 'level-1-triangles';
   const night = {
     'studio-01-three-trajectories': 'levels-night.webp',
     'footer-orbital-sectors': 'footer-night.webp',
-    'progress-prismatic-weave': 'progress-night.png',
+    'progress-light-facet-weave-v2': 'progress-night-facet-weave-v2.png',
     'study-phase-rosettes': 'study-night.webp',
+    'level-2-woven-orbits-v2': 'level-2-woven-orbits-v2-dark.webp',
+    'practice-meander-light': 'practice-meander-dark.png',
+    'history-lens-light': 'history-lens-dark.png',
+    'stats-level-1-ribbon-wave-light': 'stats-level-1-ribbon-wave-dark.png',
+    'stats-level-2-ribbon-wave-light': 'stats-level-2-ribbon-wave-dark.png',
+    'stats-level-3-ribbon-wave-light': 'stats-level-3-ribbon-wave-dark.png',
+    'banner-level-1-braid-light': 'banner-level-1-braid-dark.webp',
+    'banner-level-2-chevron-weave-light': 'banner-level-2-chevron-weave-dark.webp',
+    'banner-level-3-gates-light': 'banner-level-3-gates-dark.webp',
   }[file];
   const path = `artwork/${file}.${format}`;
   const nightPath = night && `artwork/${night}`;
   const dimensions = imageVariants[path];
   const size =
-    file === 'footer-orbital-sectors'
+    sizes ||
+    (file === 'footer-orbital-sectors'
       ? '100vw'
-      : file === 'practice-folded-paths'
-        ? '(max-width: 900px) calc(100vw - 32px), 604px'
-        : '(max-width: 700px) calc(100vw - 32px), (max-width: 1296px) calc(100vw - 64px), 1232px';
+      : file === 'practice-meander-light'
+        ? '(max-width: 570px) calc(100vw - 32px), (max-width: 820px) calc(100vw - 44px), (max-width: 1296px) calc(50vw - 44px), 604px'
+        : '(max-width: 700px) calc(100vw - 32px), (max-width: 1296px) calc(100vw - 64px), 1232px');
   return html`<picture class=${`section-backdrop ${night ? 'has-night-art' : ''}`} aria-hidden="true">${night && html`<source media=${dark ? 'all' : 'not all'} srcset=${responsiveSources(nightPath) || assetUrl(nightPath)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading="lazy" decoding="async"/></picture>`;
 }
 
@@ -168,8 +178,8 @@ export function Modal({ title, children, confirmText = 'Подтвердить',
   }}><section class="modal" role="dialog" aria-modal="true" aria-labelledby=${id} ref=${ref}><div class="modal-symbol"><${Icon} name=${dangerous ? 'trash' : 'info'} size=${28}/></div><h2 id=${id}>${title}</h2><div class="modal-copy">${children}</div><div class="modal-actions"><button class="button secondary" onClick=${onClose}>Отмена</button><button class=${`button ${dangerous ? 'danger' : 'primary'}`} onClick=${onConfirm}>${confirmText}</button></div></section></div>`;
 }
 
-export function EmptyState({ icon = 'book', title, children }) {
-  return html`<div class="empty-state"><span class="empty-symbol"><${Icon} name=${icon} size=${30}/></span><h3>${title}</h3><div>${children}</div></div>`;
+export function EmptyState({ icon = 'book', title, children, backdrop }) {
+  return html`<div class="empty-state">${backdrop}<span class="empty-symbol"><${Icon} name=${icon} size=${30}/></span><h3>${title}</h3><div>${children}</div></div>`;
 }
 
 export function downloadFile(name, content, type = 'application/json;charset=utf-8') {

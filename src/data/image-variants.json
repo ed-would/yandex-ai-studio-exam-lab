@@ -148,14 +148,24 @@
       [1536, "artwork/study-night.webp"]
     ]
   },
-  "artwork/progress-night.png": {
+  "artwork/progress-night-facet-weave-v2.png": {
     "width": 1536,
     "height": 1024,
     "variants": [
-      [384, "artwork/progress-night-384-optimized.webp"],
-      [768, "artwork/progress-night-768-optimized.webp"],
-      [1152, "artwork/progress-night-1152-optimized.webp"],
-      [1536, "artwork/progress-night-1536-optimized.webp"]
+      [384, "artwork/progress-night-facet-weave-v2-384-optimized.webp"],
+      [768, "artwork/progress-night-facet-weave-v2-768-optimized.webp"],
+      [1152, "artwork/progress-night-facet-weave-v2-1152-optimized.webp"],
+      [1536, "artwork/progress-night-facet-weave-v2-1536-optimized.webp"]
+    ]
+  },
+  "artwork/progress-light-facet-weave-v2.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/progress-light-facet-weave-v2-384-optimized.webp"],
+      [768, "artwork/progress-light-facet-weave-v2-768-optimized.webp"],
+      [1152, "artwork/progress-light-facet-weave-v2-1152-optimized.webp"],
+      [1536, "artwork/progress-light-facet-weave-v2-1536-optimized.webp"]
     ]
   },
   "artwork/studio-01-three-trajectories.webp": {
@@ -188,16 +198,6 @@
       [1536, "artwork/practice-folded-paths.webp"]
     ]
   },
-  "artwork/progress-prismatic-weave.webp": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/progress-prismatic-weave-384-optimized.webp"],
-      [768, "artwork/progress-prismatic-weave-768-optimized.webp"],
-      [1152, "artwork/progress-prismatic-weave-1152-optimized.webp"],
-      [1536, "artwork/progress-prismatic-weave.webp"]
-    ]
-  },
   "artwork/study-phase-rosettes.jpg": {
     "width": 1536,
     "height": 1024,
@@ -214,14 +214,6 @@
       [1536, "artwork/level-1-triangles.jpg"]
     ]
   },
-  "artwork/level-2-woven-orbits.jpg": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/level-2-woven-orbits-384-optimized.webp"],
-      [1536, "artwork/level-2-woven-orbits.jpg"]
-    ]
-  },
   "artwork/level-3-prisms.jpg": {
     "width": 1536,
     "height": 1024,
@@ -230,14 +222,14 @@
       [1536, "artwork/level-3-prisms.jpg"]
     ]
   },
-  "artwork/studio-02-lilac-phase.webp": {
-    "width": 1774,
-    "height": 887,
+  "artwork/outcome-phase-basket.webp": {
+    "width": 2400,
+    "height": 1328,
     "variants": [
-      [384, "artwork/studio-02-lilac-phase-384-optimized.webp"],
-      [768, "artwork/studio-02-lilac-phase-768-optimized.webp"],
-      [1152, "artwork/studio-02-lilac-phase-1152-optimized.webp"],
-      [1774, "artwork/studio-02-lilac-phase.webp"]
+      [384, "artwork/outcome-phase-basket-384-optimized.webp"],
+      [768, "artwork/outcome-phase-basket-768-optimized.webp"],
+      [1152, "artwork/outcome-phase-basket-1152-optimized.webp"],
+      [2400, "artwork/outcome-phase-basket.webp"]
     ]
   },
   "artwork/studio-03-mint-intersections.webp": {
@@ -268,6 +260,186 @@
       [768, "artwork/studio-05-rose-hourglass-768-optimized.webp"],
       [1152, "artwork/studio-05-rose-hourglass-1152-optimized.webp"],
       [1774, "artwork/studio-05-rose-hourglass.webp"]
+    ]
+  },
+  "artwork/banner-level-1-braid-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-1-braid-light-384-optimized.webp"],
+      [768, "artwork/banner-level-1-braid-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-1-braid-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-1-braid-light.webp"]
+    ]
+  },
+  "artwork/banner-level-1-braid-dark.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-1-braid-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-1-braid-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-1-braid-dark-1152-optimized.webp"],
+      [1860, "artwork/banner-level-1-braid-dark.webp"]
+    ]
+  },
+  "artwork/banner-level-2-chevron-weave-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-2-chevron-weave-light-384-optimized.webp"],
+      [768, "artwork/banner-level-2-chevron-weave-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-2-chevron-weave-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-2-chevron-weave-light.webp"]
+    ]
+  },
+  "artwork/banner-level-2-chevron-weave-dark.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-2-chevron-weave-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-2-chevron-weave-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-2-chevron-weave-dark-1152-optimized.webp"],
+      [1860, "artwork/banner-level-2-chevron-weave-dark.webp"]
+    ]
+  },
+  "artwork/banner-level-3-gates-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-3-gates-light-384-optimized.webp"],
+      [768, "artwork/banner-level-3-gates-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-3-gates-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-3-gates-light.webp"]
+    ]
+  },
+  "artwork/banner-level-3-gates-dark.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-3-gates-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-3-gates-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-3-gates-dark-1152-optimized.webp"],
+      [1860, "artwork/banner-level-3-gates-dark.webp"]
+    ]
+  },
+  "artwork/level-2-woven-orbits-v2.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/level-2-woven-orbits-v2-384-optimized.webp"],
+      [768, "artwork/level-2-woven-orbits-v2-768-optimized.webp"],
+      [1152, "artwork/level-2-woven-orbits-v2-1152-optimized.webp"],
+      [1536, "artwork/level-2-woven-orbits-v2-1536-optimized.webp"]
+    ]
+  },
+  "artwork/level-2-woven-orbits-v2-dark.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/level-2-woven-orbits-v2-dark-384-optimized.webp"],
+      [768, "artwork/level-2-woven-orbits-v2-dark-768-optimized.webp"],
+      [1152, "artwork/level-2-woven-orbits-v2-dark-1152-optimized.webp"],
+      [1536, "artwork/level-2-woven-orbits-v2-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/practice-meander-light.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/practice-meander-light-384-optimized.webp"],
+      [768, "artwork/practice-meander-light-768-optimized.webp"],
+      [1152, "artwork/practice-meander-light-1152-optimized.webp"],
+      [1536, "artwork/practice-meander-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/practice-meander-dark.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/practice-meander-dark-384-optimized.webp"],
+      [768, "artwork/practice-meander-dark-768-optimized.webp"],
+      [1152, "artwork/practice-meander-dark-1152-optimized.webp"],
+      [1536, "artwork/practice-meander-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/history-lens-light.png": {
+    "width": 1536,
+    "height": 474,
+    "variants": [
+      [384, "artwork/history-lens-light-384-optimized.webp"],
+      [768, "artwork/history-lens-light-768-optimized.webp"],
+      [1152, "artwork/history-lens-light-1152-optimized.webp"],
+      [1536, "artwork/history-lens-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/history-lens-dark.png": {
+    "width": 1536,
+    "height": 474,
+    "variants": [
+      [384, "artwork/history-lens-dark-384-optimized.webp"],
+      [768, "artwork/history-lens-dark-768-optimized.webp"],
+      [1152, "artwork/history-lens-dark-1152-optimized.webp"],
+      [1536, "artwork/history-lens-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-1-ribbon-wave-light.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-1-ribbon-wave-light-384-optimized.webp"],
+      [768, "artwork/stats-level-1-ribbon-wave-light-768-optimized.webp"],
+      [1152, "artwork/stats-level-1-ribbon-wave-light-1152-optimized.webp"],
+      [1536, "artwork/stats-level-1-ribbon-wave-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-1-ribbon-wave-dark.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-1-ribbon-wave-dark-384-optimized.webp"],
+      [768, "artwork/stats-level-1-ribbon-wave-dark-768-optimized.webp"],
+      [1152, "artwork/stats-level-1-ribbon-wave-dark-1152-optimized.webp"],
+      [1536, "artwork/stats-level-1-ribbon-wave-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-2-ribbon-wave-light.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-2-ribbon-wave-light-384-optimized.webp"],
+      [768, "artwork/stats-level-2-ribbon-wave-light-768-optimized.webp"],
+      [1152, "artwork/stats-level-2-ribbon-wave-light-1152-optimized.webp"],
+      [1536, "artwork/stats-level-2-ribbon-wave-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-2-ribbon-wave-dark.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-2-ribbon-wave-dark-384-optimized.webp"],
+      [768, "artwork/stats-level-2-ribbon-wave-dark-768-optimized.webp"],
+      [1152, "artwork/stats-level-2-ribbon-wave-dark-1152-optimized.webp"],
+      [1536, "artwork/stats-level-2-ribbon-wave-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-3-ribbon-wave-light.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-3-ribbon-wave-light-384-optimized.webp"],
+      [768, "artwork/stats-level-3-ribbon-wave-light-768-optimized.webp"],
+      [1152, "artwork/stats-level-3-ribbon-wave-light-1152-optimized.webp"],
+      [1536, "artwork/stats-level-3-ribbon-wave-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/stats-level-3-ribbon-wave-dark.png": {
+    "width": 1536,
+    "height": 1690,
+    "variants": [
+      [384, "artwork/stats-level-3-ribbon-wave-dark-384-optimized.webp"],
+      [768, "artwork/stats-level-3-ribbon-wave-dark-768-optimized.webp"],
+      [1152, "artwork/stats-level-3-ribbon-wave-dark-1152-optimized.webp"],
+      [1536, "artwork/stats-level-3-ribbon-wave-dark-1536-optimized.webp"]
     ]
   }
 }

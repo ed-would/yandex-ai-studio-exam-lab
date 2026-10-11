@@ -1,0 +1,218 @@
+{
+  "dark": {
+    "fonts": true,
+    "images": [
+      {
+        "src": "artwork-mobile-dark.png",
+        "loaded": true
+      }
+    ],
+    "labels": [
+      {
+        "text": "Тренажёр компетенций ИИ",
+        "box": {
+          "x": 142,
+          "y": 66,
+          "width": 694,
+          "height": 52
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(197, 168, 242)"
+      },
+      {
+        "text": "Основы",
+        "box": {
+          "x": 64,
+          "y": 200,
+          "width": 772,
+          "height": 103.3984375
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(242, 237, 248)"
+      },
+      {
+        "text": "работы с ИИ",
+        "box": {
+          "x": 64,
+          "y": 303.3984375,
+          "width": 772,
+          "height": 103.3984375
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(242, 237, 248)"
+      },
+      {
+        "text": "Практика перед экзаменом.",
+        "box": {
+          "x": 64,
+          "y": 456.796875,
+          "width": 772,
+          "height": 56
+        },
+        "font": "Arial, sans-serif",
+        "weight": "400",
+        "color": "rgb(242, 237, 248)"
+      },
+      {
+        "text": "Разбор после каждого ответа.",
+        "box": {
+          "x": 64,
+          "y": 512.796875,
+          "width": 772,
+          "height": 56
+        },
+        "font": "Arial, sans-serif",
+        "weight": "400",
+        "color": "rgb(242, 237, 248)"
+      },
+      {
+        "text": "180 вопросов",
+        "box": {
+          "x": 86,
+          "y": 1188.5,
+          "width": 229.6015625,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(211, 227, 140)"
+      },
+      {
+        "text": "3 уровня",
+        "box": {
+          "x": 377.6015625,
+          "y": 1188.5,
+          "width": 149.6328125,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(147, 215, 208)"
+      },
+      {
+        "text": "6 доменов",
+        "box": {
+          "x": 589.234375,
+          "y": 1188.5,
+          "width": 176.53125,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(197, 168, 242)"
+      }
+    ],
+    "copyFits": true
+  },
+  "light": {
+    "fonts": true,
+    "images": [
+      {
+        "src": "artwork-mobile-light.png",
+        "loaded": true
+      }
+    ],
+    "labels": [
+      {
+        "text": "Тренажёр компетенций ИИ",
+        "box": {
+          "x": 142,
+          "y": 66,
+          "width": 694,
+          "height": 52
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(104, 65, 171)"
+      },
+      {
+        "text": "Основы",
+        "box": {
+          "x": 64,
+          "y": 200,
+          "width": 772,
+          "height": 103.3984375
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(37, 33, 43)"
+      },
+      {
+        "text": "работы с ИИ",
+        "box": {
+          "x": 64,
+          "y": 303.3984375,
+          "width": 772,
+          "height": 103.3984375
+        },
+        "font": "Unbounded, Arial, sans-serif",
+        "weight": "450",
+        "color": "rgb(37, 33, 43)"
+      },
+      {
+        "text": "Практика перед экзаменом.",
+        "box": {
+          "x": 64,
+          "y": 456.796875,
+          "width": 772,
+          "height": 56
+        },
+        "font": "Arial, sans-serif",
+        "weight": "400",
+        "color": "rgb(37, 33, 43)"
+      },
+      {
+        "text": "Разбор после каждого ответа.",
+        "box": {
+          "x": 64,
+          "y": 512.796875,
+          "width": 772,
+          "height": 56
+        },
+        "font": "Arial, sans-serif",
+        "weight": "400",
+        "color": "rgb(37, 33, 43)"
+      },
+      {
+        "text": "180 вопросов",
+        "box": {
+          "x": 86,
+          "y": 1188.5,
+          "width": 229.6015625,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(70, 92, 22)"
+      },
+      {
+        "text": "3 уровня",
+        "box": {
+          "x": 377.6015625,
+          "y": 1188.5,
+          "width": 149.6328125,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(0, 91, 100)"
+      },
+      {
+        "text": "6 доменов",
+        "box": {
+          "x": 589.234375,
+          "y": 1188.5,
+          "width": 176.53125,
+          "height": 38
+        },
+        "font": "Arial, sans-serif",
+        "weight": "700",
+        "color": "rgb(104, 65, 171)"
+      }
+    ],
+    "copyFits": true
+  }
+}

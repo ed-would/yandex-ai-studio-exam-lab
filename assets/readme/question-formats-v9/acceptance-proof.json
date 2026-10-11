@@ -1,0 +1,39 @@
+{
+  "preservedFiles": 124,
+  "changedPreservedFiles": [],
+  "READMEassetReferences": [
+    "assets/readme/question-formats-v9/question-formats-mobile-dark.jpg",
+    "assets/readme/question-formats-v9/question-formats-mobile-light.jpg",
+    "assets/readme/question-formats-v9/question-formats-desktop-dark.jpg",
+    "assets/readme/question-formats-v9/question-formats-desktop-light.jpg",
+    "assets/readme/question-formats-v9/question-formats-desktop-light.jpg"
+  ],
+  "exactLabels": true,
+  "nativeFonts": true,
+  "pairInspection": {
+    "method": "Root visual inspection of all four complete exports",
+    "left": [
+      "purple",
+      "mint",
+      "lime"
+    ],
+    "right": [
+      "purple",
+      "lime",
+      "mint"
+    ],
+    "connections": [
+      "purple top left to top right",
+      "mint middle left to bottom right",
+      "lime bottom left to middle right"
+    ],
+    "allEndpointAndCordColorsMatch": true,
+    "oneToOne": true
+  },
+  "newIndependentReviews": 0,
+  "priorHistory": {
+    "initial": 1,
+    "recheck": 1,
+    "max": 1
+  }
+}

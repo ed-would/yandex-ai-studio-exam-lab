@@ -1,0 +1,11 @@
+{
+  "draft": "src/core/exam.js:88; src/components/questions.js:34",
+  "check": "src/app.js:450; src/core/exam.js:100; src/components/questions.js:229",
+  "explanation": "src/components/questions.js:200,230; src/components/ui.js:129",
+  "repeat": "src/app.js:451,273; src/core/exam.js:227,64; src/components/results-page.js:172",
+  "qualifiers": [
+    "Timers may fix an expired empty answer; draft wording deliberately does not imply indefinite availability",
+    "Detailed option/pair explanations can initially be collapsed",
+    "Mistake practice appears only if mistakes or unchecked questions exist; starts a new attempt after completion"
+  ]
+}

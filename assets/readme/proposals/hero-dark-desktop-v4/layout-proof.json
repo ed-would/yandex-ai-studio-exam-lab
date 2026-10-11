@@ -1,0 +1,171 @@
+{
+  "fontStatus": "loaded",
+  "loadedFonts": [
+    {
+      "family": "Unbounded",
+      "status": "loaded",
+      "weight": "200 900"
+    },
+    {
+      "family": "Unbounded",
+      "status": "loaded",
+      "weight": "200 900"
+    }
+  ],
+  "images": [
+    {
+      "src": "artwork.png",
+      "loaded": true,
+      "naturalWidth": 1895,
+      "naturalHeight": 830,
+      "alt": "Небольшой пятилистный логотип отдельно слева. Справа на одном переднем плане, с равным визуальным весом: лаймовый складчатый тор, бирюзовые арки со сферой и сиреневая треугольная лента – формы трёх уровней тренажёра"
+    }
+  ],
+  "labels": [
+    {
+      "text": "Тренажёр компетенций ИИ",
+      "font": "Unbounded, Arial, sans-serif",
+      "size": "32px",
+      "weight": "450",
+      "color": "rgb(197, 168, 242)",
+      "box": {
+        "x": 126,
+        "y": 76,
+        "width": 562,
+        "height": 41.59375
+      }
+    },
+    {
+      "text": "Основы",
+      "font": "Unbounded, Arial, sans-serif",
+      "size": "80px",
+      "weight": "450",
+      "color": "rgb(242, 237, 248)",
+      "box": {
+        "x": 48,
+        "y": 169.59375,
+        "width": 640,
+        "height": 88
+      }
+    },
+    {
+      "text": "работы с ИИ",
+      "font": "Unbounded, Arial, sans-serif",
+      "size": "80px",
+      "weight": "450",
+      "color": "rgb(242, 237, 248)",
+      "box": {
+        "x": 48,
+        "y": 257.59375,
+        "width": 640,
+        "height": 88
+      }
+    },
+    {
+      "text": "Практика перед экзаменом.",
+      "font": "Arial, sans-serif",
+      "size": "31px",
+      "weight": "400",
+      "color": "rgb(242, 237, 248)",
+      "box": {
+        "x": 48,
+        "y": 400.59375,
+        "width": 640,
+        "height": 45.875
+      }
+    },
+    {
+      "text": "Разбор после каждого ответа.",
+      "font": "Arial, sans-serif",
+      "size": "31px",
+      "weight": "400",
+      "color": "rgb(242, 237, 248)",
+      "box": {
+        "x": 48,
+        "y": 446.46875,
+        "width": 640,
+        "height": 45.875
+      }
+    },
+    {
+      "text": "180 вопросов",
+      "font": "Arial, sans-serif",
+      "size": "24px",
+      "weight": "700",
+      "color": "rgb(211, 227, 140)",
+      "box": {
+        "x": 67,
+        "y": 588.84375,
+        "width": 162.0703125,
+        "height": 26.5
+      }
+    },
+    {
+      "text": "3 уровня",
+      "font": "Arial, sans-serif",
+      "size": "24px",
+      "weight": "700",
+      "color": "rgb(147, 215, 208)",
+      "box": {
+        "x": 279.0703125,
+        "y": 588.84375,
+        "width": 105.625,
+        "height": 26.5
+      }
+    },
+    {
+      "text": "6 доменов",
+      "font": "Arial, sans-serif",
+      "size": "24px",
+      "weight": "700",
+      "color": "rgb(197, 168, 242)",
+      "box": {
+        "x": 434.6953125,
+        "y": 588.84375,
+        "width": 124.609375,
+        "height": 26.5
+      }
+    }
+  ],
+  "pills": [
+    {
+      "text": "180 вопросов",
+      "background": "rgb(52, 60, 39)",
+      "color": "rgb(211, 227, 140)",
+      "box": {
+        "x": 48,
+        "y": 576.34375,
+        "width": 200.0703125,
+        "height": 52.3984375
+      }
+    },
+    {
+      "text": "3 уровня",
+      "background": "rgb(39, 63, 64)",
+      "color": "rgb(147, 215, 208)",
+      "box": {
+        "x": 260.0703125,
+        "y": 576.34375,
+        "width": 143.625,
+        "height": 52.3984375
+      }
+    },
+    {
+      "text": "6 доменов",
+      "background": "rgb(59, 48, 77)",
+      "color": "rgb(197, 168, 242)",
+      "box": {
+        "x": 415.6953125,
+        "y": 576.34375,
+        "width": 162.609375,
+        "height": 52.3984375
+      }
+    }
+  ],
+  "copyFits": true,
+  "brandFits": true,
+  "dimensions": {
+    "width": 1600,
+    "height": 700
+  }
+}

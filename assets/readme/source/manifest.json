@@ -1,0 +1,736 @@
+{
+  "version": 2,
+  "language": "ru",
+  "method": "Built-in Image Generation artwork + exact project artwork layers + local Unbounded/Arial typography; Playwright MCP rasterization; WebP quality 90 method 6",
+  "fonts": [
+    {
+      "path": "public/fonts/unbounded-cyrillic-variable.woff2",
+      "bytes": 31460,
+      "sha256": "c3880f0c5afb7890a102bc4b9c8257703664388f708b4be880ec5f5f68e8ea9d"
+    },
+    {
+      "path": "public/fonts/unbounded-latin-variable.woff2",
+      "bytes": 50892,
+      "sha256": "d7f07f8a308ce0a7287d79a65a85cfbc0f4741ef426bf1a3902d24392cc71723"
+    }
+  ],
+  "fontLicense": "public/fonts/Unbounded-OFL.txt",
+  "bodyFont": "Arial, system font; no font file redistributed",
+  "references": [
+    {
+      "path": "public/images/artwork/level-1-foundations-1254-optimized.webp",
+      "bytes": 761480,
+      "sha256": "31befd3e3a920fcbea90fe52a277918e7a96ebbb44d0e2bdbf78e9551bd82ec2",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "public/images/artwork/level-2-application-1254-optimized.webp",
+      "bytes": 614892,
+      "sha256": "0c3ebdba23c3ae92f50ea6c229581bb495967cbbe66081675d70249bdad0afb1",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "public/images/artwork/level-3-expert-1254-optimized.webp",
+      "bytes": 953844,
+      "sha256": "484ce572c96b35ff2e371de24948a3586d575cc4a5fedd3d6d17a16152a1cf99",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "public/images/brand/trainer-abstract-256-optimized.webp",
+      "bytes": 45462,
+      "sha256": "942f39dc6dc9756abe6d5cec68798eb2e1e749c8fed30e5bf42ab2256bf304d7",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "exports": [
+    {
+      "path": "assets/readme/hero.webp",
+      "bytes": 119662,
+      "sha256": "e498a8d9bbd180fc3a7279189bb10340ab81bd5f7526badf35a0ae223bf91a50",
+      "dimensions": [
+        1600,
+        690
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/hero-mobile.webp",
+      "bytes": 101198,
+      "sha256": "8b951721d81c3c65245fefa1d9083eb487b4742582564773e9f32e13e0ca83e9",
+      "dimensions": [
+        900,
+        1300
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/bank-map.webp",
+      "bytes": 148854,
+      "sha256": "bd76430907777cd32ab551a1d0094bacb2ba7d65ed13d78f6f2cfd3020b1b3d5",
+      "dimensions": [
+        1774,
+        970
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/bank-map-mobile.webp",
+      "bytes": 135256,
+      "sha256": "1bc4908cec0143086a60aa835000bd66e0bed2404d0804139a9df17b166af229",
+      "dimensions": [
+        900,
+        1900
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/learning-cycle.webp",
+      "bytes": 144646,
+      "sha256": "be4f584f11ee87f0a9d0fe5a9154171f68cca42d09d0aaa2ac1859ba71331b47",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/learning-cycle-mobile.webp",
+      "bytes": 135382,
+      "sha256": "27ae4ea5acb5dc22478cb653e4c4961b4d0374fec7a36fdfa36b07a34a83ed09",
+      "dimensions": [
+        900,
+        1840
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "generatedArtwork": [
+    {
+      "path": "assets/readme/source/hero.expressive-artwork.png",
+      "bytes": 1970941,
+      "sha256": "909265c72185ca0d8a8442c1dd30c59aa48eb1388649b6584fa2f46eb6e6182f",
+      "dimensions": [
+        1909,
+        824
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/bank-map.expressive-artwork.png",
+      "bytes": 1900539,
+      "sha256": "b35b4108f0f5279e62093a777ee6e3a1cb33ad8d5173deeaed53b59781382d1b",
+      "dimensions": [
+        1697,
+        927
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/bank-map.expressive-mobile-artwork.png",
+      "bytes": 1900427,
+      "sha256": "e2776ee0e4b6ed6911c17bd2c9016ac6f21903aa0eece8290bcf3c22ca332405",
+      "dimensions": [
+        863,
+        1823
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.expressive-artwork.png",
+      "bytes": 1884822,
+      "sha256": "9372b6c93d4c12f5c24174350f7cc5bec34a47deb20547439e25307b5fbde156",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.expressive-mobile-artwork.png",
+      "bytes": 1894171,
+      "sha256": "0b0104d6b921833b575f0b215fbbd5911416cb3d153ed8ad1f6ae676fbb8a0cc",
+      "dimensions": [
+        877,
+        1792
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "layouts": [
+    {
+      "path": "assets/readme/source/bank-map.layout.html",
+      "bytes": 4545,
+      "sha256": "1b83bc64699a68bf4cdf0a8e412ada8e46b620ae930be7b92a317d3185b8bc29"
+    },
+    {
+      "path": "assets/readme/source/hero.layout.html",
+      "bytes": 3121,
+      "sha256": "0d68b40a0971f5d2a6fffd43d5e8a3b228e1dd512cbf67dfdd96eb4bc0980bce"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.layout.html",
+      "bytes": 2793,
+      "sha256": "4ce9fa42deac93411146ee4ba61f884c307a0e31e2bdbabc46cde73cb58a48ae"
+    }
+  ],
+  "prompts": [
+    {
+      "path": "assets/readme/source/bank-map.expressive-mobile.prompt.txt",
+      "bytes": 1062,
+      "sha256": "2b28b1d43fd0d3dce17dad28e024d0e7bb49146acff1e55defa0c9e025cba3eb"
+    },
+    {
+      "path": "assets/readme/source/bank-map.expressive.prompt.txt",
+      "bytes": 1975,
+      "sha256": "c5f12a16eb8318da94e561a6911880d2b9a2fc71b4f1b324ab158d951de1484a"
+    },
+    {
+      "path": "assets/readme/source/bank-map.prompt.txt",
+      "bytes": 1840,
+      "sha256": "960565241f4bc2d865222f3798a31dfebcabb4cf0ef4fbb223782b1451e2acc1"
+    },
+    {
+      "path": "assets/readme/source/hero.expressive.prompt.txt",
+      "bytes": 1343,
+      "sha256": "c76d9a5bfa1e45235611448ef077b22367d9b708473656a9de98883b1bf38a5d"
+    },
+    {
+      "path": "assets/readme/source/hero.prompt.txt",
+      "bytes": 1794,
+      "sha256": "e72dc676c74491c473830aea0b38fab1c8c0d4be29beba5cae4b8af75785b584"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.expressive-mobile.prompt.txt",
+      "bytes": 1188,
+      "sha256": "611f3d66851d638655596b010fff519560dad19ca1bbe075518d9442fe53a2db"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.expressive.prompt.txt",
+      "bytes": 1672,
+      "sha256": "5f3a72edc18f374782e5991504a01786d83e274a9243c8a501e8c834b892867b"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.prompt.txt",
+      "bytes": 1956,
+      "sha256": "4393f07b8e51abec4c4d9f420249b22a9d104eb9fa16081b4ebe2bf492b0dad4"
+    },
+    {
+      "path": "assets/readme/source/typography-correction.prompt.txt",
+      "bytes": 818,
+      "sha256": "9ef0098c5871be60e4a6aa0b961d91465708dd61efe8ced25527f04410ed819f"
+    }
+  ],
+  "rasterSources": [
+    {
+      "path": "assets/readme/source/bank-map-mobile.export.png",
+      "bytes": 1413265,
+      "sha256": "b1e6465abd8fe828dd4eb89e2585931d1776c37fd2348c811a5df45572698b3d",
+      "dimensions": [
+        900,
+        1900
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/bank-map.export.png",
+      "bytes": 1474669,
+      "sha256": "546ca69649b116961840f5258761c031db3153043b8c1eac3a692ee6ecc2073e",
+      "dimensions": [
+        1774,
+        970
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/hero-mobile.export.png",
+      "bytes": 991708,
+      "sha256": "78a0678dc22331f15d6d478f085b99417f74e7d13746ab73dbee55687534920a",
+      "dimensions": [
+        900,
+        1300
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/hero.export.png",
+      "bytes": 1223413,
+      "sha256": "16dbb5490a195cac848e351a1b7952d2f34a758fe81c18e5c98b51f0017124b9",
+      "dimensions": [
+        1600,
+        690
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle-mobile.export.png",
+      "bytes": 1704131,
+      "sha256": "408036ba4de5f217ff65943e8d3903de066c9976229cbd923397515dcf21f3a1",
+      "dimensions": [
+        900,
+        1840
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.export.png",
+      "bytes": 1742835,
+      "sha256": "a9f31f49abd755fdec986bcafe6a9356fe994b1bfd9520d7bc5b7f9025819c3b",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "assets/readme/screenshots/home-light.png",
+      "bytes": 481991,
+      "sha256": "c361a2509391b74e7d87afe9659dae0d492a7bccf7083633dc4cf0b1936acef6",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/home-light.webp",
+      "bytes": 84288,
+      "sha256": "b0e55ddd280ac47013dc7178e487f68fd16af347d2b99663ed5fc978f79f61b7",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/materials-light.png",
+      "bytes": 522343,
+      "sha256": "d2e7fefc76a1e168042e11959906b895ce17836ba8239c61dd1e6c4076f8dc40",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/materials-light.webp",
+      "bytes": 120952,
+      "sha256": "2443a8c8b7533219425135d93fc24e2c786d396720b896a1db078af2b50ca7ce",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/question-dark.png",
+      "bytes": 218980,
+      "sha256": "80b32234d13a33fa3cae466aa130c55c091b5b81919a6f8ca4d5f17d1eb8ac1a",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/question-dark.webp",
+      "bytes": 67640,
+      "sha256": "76f8848c318805f937ba9f9be52eb345b707594cbeaab70bc6ce3b3f4df4e937",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/question-light.png",
+      "bytes": 246639,
+      "sha256": "58e5e03ee96ef8f71447ecedc4763d2dc7f8ce6a8e31a326d5a4a63522cf471b",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/question-light.webp",
+      "bytes": 67786,
+      "sha256": "0a9df9751fad4641f5c27ea0923c615f8cdc3355960ffb976d70897f0f89c804",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/results-light.png",
+      "bytes": 493834,
+      "sha256": "311827b8eff731bd269dcee16a9a703463857f804d66c43c808f9f467d32c000",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/screenshots/results-light.webp",
+      "bytes": 83046,
+      "sha256": "61c30b167341b55fe61d9cc013c5a4a4d8d0a89e39ec48564dee0162a8a346b6",
+      "dimensions": [
+        1440,
+        1050
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "icons": {
+    "library": "Lucide",
+    "version": "1.8.0",
+    "notice": "assets/readme/icons/LICENSE",
+    "count": 17
+  },
+  "unusedTrials": [
+    {
+      "path": "assets/readme/source/hero.png",
+      "bytes": 1733461,
+      "sha256": "2e3a044e4a2d9cf0bd5eb5af859965a7b5c032ce3fec53aac277bb56b0504964",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/bank-map.png",
+      "bytes": 1639404,
+      "sha256": "dcd4cb20cd7014a2c4ef6240881517b5c2a2cad5669900fddbd64a7cccb8d0cf",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.png",
+      "bytes": 1494016,
+      "sha256": "fdc892fb61949abbed875f64ad4e88609193acb9b417af53c8cf4e29853ab9e8",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/bank-map.artwork.png",
+      "bytes": 1755408,
+      "sha256": "dafca4b2b51aee6feff302e41db94b097a7b88b7b78b415e33d97e519b8be1f0",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/readme/source/learning-cycle.artwork.png",
+      "bytes": 1507615,
+      "sha256": "c0448795934eded1413c943b70205b96c90f7beecc3458f899dd14f7a65b0d99",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "corrections": [
+    "Generated lettering replaced with exact project font rendering",
+    "Regenerated test sculptures replaced with exact original transparent project assets",
+    "Repeated six miniatures removed; one shared domain-count caption",
+    "Expressive Image Generation ribbon compositions replace flat background",
+    "Separate portrait compositions for narrow displays"
+  ],
+  "contrast": [
+    {
+      "name": "hero",
+      "labels": [
+        {
+          "text": "Тренажёр компетенций ИИ",
+          "minContrast": 7.62,
+          "corePixels": 1499
+        },
+        {
+          "text": "Основыработы с ИИ",
+          "minContrast": 13.56,
+          "corePixels": 15182
+        },
+        {
+          "text": "Практика перед экзаменом.Разбор после каждого ответа.",
+          "minContrast": 13.61,
+          "corePixels": 4349
+        },
+        {
+          "text": "180 вопросов · 3 уровня · 6 доменов",
+          "minContrast": 4.6,
+          "corePixels": 2104
+        }
+      ],
+      "minContrast": 4.6
+    },
+    {
+      "name": "hero-mobile",
+      "labels": [
+        {
+          "text": "Тренажёр компетенций ИИ",
+          "minContrast": 6.06,
+          "corePixels": 2500
+        },
+        {
+          "text": "Основыработы с ИИ",
+          "minContrast": 9.97,
+          "corePixels": 23617
+        },
+        {
+          "text": "Практика перед экзаменом.Разбор после каждого ответа.",
+          "minContrast": 9.41,
+          "corePixels": 8453
+        },
+        {
+          "text": "180 вопросов · 3 уровня · 6 доменов",
+          "minContrast": 5.02,
+          "corePixels": 3586
+        }
+      ],
+      "minContrast": 5.02
+    },
+    {
+      "name": "bank-map",
+      "labels": [
+        {
+          "text": "180 авторских вопросов",
+          "minContrast": 8.66,
+          "corePixels": 19596
+        },
+        {
+          "text": "Три теста. Каждый уровень доступен сразу.",
+          "minContrast": 7.19,
+          "corePixels": 3675
+        },
+        {
+          "text": "Базовый",
+          "minContrast": 8.07,
+          "corePixels": 2755
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 11.99,
+          "corePixels": 1314
+        },
+        {
+          "text": "Продвинутый",
+          "minContrast": 7.84,
+          "corePixels": 4102
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 13.25,
+          "corePixels": 1339
+        },
+        {
+          "text": "Экспертный",
+          "minContrast": 5.51,
+          "corePixels": 3575
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 9.62,
+          "corePixels": 1313
+        },
+        {
+          "text": "6 доменов × 10 вопросов на каждом уровне",
+          "minContrast": 13.59,
+          "corePixels": 9467
+        }
+      ],
+      "minContrast": 5.51
+    },
+    {
+      "name": "bank-map-mobile",
+      "labels": [
+        {
+          "text": "180 авторских вопросов",
+          "minContrast": 8.46,
+          "corePixels": 20728
+        },
+        {
+          "text": "Три теста. Каждый уровень доступен сразу.",
+          "minContrast": 8.48,
+          "corePixels": 4915
+        },
+        {
+          "text": "Базовый",
+          "minContrast": 9.44,
+          "corePixels": 2875
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 11.13,
+          "corePixels": 2328
+        },
+        {
+          "text": "Продвинутый",
+          "minContrast": 7.02,
+          "corePixels": 4279
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 9.84,
+          "corePixels": 2328
+        },
+        {
+          "text": "Экспертный",
+          "minContrast": 5.66,
+          "corePixels": 3732
+        },
+        {
+          "text": "60 вопросов",
+          "minContrast": 10.19,
+          "corePixels": 2328
+        },
+        {
+          "text": "6 доменов × 10 вопросов на каждом уровне",
+          "minContrast": 4.58,
+          "corePixels": 12843
+        }
+      ],
+      "minContrast": 4.58
+    },
+    {
+      "name": "learning-cycle",
+      "labels": [
+        {
+          "text": "Каждый ответ становится уроком",
+          "minContrast": 13.02,
+          "corePixels": 21587
+        },
+        {
+          "text": "1. Ответ",
+          "minContrast": 11.22,
+          "corePixels": 1304
+        },
+        {
+          "text": "Черновик можно изменить",
+          "minContrast": 14.5,
+          "corePixels": 2101
+        },
+        {
+          "text": "2. Проверка",
+          "minContrast": 12.33,
+          "corePixels": 2484
+        },
+        {
+          "text": "Ответ фиксируется",
+          "minContrast": 14.21,
+          "corePixels": 1641
+        },
+        {
+          "text": "3. Разбор",
+          "minContrast": 13.04,
+          "corePixels": 1943
+        },
+        {
+          "text": "Причина и источники",
+          "minContrast": 14.23,
+          "corePixels": 1689
+        },
+        {
+          "text": "4. Повторение",
+          "minContrast": 11.63,
+          "corePixels": 2810
+        },
+        {
+          "text": "Ошибки и пропуски",
+          "minContrast": 14.09,
+          "corePixels": 1616
+        },
+        {
+          "text": "Повторение создаёт новую попытку",
+          "minContrast": 8.41,
+          "corePixels": 2170
+        }
+      ],
+      "minContrast": 8.41
+    },
+    {
+      "name": "learning-cycle-mobile",
+      "labels": [
+        {
+          "text": "Каждый ответ становится уроком",
+          "minContrast": 12.58,
+          "corePixels": 26719
+        },
+        {
+          "text": "1. Ответ",
+          "minContrast": 14.26,
+          "corePixels": 1886
+        },
+        {
+          "text": "Черновик можно изменить",
+          "minContrast": 14.12,
+          "corePixels": 3484
+        },
+        {
+          "text": "2. Проверка",
+          "minContrast": 14.1,
+          "corePixels": 3407
+        },
+        {
+          "text": "Ответ фиксируется",
+          "minContrast": 14.32,
+          "corePixels": 2635
+        },
+        {
+          "text": "3. Разбор",
+          "minContrast": 14.49,
+          "corePixels": 2718
+        },
+        {
+          "text": "Причина и источники",
+          "minContrast": 14.13,
+          "corePixels": 2659
+        },
+        {
+          "text": "4. Повторение",
+          "minContrast": 14.69,
+          "corePixels": 3907
+        },
+        {
+          "text": "Ошибки и пропуски",
+          "minContrast": 14.85,
+          "corePixels": 2573
+        },
+        {
+          "text": "Повторение создаёт новую попытку",
+          "minContrast": 7.08,
+          "corePixels": 4614
+        }
+      ],
+      "minContrast": 7.08
+    }
+  ]
+}

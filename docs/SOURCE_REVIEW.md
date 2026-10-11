@@ -4,9 +4,9 @@
 **Программа экзамена: редакция от 4 октября 2026 года.**  
 **Версия авторского банка: `2026-10-09.1`.**
 
-Этот документ описывает, на каких материалах подготовлен русскоязычный тренажёр экзамена «Основы работы с ИИ», какие части рекомендованных материалов были доступны и чем заменялись недоступные уроки. Основание содержания — [официальный перечень проверяемых компетенций](https://ai-basic-competencies.website.yandexcloud.net/). Названия, даты, доли доменов и семь рекомендованных ссылок сверены с сохранённой страницей программы и метаданными проекта.
+Этот документ описывает, на каких материалах подготовлен русскоязычный тренажёр экзамена «Основы работы с ИИ», какие части рекомендованных материалов были доступны и чем заменялись недоступные уроки. Основание содержания – [официальный перечень проверяемых компетенций](https://ai-basic-competencies.website.yandexcloud.net/). Названия, даты, доли доменов и семь рекомендованных ссылок сверены с сохранённой страницей программы и метаданными проекта.
 
-**Все 180 вопросов — авторские учебные задания.** Это не официальный банк Яндекса, не восстановленные экзаменационные вопросы и не обещание совпадения формулировок с сертификацией. Условия, варианты ответов, ложные варианты, числовые примеры и разборы составлены для тренажёра. Тексты закрытых уроков и полные копии сторонних статей в проект не включены.
+**Все 180 вопросов – авторские учебные задания.** Это не официальный банк Яндекса, не восстановленные экзаменационные вопросы и не обещание совпадения формулировок с сертификацией. Условия, варианты ответов, ложные варианты, числовые примеры и разборы составлены для тренажёра. Тексты закрытых уроков и полные копии сторонних статей в проект не включены.
 
 ## 1. Программа и покрытие банка
 
@@ -22,11 +22,11 @@
 | 6 | Алиса AI Про для бизнеса: коннекторы, навыки и автоматизация | ~28% | 10 | 30 |
 | **Итого** | **Шесть доменов** | **~100%** | **60** | **180** |
 
-Источник долей и названий — [перечень компетенций от 4 октября 2026 года](https://ai-basic-competencies.website.yandexcloud.net/).
+Источник долей и названий – [перечень компетенций от 4 октября 2026 года](https://ai-basic-competencies.website.yandexcloud.net/).
 
-По заданию пользователя каждый из трёх уровней содержит одинаковые 10 вопросов по каждому домену. Поэтому учебный результат по числу правильных ответов не воспроизводит официальное распределение весов. Цель 80%, указанная в приложении, — ориентир тренировки; она не выдаётся за официальный проходной балл.
+По заданию пользователя каждый из трёх уровней содержит одинаковые 10 вопросов по каждому домену. Поэтому учебный результат по числу правильных ответов не воспроизводит официальное распределение весов. Цель 80%, указанная в приложении, – ориентир тренировки; она не выдаётся за официальный проходной балл.
 
-На каждом уровне каждого домена есть четыре вопроса с одним ответом, четыре с множественным выбором и два на сопоставление. Всего это 72 одиночных вопроса, 72 множественных и 36 сопоставлений. В множественном выборе встречаются наборы от одного до пяти верных вариантов. Каждый вариант или пара имеет пояснение, а каждое задание — общий разбор, памятку и ссылки для дальнейшего изучения.
+На каждом уровне каждого домена есть четыре вопроса с одним ответом, четыре с множественным выбором и два на сопоставление. Всего это 72 одиночных вопроса, 72 множественных и 36 сопоставлений. В множественном выборе встречаются наборы от одного до пяти верных вариантов. Каждый вариант или пара имеет пояснение, а каждое задание – общий разбор, памятку и ссылки для дальнейшего изучения.
 
 Уровни различаются задачей ученика: «Основа» закрепляет понятия и простые примеры; «Практика» предлагает выбор подхода и диагностику ошибок; «Сложные кейсы» совмещает несколько условий, источников, ограничений доступа, требований к качеству или затратам.
 
@@ -41,12 +41,12 @@
 | [Техники работы с промптами](https://aistudio.yandex.ru/ru/ai-academy/courses/prompting) | Публичную программу, описание формата и переход к регистрации; темы запросов для текста и изображений | Полные уроки и практика находятся на учебной платформе; отдельные прямые обращения к странице возвращали SmartCaptcha | [Руководство Yandex Cloud по промптам](https://yandex.cloud/ru/blog/gpt-prompting-guide), [понятия AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary), [стратегии запросов Google](https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru) |
 | [ИИ в бизнесе](https://aistudio.yandex.ru/ru/ai-academy/courses/ai-in-business) | Индексируемое открытое описание отбора задач, оценки инициатив и перехода от идеи через пилот к эксплуатации | Полная страница и уроки не получены: при доступных способах чтения встречалась CAPTCHA | [Кейс команды Яндекс Доставки](https://dev.go.yandex/blog/ai-for-legal-automation-2026-07-03), [NIST AI RMF: контекст, измерение и управление](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) |
 | [Экономика LLM-продуктов](https://aistudio.yandex.ru/ru/ai-academy/courses/llm-costs) | Название и назначение из официального каталога и программы экзамена | Страница возвращала CAPTCHA; полный состав и содержание уроков не прочитаны | [Правила тарификации AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/pricing), [разделение ответственности](https://yandex.cloud/ru/docs/overview/concepts/ai-studio-responsibilities), собственные расчётные ситуации по полной стоимости |
-| [Создание ИИ-агентов в Yandex AI Studio](https://aistudio.yandex.ru/ru/ai-academy/courses/ai-agents) | Название и назначение в программе экзамена | Прямое открытие возвращало ошибку, альтернативное публичное чтение — проверку «Вы не робот?»; уроки не прочитаны | [Обзор агентов](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/), [сборка в интерфейсе](https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-agent-ui), документация File Search, Web Search, MCP, Code Interpreter и Workflows |
+| [Создание ИИ-агентов в Yandex AI Studio](https://aistudio.yandex.ru/ru/ai-academy/courses/ai-agents) | Название и назначение в программе экзамена | Прямое открытие возвращало ошибку, альтернативное публичное чтение – проверку «Вы не робот?»; уроки не прочитаны | [Обзор агентов](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/), [сборка в интерфейсе](https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-agent-ui), документация File Search, Web Search, MCP, Code Interpreter и Workflows |
 | [Курс «Искусственный интеллект» в профессии «Инженер облачных сервисов»](https://yandex.cloud/ru/training/ycloud) | Публичную страницу профессии; доступная версия содержит описание направлений облачного обучения | Полного текста отдельного модуля ИИ на этой странице нет; обучение открывается через профиль Практикума | [Введение Google в ML](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru), [учебная статья Yandex Cloud о ML](https://yandex.cloud/ru/blog/machine-learning-guide), документация моделей, контекста, дообучения и агентов |
 | [Документация Алисы AI Про](https://aistudio.yandex.ru/ru/docs/alice-ai-pro/) | Обзор и доступные страницы пользовательского раздела: рабочее место, проекты, чаты, файлы, плагины, доступ, лимиты, модели, память, постановка задачи, контекст, расписания и устранение проблем | Это чтение документации, а не проверка всех возможностей в зарегистрированном рабочем месте; для ряда требований программы открытое подтверждение неполное | Прямые пользовательские инструкции; дополнительно документация профилей и рабочих мест, подписок, тарификации и хранения данных AI Studio |
 | [Документация Yandex AI Studio](https://aistudio.yandex.ru/ru/docs/) | Релевантные разделы моделей, промптов, токенов, контекста, поиска, дообучения, агентов, инструментов, визуальной сборки, Workflows, доступа, хранения и оплаты | Вся документация Яндекса не изучалась; программные примеры не превращены в требования базового экзамена | Открытые тематические страницы, перечисленные в индексе ниже и в отдельных исследовательских заметках |
 
-Для курса по промптам просмотрен открытый [переход к подключению курса в Практикуме](https://practicum.yandex.ru/professions/yc-ml-prompting/subscribe); для профессии — ссылка на [профиль обучения](https://practicum.yandex.ru/profile/ycloud). Регистрация и вход в личные кабинеты не выполнялись. Краткое описание курса не считалось прочтением его уроков. CAPTCHA не обходилась: использовались доступные индексируемые публичные представления и другие первичные материалы по теме.
+Для курса по промптам просмотрен открытый [переход к подключению курса в Практикуме](https://practicum.yandex.ru/professions/yc-ml-prompting/subscribe); для профессии – ссылка на [профиль обучения](https://practicum.yandex.ru/profile/ycloud). Регистрация и вход в личные кабинеты не выполнялись. Краткое описание курса не считалось прочтением его уроков. CAPTCHA не обходилась: использовались доступные индексируемые публичные представления и другие первичные материалы по теме.
 
 ## 3. Что использовано по каждому домену
 
@@ -82,7 +82,7 @@
 
 **Право и методология.** Политика регионального управления Роскомнадзора используется для терминов и логики идентификации, а не как универсальное разрешение для бизнеса. Кейсы не заменяют проверку действующего права и условий конкретного сервиса. NIST и рассказ команды Яндекса служат источниками принципов; эффект отдельного внедрения не обещается всем компаниям. [Материал Роскомнадзора](https://02.rkn.gov.ru/directions/p4172/p18331/), [NIST](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/), [первичный кейс](https://dev.go.yandex/blog/ai-for-legal-automation-2026-07-03).
 
-**Понятия модели.** Использование сведений внутри диалога не доказывает изменения весов. RAG не приравнен к дообучению, наличие ссылки — к истинности, низкая температура — к проверке фактов. Открытые веса и место размещения модели рассматриваются отдельно. Практические выводы вроде проверки причины изменения показателя или подтверждения результата внешней операции представлены как авторские учебные ситуации, а не дословные обещания документации. [Контекст](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/conversations-api), [поиск](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/), [дообучение](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/).
+**Понятия модели.** Использование сведений внутри диалога не доказывает изменения весов. RAG не приравнен к дообучению, наличие ссылки – к истинности, низкая температура – к проверке фактов. Открытые веса и место размещения модели рассматриваются отдельно. Практические выводы вроде проверки причины изменения показателя или подтверждения результата внешней операции представлены как авторские учебные ситуации, а не дословные обещания документации. [Контекст](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/conversations-api), [поиск](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/), [дообучение](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/).
 
 ## 5. Полный индекс источников банка
 
@@ -94,36 +94,36 @@
 
 12 уникальных источников в домене.
 
-- [Что такое машинное обучение — Google for Developers](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru)
-- [Основы машинного обучения — Yandex Cloud](https://yandex.cloud/ru/blog/machine-learning-guide)
-- [Токены — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/tokens)
-- [Введение в большие языковые модели — Google for Developers](https://developers.google.com/machine-learning/crash-course/llm?hl=ru)
-- [Большая языковая модель: возможности и ограничения — Yandex Cloud](https://yandex.cloud/ru/docs/glossary/llm)
-- [Как писать промпты и исправлять плохие ответы — Yandex Cloud](https://yandex.cloud/ru/blog/gpt-prompting-guide)
-- [Поиск и обогащение контекста — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/)
-- [Управление контекстом диалога — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/conversations-api)
-- [Промпт и температура — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary)
-- [Дообучение: качество данных и ограничения — Yandex Cloud](https://yandex.cloud/ru/blog/posts/2025/03/fine-tuning)
-- [Глоссарий генеративного ИИ — Google for Developers](https://developers.google.com/machine-learning/glossary/generative?hl=ru)
-- [Дообучение моделей — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/)
+- [Что такое машинное обучение: Google for Developers](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru)
+- [Основы машинного обучения: Yandex Cloud](https://yandex.cloud/ru/blog/machine-learning-guide)
+- [Токены: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/tokens)
+- [Введение в большие языковые модели: Google for Developers](https://developers.google.com/machine-learning/crash-course/llm?hl=ru)
+- [Большая языковая модель: возможности и ограничения: Yandex Cloud](https://yandex.cloud/ru/docs/glossary/llm)
+- [Как писать промпты и исправлять плохие ответы: Yandex Cloud](https://yandex.cloud/ru/blog/gpt-prompting-guide)
+- [Поиск и обогащение контекста: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/)
+- [Управление контекстом диалога: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/conversations-api)
+- [Промпт и температура: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary)
+- [Дообучение: качество данных и ограничения: Yandex Cloud](https://yandex.cloud/ru/blog/posts/2025/03/fine-tuning)
+- [Глоссарий генеративного ИИ: Google for Developers](https://developers.google.com/machine-learning/glossary/generative?hl=ru)
+- [Дообучение моделей: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/)
 
 ### Домен 2. Практическое применение в работе
 
 13 уникальных источников в домене.
 
-- [Как писать промпты и исправлять плохие ответы — Yandex Cloud](https://yandex.cloud/ru/blog/gpt-prompting-guide)
-- [Промпт и температура — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary)
-- [Что такое машинное обучение — Google for Developers](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru)
-- [Системный промпт: роль, стиль и ограничения — AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-voice-agent-ui)
-- [Стратегии составления запросов — Google AI for Developers](https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru)
-- [Открытые модели Gemma: веса, настройка и размещение — Google](https://ai.google.dev/gemma/docs?hl=ru)
+- [Как писать промпты и исправлять плохие ответы: Yandex Cloud](https://yandex.cloud/ru/blog/gpt-prompting-guide)
+- [Промпт и температура: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary)
+- [Что такое машинное обучение: Google for Developers](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru)
+- [Системный промпт: роль, стиль и ограничения: AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-voice-agent-ui)
+- [Стратегии составления запросов: Google AI for Developers](https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru)
+- [Открытые модели Gemma: веса, настройка и размещение: Google](https://ai.google.dev/gemma/docs?hl=ru)
 - [Yandex AI Studio On-premises: назначение и условия применения](https://aistudio.yandex.ru/ru/docs/ai-studio/onprem/)
-- [Основы машинного обучения — Yandex Cloud](https://yandex.cloud/ru/blog/machine-learning-guide)
-- [Визуально-языковые модели: возможности и ограничения — Yandex Cloud](https://yandex.cloud/ru/blog/vlm-visual-language-models)
-- [Обзор моделей и сценариев — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/)
-- [ИИ-агенты: модель, инструкция, инструменты, память — AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/)
-- [Поиск и обогащение контекста — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/)
-- [Дообучение моделей — документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/)
+- [Основы машинного обучения: Yandex Cloud](https://yandex.cloud/ru/blog/machine-learning-guide)
+- [Визуально-языковые модели: возможности и ограничения: Yandex Cloud](https://yandex.cloud/ru/blog/vlm-visual-language-models)
+- [Обзор моделей и сценариев: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/)
+- [ИИ-агенты: модель, инструкция, инструменты, память: AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/)
+- [Поиск и обогащение контекста: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/)
+- [Дообучение моделей: документация AI Studio](https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/)
 
 ### Домен 3. Ответственный ИИ
 
@@ -178,7 +178,7 @@
 - [Как ставить задачи Алисе AI Про](https://aistudio.yandex.ru/ru/docs/alice-ai-pro/operations/formulate-task)
 - [Рабочие места и профили пользователей](https://aistudio.yandex.ru/ru/docs/ai-studio/manage/concepts/)
 - [Перечень компетенций экзамена «Основы работы с ИИ»](https://ai-basic-competencies.website.yandexcloud.net/)
-- [Yandex AI Studio в собственном контуре](https://aistudio.yandex.ru/ru/on-premises) — **частичный доступ:** прочитано официальное описание в публичной выдаче, полная страница не получена.
+- [Yandex AI Studio в собственном контуре](https://aistudio.yandex.ru/ru/on-premises) – **частичный доступ:** прочитано официальное описание в публичной выдаче, полная страница не получена.
 - [Лимиты и контекст чата](https://aistudio.yandex.ru/ru/docs/alice-ai-pro/concepts/limits)
 - [Подписочная модель потребления ресурсов](https://aistudio.yandex.ru/ru/docs/ai-studio/manage/concepts/subscription)
 - [Разрешения и доступ к данным](https://aistudio.yandex.ru/ru/docs/alice-ai-pro/concepts/permissions)
@@ -190,6 +190,6 @@
 
 После ошибки сначала прочитайте объяснение конкретного варианта и памятку к вопросу, затем откройте один-два прикреплённых источника по этой теме. Для связного повторения используйте тематический журнал соответствующего домена. При подготовке к реальной сертификации заново сверяйте перечень компетенций и рекомендованные материалы по официальной странице.
 
-Ссылки, интерфейсы, модели, тарифы и условия продуктов могут измениться после даты исследования. При обновлении банка следует проверять не только доступность URL, но и смысл утверждений, к которым он прикреплён, затем обновлять дату, журнал исследования и версию банка. Доступность страницы на дату подготовки не гарантирует её последующий доступ без CAPTCHA или регистрации.
+Ссылки, интерфейсы, модели, тарифы и условия продуктов могут измениться после даты исследования. При обновлении банка проверьте, что URL доступны и подтверждают связанные с ними утверждения. Затем обновите дату, журнал исследования и версию банка. Доступность страницы на дату подготовки не гарантирует её последующий доступ без CAPTCHA или регистрации.
 
 При сборке этого обзора проверены даты и веса в метаданных, семь ссылок из программы, число вопросов и полное совпадение индекса с уникальными ссылками банка по каждому домену. Описание фактического доступа основано на исследовательских журналах проекта; повторное прохождение закрытых курсов или изучение всей документации Яндекса не заявляется.
