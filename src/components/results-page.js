@@ -26,6 +26,12 @@ export function Results({
   const coaching = useMemo(() => resultCoaching(attempt, questions), [attempt, questions]);
   const { score, outcome, domains, priorities, strong, skipped, isPractice, needed, formatFocus } = coaching;
   const percent = formatPercent(score.percent);
+  const scoreTargetMissed = !isPractice && score.percent < TRAINING_TARGET;
+  const scoreTarget = isPractice
+    ? null
+    : score.percent >= TRAINING_TARGET
+      ? 'Цель достигнута'
+      : `До цели осталось ${formatPercent(TRAINING_TARGET - score.percent)} %`;
   const level = levelById(attempt.level);
   const reviewScore = domain === 'all' ? score : score.byDomain.find((row) => row.domain === Number(domain));
   const entries = attempt.questionIds
@@ -91,26 +97,28 @@ export function Results({
         </div>
       </div>
       <div class="outcome-score">
-        <div class="score-orbit" style=${{ '--score': `${score.percent}%` }}><div><span class=${`score-number ${percent.length > 2 ? 'score-number-wide' : ''}`}>${percent}<small>%</small></span><span>${score.correct} из ${score.total} баллов</span></div></div>
-        <p class="outcome-goal">${isPractice ? 'Результат выбранной подборки' : score.percent >= TRAINING_TARGET ? `Учебная цель ${TRAINING_TARGET}% достигнута` : `Учебная цель — ${TRAINING_TARGET}%`}</p>
+        <div class="score-orbit" style=${{ '--score': `${score.percent}%` }}><div><span class=${`score-number ${percent.length > 2 ? 'score-number-wide' : ''}`}>${percent}<small>%</small></span>${scoreTarget && html`<span class=${`score-target score-target-status${scoreTargetMissed ? ' score-target-remaining' : ''}`}>${scoreTarget}</span>`}</div></div>
       </div>
-      <div class="outcome-facts"><div><span>Верно</span><strong class="correct">${score.correct}<small> / ${score.total}</small></strong></div><div><span>Ошибки</span><strong class="incorrect">${score.wrong}</strong></div><div><span>Пропущено</span><strong>${score.unanswered}</strong></div><div><span>Тем с результатом от ${TRAINING_TARGET}%</span><strong class="correct">${strong.length}<small> / ${domains.length}</small></strong></div></div>
+      <div class="outcome-facts"><div><span>Верно</span><strong class=${score.correct > 0 ? 'correct' : ''}>${score.correct}<small> / ${score.total}</small></strong></div><div><span>Ошибки</span><strong class=${score.wrong > 0 ? 'incorrect' : ''}>${score.wrong}</strong></div><div><span>Пропущено</span><strong>${score.unanswered}</strong></div><div><span>Тем с результатом от ${TRAINING_TARGET}%</span><strong class=${strong.length > 0 ? 'correct' : ''}>${strong.length}<small> / ${domains.length}</small></strong></div></div>
     </section>
 
     <section class="coaching-section" aria-labelledby="coaching-title">
-      <div class="section-heading"><div><h2 id="coaching-title">${priorities.length ? 'Что подтянуть в первую очередь' : !score.answered ? 'Сначала собери свой результат' : score.unanswered ? 'Допроверь пропущенные темы' : 'Что уже получилось'}</h2><p>${priorities.length ? `Рекомендации по ошибкам в этой попытке. Выбраны ${priorities.length > 3 ? 'три приоритетные темы' : 'темы, которым стоит уделить внимание'}.` : !score.answered ? 'Ответь на вопросы — и здесь появятся рекомендации по твоим ответам.' : score.unanswered ? 'Пропуск не говорит о слабом знании. Сначала проверь себя на этих заданиях.' : isPractice ? 'В выбранной подборке ошибок нет. Следующий шаг — проверить весь уровень.' : 'В этой попытке ошибок нет. Можно переходить к более сложным задачам и закреплению.'}</p></div></div>
+      <div class="section-heading"><div><h2 id="coaching-title">${priorities.length ? 'Что подтянуть в первую очередь' : !score.answered ? 'Сначала собери свой результат' : score.unanswered ? 'Допроверь пропущенные темы' : 'Что уже получилось'}</h2><p>${priorities.length ? `Рекомендации по ошибкам в этой попытке. Выбраны ${priorities.length > 3 ? 'три приоритетные темы' : 'темы, которым стоит уделить внимание'}.` : !score.answered ? 'Ответь на вопросы, и здесь появятся рекомендации.' : score.unanswered ? 'Пропуск не говорит о слабом знании. Сначала проверь себя на этих заданиях.' : isPractice ? 'В выбранной подборке ошибок нет. Теперь проверь весь уровень.' : 'В этой попытке ошибок нет. Можно переходить к более сложным задачам и закреплению.'}</p></div></div>
       ${
         priorities.length
           ? html`<div class="coaching-grid">${priorities.slice(0, 3).map(
               (row) => html`<article class="coaching-card" data-coaching-domain=${row.id}>
-        <div class="coaching-card-top"><span class="coaching-domain-icon"><${Icon} name=${row.icon} size=${24}/></span><span>${plural(row.wrong, ['ошибка', 'ошибки', 'ошибок'])} в ${plural(row.answered, ['проверенном задании', 'проверенных заданиях', 'проверенных заданиях'])}</span></div>
-        <h3>${row.short}</h3><ul class="coaching-topics">${row.topics.slice(0, 2).map((topic) => html`<li>${topic.title}</li>`)}</ul>
+        <header class="coaching-card-heading">
+          <div class="coaching-card-identity"><span class="competency-icon"><${Icon} name=${row.icon} size=${22}/></span><h3>${row.short}</h3></div>
+          <p class="coaching-card-top">${plural(row.wrong, ['ошибка', 'ошибки', 'ошибок'])} в ${plural(row.answered, ['проверенном задании', 'проверенных заданиях', 'проверенных заданиях'])}</p>
+        </header>
+        <ul class="coaching-topics">${row.topics.slice(0, 2).map((topic) => html`<li>${topic.title}</li>`)}</ul>
         ${row.topics.length > 2 && html`<p class="coaching-more">Ещё ${plural(row.topics.length - 2, ['тема', 'темы', 'тем'])} в разборе</p>`}
         <p class="coaching-takeaway">${row.topics[0].takeaway}</p>
         <div class="coaching-card-actions"><a class="button secondary" href=${`#/study/${row.id}`}><${Icon} name="book" size=${18}/>Повторить тему</a><button class="text-button" onClick=${() => openReview(row.id, 'incorrect')}><${Icon} name="search" size=${18}/>Разобрать ошибки</button></div>
       </article>`,
             )}</div>`
-          : html`<div class="coaching-clear"><span class="coaching-clear-icon"><${Icon} name=${!score.answered ? 'book' : score.unanswered ? 'clock' : 'shield'} size=${36}/></span><div><h3>${!score.answered ? 'Первая попытка даст точку отсчёта.' : score.unanswered ? `${plural(score.unanswered, ['задание осталось', 'задания остались', 'заданий осталось'])} без проверки.` : 'Проверенные ответы — без ошибок.'}</h3><p>${!score.answered ? 'Начни с любого уровня и проверяй каждый ответ. Можно продолжать в своём темпе.' : score.unanswered ? 'Выполни их в точечной тренировке: так станет понятно, что уже усвоено, а что стоит повторить.' : 'Объясни себе логику решения своими словами и попробуй применить её к другой задаче.'}</p></div></div>`
+          : html`<div class="coaching-clear"><span class="coaching-clear-icon"><${Icon} name=${!score.answered ? 'book' : score.unanswered ? 'clock' : 'shield'} size=${36}/></span><div><h3>${!score.answered ? 'Первая попытка даст точку отсчёта.' : score.unanswered ? `${plural(score.unanswered, ['задание осталось', 'задания остались', 'заданий осталось'])} без проверки.` : 'Все проверенные ответы верны.'}</h3><p>${!score.answered ? 'Начни с любого уровня и проверяй каждый ответ. Можно продолжать в своём темпе.' : score.unanswered ? 'Выполни их в точечной тренировке: так станет понятно, что уже усвоено, а что стоит повторить.' : 'Объясни себе логику решения своими словами и попробуй применить её к другой задаче.'}</p></div></div>`
       }
       ${score.unanswered > 0 && score.answered > 0 && html`<div class="skipped-note"><${Icon} name="clock" size=${22}/><div><strong>${plural(score.unanswered, ['пропущенное задание', 'пропущенных задания', 'пропущенных заданий'])}</strong><p>${skipped.map((row) => row.short).join(' · ')}. По этим заданиям знания ещё не проверены.</p></div><button class="text-button" onClick=${() => openReview('all', 'unanswered')}><${Icon} name="search" size=${18}/>Посмотреть пропуски</button></div>`}
     </section>
@@ -153,7 +161,7 @@ export function Results({
                       ? 'На следующем уровне будет больше условий и рабочих ситуаций.'
                       : 'Перенеси приёмы из теста в свою рабочую задачу и проверь качество результата.'
           }</p></li>
-          <li><h3>${score.incorrect ? 'Закрепи в точечной тренировке' : 'Проверь понимание'}</h3><p>${score.incorrect ? `В подборке будет ${plural(score.incorrect)}: ${score.wrong} с ошибкой и ${score.unanswered} без проверки. Обрати внимание на объяснения каждого варианта.` : 'Попробуй обосновать не только верный вариант, но и то, почему остальные не подходят.'}</p></li>
+          <li><h3>${score.incorrect ? 'Закрепи в точечной тренировке' : 'Проверь понимание'}</h3><p>${score.incorrect ? `В подборке будет ${plural(score.incorrect)}: ${score.wrong} с ошибкой и ${score.unanswered} без проверки. Обрати внимание на объяснения каждого варианта.` : 'Объясни, почему верный ответ подходит, а остальные нет.'}</p></li>
           <li><h3>${isPractice ? 'Вернись к полному тесту' : 'Проверь устойчивость результата'}</h3><p>${isPractice ? 'Результат подборки не заменяет оценку всех 60 вопросов.' : 'Пройди уровень ещё раз после повторения. Сравни результат в истории и посмотри, какие темы стали увереннее.'}</p></li>
         </ol>
         ${formatFocus && html`<div class="format-coaching"><span>Особое внимание: ${formatFocus.title.toLowerCase()}</span><p>${plural(formatFocus.wrong, ['ошибка', 'ошибки', 'ошибок'])} в ${plural(formatFocus.answered, ['проверенном задании', 'проверенных заданиях', 'проверенных заданиях'])}. ${formatFocus.tip}</p></div>`}
@@ -167,7 +175,7 @@ export function Results({
       <div class="details-content"><div class="details-content-inner"><div class=${`scoring-copy ${score.weighted !== null ? 'scoring-copy--weighted' : ''}`}>
         <section class="scoring-rules" aria-labelledby="scoring-rules-title">
           <h3 id="scoring-rules-title">Баллы за задания</h3>
-          <p>Каждое задание даёт <strong>1 балл</strong> только за <strong>полностью правильный ответ</strong>. Ошибка или пропуск — <strong>0 баллов</strong>.</p>
+          <p>Каждое задание даёт <strong>1 балл</strong> только за <strong>полностью правильный ответ</strong>. За ошибку или пропуск дают <strong>0 баллов</strong>.</p>
           <ul><li><strong>Мультивыбор:</strong> должен совпасть весь набор.</li><li><strong>Сопоставление:</strong> должны совпасть все пары.</li></ul>
           <p class="scoring-note">Частичных баллов нет.</p>
           <p class="scoring-formula"><span>Процент результата</span><strong>Правильные ответы ÷ ${score.total} × 100</strong></p>
@@ -182,7 +190,7 @@ export function Results({
           <p class="scoring-note">Это не прогноз официального экзамена и не его шкала оценки.</p>
         </section>`
         }
-        <p class="scoring-disclaimer"><strong>Учебная цель — ${TRAINING_TARGET}%.</strong> Выбрана для самостоятельной тренировки и не является официальным проходным баллом.</p>
+        <p class="scoring-disclaimer"><strong>Учебная цель: ${TRAINING_TARGET}%.</strong> Это ориентир для самостоятельной тренировки, а не официальный проходной балл.</p>
       </div></div></div>
     </details>
 

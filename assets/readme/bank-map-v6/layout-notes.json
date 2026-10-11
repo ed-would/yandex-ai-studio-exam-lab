@@ -1,0 +1,66 @@
+{
+  "canvas": {
+    "width": 1600,
+    "height": 900
+  },
+  "sourceArtwork": {
+    "width": 1672,
+    "height": 941,
+    "fit": "cover; aspect ratio difference below 0.1%, no meaningful crop"
+  },
+  "header": {
+    "left": 80,
+    "right": 80,
+    "top": 59,
+    "headingFontSize": 66,
+    "subtitleFontSize": 30
+  },
+  "levelLabels": {
+    "top": 236,
+    "width": 424,
+    "centers": [
+      348,
+      795,
+      1300
+    ],
+    "headingFontSize": 32,
+    "badgeFontSize": 26,
+    "badgeBottomApprox": 341
+  },
+  "sculptureBoundsApproxBoardCoordinates": [
+    {
+      "level": "Базовый",
+      "x": 176,
+      "y": 366,
+      "width": 343,
+      "height": 312
+    },
+    {
+      "level": "Продвинутый",
+      "x": 610,
+      "y": 366,
+      "width": 370,
+      "height": 312
+    },
+    {
+      "level": "Экспертный",
+      "x": 1100,
+      "y": 357,
+      "width": 402,
+      "height": 330
+    }
+  ],
+  "footer": {
+    "top": 746,
+    "equationFontSize": 36,
+    "scopeFontSize": 27,
+    "lastTextBottomApprox": 852.75,
+    "opaqueCardBottomApprox": 870.75,
+    "bottomMarginApprox": 29.25,
+    "grouping": "Equation and scope share one opaque level-3-soft card"
+  },
+  "captureSelector": "main#capture.board",
+  "contrastCapture": "Add no-letters class to #capture. All .ink spans become invisible; the opaque badge/equation fills remain.",
+  "artAssessment": "Exactly three recognizable sculptures, one per test; equal apparent weight, shared ground plane, coherent glossy scene; no logo or generated text. Light preserves dark geometry.",
+  "browserStatus": "Passed root Playwright MCP fonts/loading/layout, 1600x900 export and960px visual review; all text contrast >=4.5"
+}

@@ -22,10 +22,10 @@ const OUTCOMES = {
   },
   close: {
     id: 'close',
-    background: 'studio-02-lilac-phase',
+    background: 'banner-level-1-braid-light',
     icon: 'spark',
     achievement: 'На пути к цели',
-    title: 'До цели — несколько шагов.',
+    title: 'До цели осталось несколько шагов.',
     description:
       'Хорошая основа уже есть. Сосредоточь следующую тренировку на темах ниже: они помогут продвинуться к учебной цели.',
   },
@@ -38,6 +38,12 @@ const OUTCOMES = {
     description:
       'Эта попытка показала, с чего начать подготовку. Разбери несколько ключевых тем, потренируйся на ошибках и возвращайся к полному тесту.',
   },
+};
+
+const CLOSE_RESULT_BACKGROUNDS = {
+  1: 'banner-level-1-braid-light',
+  2: 'banner-level-2-chevron-weave-light',
+  3: 'banner-level-3-gates-light',
 };
 
 export function resultOutcome(percent) {
@@ -98,12 +104,13 @@ export function resultCoaching(attempt, questions) {
   const skipped = domains.filter((row) => row.skipped > 0);
   const isPractice = attempt.mode === 'mistakes';
   const outcome = { ...resultOutcome(score.percent) };
+  if (outcome.id === 'close') outcome.background = CLOSE_RESULT_BACKGROUNDS[attempt.level] || outcome.background;
   if (score.unanswered) {
     outcome.achievement = 'Попытка завершена досрочно';
     outcome.title = score.answered ? 'Есть ещё что проверить.' : 'Начни с первого ответа.';
     outcome.description = score.answered
       ? 'Пропущенные задания вошли в результат с нулём баллов. Ошибки уже можно разобрать, а по пропускам ещё предстоит проверить знания.'
-      : 'В этой попытке нет проверенных ответов. Пока рано делать выводы о сильных и слабых темах — начни новую тренировку.';
+      : 'В этой попытке нет проверенных ответов. Пока рано делать выводы о сильных и слабых темах. Начни новую тренировку.';
   } else if (isPractice) {
     outcome.achievement = score.percent === 100 ? 'Подборка без ошибок' : 'Работа над ошибками';
     outcome.title = score.percent === 100 ? 'Нюансы закреплены.' : 'Ошибки становятся опытом.';
@@ -111,7 +118,7 @@ export function resultCoaching(attempt, questions) {
       'Это результат выбранной подборки. Чтобы оценить подготовку по всем шести темам, пройди полный тест этого уровня.';
   } else if (score.percent === 100) {
     outcome.title = 'Безошибочный раунд.';
-    outcome.achievement = `Все ${score.total} — на своих местах`;
+    outcome.achievement = `Все ${score.total} заданий решены верно`;
     outcome.description =
       'В этой попытке все задания решены верно. Проверь, насколько легко ты переносишь эти знания в новые рабочие ситуации.';
   }

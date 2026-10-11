@@ -1,0 +1,62 @@
+[
+  {
+    "width": 375,
+    "theme": "dark",
+    "images": [
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/bank-map-v6/bank-map-desktop-dark.webp",
+        "loaded": true
+      },
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.webp",
+        "loaded": true
+      }
+    ],
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "theme": "light",
+    "images": [
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/bank-map-v6/bank-map-desktop-light.webp",
+        "loaded": true
+      },
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/learning-cycle-v7/learning-cycle-desktop-light.webp",
+        "loaded": true
+      }
+    ],
+    "overflow": false
+  },
+  {
+    "width": 960,
+    "theme": "dark",
+    "images": [
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/bank-map-v6/bank-map-desktop-dark.webp",
+        "loaded": true
+      },
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.webp",
+        "loaded": true
+      }
+    ],
+    "overflow": false
+  },
+  {
+    "width": 960,
+    "theme": "light",
+    "images": [
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/bank-map-v6/bank-map-desktop-light.webp",
+        "loaded": true
+      },
+      {
+        "file": "http://127.0.0.1:5173/assets/readme/learning-cycle-v7/learning-cycle-desktop-light.webp",
+        "loaded": true
+      }
+    ],
+    "overflow": false
+  }
+]

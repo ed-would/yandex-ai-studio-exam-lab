@@ -1,0 +1,54 @@
+{
+  "method": "Exact foreground glyph core pixels against same rendered scene with only letters hidden; opaque pill fills remain visible in background reference. All copy checked against 4.5:1.",
+  "labels": [
+    {
+      "text": "Тренажёр компетенций ИИ",
+      "corePixels": 4651,
+      "minContrast": 8.38,
+      "meets4_5": true
+    },
+    {
+      "text": "Основы",
+      "corePixels": 9192,
+      "minContrast": 15.18,
+      "meets4_5": true
+    },
+    {
+      "text": "работы с ИИ",
+      "corePixels": 14271,
+      "minContrast": 15.2,
+      "meets4_5": true
+    },
+    {
+      "text": "Практика перед экзаменом.",
+      "corePixels": 2179,
+      "minContrast": 12.67,
+      "meets4_5": true
+    },
+    {
+      "text": "Разбор после каждого ответа.",
+      "corePixels": 2327,
+      "minContrast": 11.35,
+      "meets4_5": true
+    },
+    {
+      "text": "180 вопросов",
+      "corePixels": 921,
+      "minContrast": 8.31,
+      "meets4_5": true
+    },
+    {
+      "text": "3 уровня",
+      "corePixels": 599,
+      "minContrast": 6.88,
+      "meets4_5": true
+    },
+    {
+      "text": "6 доменов",
+      "corePixels": 711,
+      "minContrast": 5.98,
+      "meets4_5": true
+    }
+  ],
+  "allPass": true
+}

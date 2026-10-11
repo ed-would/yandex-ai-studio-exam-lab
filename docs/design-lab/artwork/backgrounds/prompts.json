@@ -1,0 +1,23 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "generate",
+  "reference": "Visual composition principles from https://aistudio.yandex.ru/ru and /ru/agent-atelier; original generated artwork, no source creatives reused",
+  "date": "2026-10-10",
+  "assets": [
+    {
+      "name": "trajectory-field",
+      "prompt": "Use case: stylized-concept. Create an ORIGINAL premium 3D abstract background plate for an AI competency training website, landscape 1536 x 1024. It is a continuous SECTION UNDERLAY, not a centered isolated object or a UI mockup. Pale lavender ground (#eee7f6), sculptural embossed topographic terraces in pearl lavender (#b39ade), mint teal (#8dcfc7) and soft citron (#dee88c). Invent a flowing landscape of rounded nested arch contours that rises from the lower left edge and upper right edge, like several paths becoming one coherent system. Large quiet pale central field, with very low contrast beneath where web cards will sit; forms occupy edges and corners, extend beyond frame organically. Satin ceramic surface, soft studio light, dimensional fine rounded grooves, restrained warm-cool pearlescence. Refined large-scale pattern, no tiny noisy details, no literal mountains, no central spiral logo, no text, letters, numbers, glyphs, interface, watermark, border or frame. A beautiful calm environment into which real website content can be laid.",
+      "original": "docs/design-lab/artwork/backgrounds/trajectory-field.png"
+    },
+    {
+      "name": "knowledge-field",
+      "prompt": "Use case: stylized-concept. Create an ORIGINAL premium abstract 3D website background plate for a preparation/knowledge-map page. Landscape 1536 x 1024, full bleed continuous composition. Very pale mint ground (#e5f2ee); frosted ceramic rounded pebble-lenses in pearly teal (#89c7be), lilac (#bfa9dc), citron (#e2ea9c) merge into an irregular tessellated field. Think a flowing constellation of softly nested cells or organic lenses: distinct but connected areas of knowledge, not a neural-network diagram. The more sculptural forms gather at the far right and bottom edge; LEFT 65 PERCENT is almost flat pale mint with just subtle ghosted contours, so a large black headline is very readable there. Forms are volumetric, sensuous and tactile with shallow shadows, broad curves, polished editorial rendering, original geometry, no sliced ribbon sculpture. Palette shares lavender/mint/citron accents with an AI practice trainer. NO text, letters, symbols, icons, UI, watermark, border or frame. This is a background surface, not a centered single product.",
+      "original": "docs/design-lab/artwork/backgrounds/knowledge-field.png"
+    },
+    {
+      "name": "footer-field",
+      "prompt": "Use case: stylized-concept. Create an ORIGINAL premium abstract 3D background plate for the FOOTER of an AI competency exam trainer. Landscape 1536 x 1024, full bleed. Deep petroleum teal ground (#004b54), satin ceramic contour terraces sweep from lower left to the right edge with pearl mint (#98d8cb), rich violet (#7956b2), muted lavender (#bca4e7) and small citron (#e0eb92) rims. Invent broad bulbous interlocking scalloped waves, like a continuous sculpted terrain with depth and flowing routes, NOT ribbons, not one centered object and not a recognizable existing company logo. Keep the upper left and upper center mostly calm deep teal to support white text. Dimensional forms strongest in right third and across lower quarter; geometry flows beyond frame, premium soft lighting, luminous edge highlights, large legible contours, art-directed contrast and abundant negative space. Evokes understanding and connecting competencies. NO text, letters, monograms, glyphs, UI, people, watermark, border or frame. Beautiful full-section environmental texture that crops naturally on desktop and mobile.",
+      "original": "docs/design-lab/artwork/backgrounds/field.png"
+    }
+  ]
+}

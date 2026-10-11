@@ -241,17 +241,9 @@ picture.section-backdrop {
     background: var(--surface);
   }
   html[data-theme='dark'] .home-lower .how-panel {
-    background: #292336;
+    background: var(--lilac-pale);
   }
-  html[data-theme='dark']
-    :is(
-      .practice-note,
-      .heading-copy,
-      .levels-section > .section-heading,
-      .exam-topline > a,
-      .exam-topline > div,
-      .exam-topline > button
-    ) {
+  html[data-theme='dark'] :is(.practice-note, .heading-copy, .levels-section > .section-heading) {
     background: var(--surface-glass);
     color: var(--ink);
     border-color: var(--line);
@@ -459,7 +451,6 @@ picture.section-backdrop {
       .outcome-facts > div > span,
       .outcome-facts small,
       .coaching-section > .section-heading p,
-      .coaching-card-top,
       .coaching-topics,
       .coaching-more,
       .coaching-takeaway,
@@ -471,21 +462,24 @@ picture.section-backdrop {
     ) {
     color: var(--muted);
   }
-  html[data-theme='dark'] :is(.achievement-label, .outcome-facts, .results-page .score-orbit > div, .format-coaching) {
+  html[data-theme='dark'] .results-page .coaching-card-top {
+    color: var(--error-text);
+  }
+  html[data-theme='dark'] :is(.achievement-label, .outcome-facts, .results-page .outcome-context .badge) {
+    background: var(--surface);
+    border-color: var(--line);
+  }
+  html[data-theme='dark'] .results-page .score-orbit > div {
+    background: var(--surface-glass);
+  }
+  html[data-theme='dark'] .format-coaching {
     background: var(--surface-glass);
     border-color: var(--line);
   }
-  html[data-theme='dark'] .results-page .score-orbit {
-    background: conic-gradient(var(--accent) var(--score), #ffffff20 0);
-    box-shadow: none;
-  }
-  html[data-theme='dark'] :is(.score-number, .competency-caption a, .review-question, .coaching-card h3) {
+  html[data-theme='dark'] :is(.review-question, .coaching-card h3) {
     color: var(--ink);
   }
-  html[data-theme='dark'] .results-page .score-orbit > div > span:last-child {
-    color: var(--muted);
-  }
-  html[data-theme='dark'] :is(.preparation-plan, .coaching-clear, .coaching-takeaway) {
+  html[data-theme='dark'] .coaching-clear {
     background: var(--accent-pale);
     border-color: var(--line);
   }
@@ -496,6 +490,10 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] .scoring-info {
     --accent: var(--info-text);
+    --ui-accent: var(--info-text);
+    --ui-accent-strong: var(--info-text);
+    --ui-accent-soft: var(--info-bg);
+    --ui-accent-pale: var(--info-bg);
     --line: var(--info-line);
     background: var(--info-bg);
   }
@@ -588,9 +586,7 @@ picture.section-backdrop {
   html[data-theme='dark'] :is(.text-button.danger-text, .stats-card-footer .text-button) {
     color: var(--error-text);
   }
-  html[data-theme='dark']
-    .outcome-hero
-    :is(.outcome-context, .outcome-description, .outcome-delta, .outcome-goal, .outcome-actions .text-button) {
+  html[data-theme='dark'] .outcome-hero :is(.outcome-context, .outcome-description) {
     color: var(--text);
   }
   html[data-theme='dark'] :is(a[href], button, summary, select, input):focus-visible,
@@ -702,6 +698,11 @@ picture.section-backdrop {
     }
   }
 }
+html[data-theme] .exam-topline > .exam-back-link {
+  color: var(--ui-neutral-link) !important;
+  background-image: none !important;
+  -webkit-text-fill-color: var(--ui-neutral-link) !important;
+}
 @media print {
   html[data-theme='dark'] {
     --page-bg: #fff;
@@ -778,8 +779,9 @@ picture.section-backdrop {
 
 /* Иконка действия всегда наследует цвет подписи, включая вложенные обёртки. */
 :is(button, a[href], .button, [role='option'], .timer-option, summary)
-  :is(.icon, .study-nav-icon, .official-resource-icon, .domain-icon, .timer-option-icon, .scoring-info-icon) {
+  :is(.icon, .study-nav-icon, .official-resource-icon, .domain-icon, .timer-option-icon) {
   color: inherit !important;
+  stroke: currentColor !important;
 }
 
 /* Общий акцент: экспертный цвет в светлой теме, составной градиент в тёмной. */
@@ -808,10 +810,13 @@ picture.section-backdrop {
   }
   @supports (background-clip: text) {
     :is(
-      .text-button:not(.danger-text):not(.study-page .text-button):not(.stats-card-footer .text-button),
+      .text-button:not(.danger-text):not(.exam-back-link):not(.study-page .text-button):not(
+          .stats-card-footer .text-button
+        ):not(.exam-page .skip-button),
       .source-links:not(.study-page .source-links) a,
       .breadcrumb a,
       .competency-caption a,
+      .exam-timing-note a,
       .primary-nav a.active .nav-label,
       .primary-nav a:focus-visible .nav-label
     ) {
@@ -885,4 +890,8 @@ picture.section-backdrop {
     --action-active-bg: var(--ui-action-active-bg);
     --action-active-ink: var(--ui-action-active-ink);
   }
+}
+html[data-theme='dark'] .results-page .icon {
+  /* Result actions follow the selected test palette instead of the global UI gradient. */
+  stroke: currentColor !important;
 }

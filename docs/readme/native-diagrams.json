@@ -1,0 +1,437 @@
+{
+  "part": "native-diagrams",
+  "decision": "User asks to continue with native Mermaid source only; add diagrams only for verified question lifecycle and backup paths",
+  "route": "QUICK",
+  "previousRoute": "STANDARD",
+  "priorReviews": {
+    "initialCompleted": 1,
+    "independentRechecksUsed": 1,
+    "maxIndependentRechecks": 1
+  },
+  "newPartReviewBudget": 0,
+  "ownership": {
+    "root": "README Mermaid blocks, source verification and own report artifacts",
+    "readme_evidence": "Read-only source evidence on question state transitions and progress backup/import"
+  },
+  "criteria": [
+    "Mermaid authored directly in README with Russian labels",
+    "No remote diagram plugin, external renderer, installation or new dependency",
+    "Edges reflect current application; text equivalent beside each new diagram",
+    "Existing raster banners, fonts and application code preserved"
+  ],
+  "checks": [
+    "git diff --check",
+    "Local link/anchor and native-source checks",
+    "/pw full local light/dark 1440/375 preview for changed Markdown"
+  ],
+  "exclusions": [
+    "runtime code",
+    "question bank",
+    "visual assets",
+    "publishing and commits"
+  ],
+  "snapshot": [
+    {
+      "path": "README.md",
+      "sha256": "d1ef31113c894040486e57ed6b14f69db6ce8b2edc7671caf8d24d06b648b839"
+    },
+    {
+      "path": "docs/readme/REPORT.md",
+      "sha256": "f80413011c10e288f31ec3a780ab6475497515cc4c17ac4d45bee41f1ce60047"
+    },
+    {
+      "path": "docs/readme/verification.json",
+      "sha256": "3676aacb3ed67b45e10382ea25421e637d54301735ef9d03890603ab3454b8c6"
+    },
+    {
+      "path": "docs/readme/review-result.json",
+      "sha256": "469cb235441361389cb396e721405f7d0989490dcddaa01dada0f8c3b2277ee2"
+    }
+  ],
+  "previousAcceptance": "docs/readme/review-result.json",
+  "changedFiles": [
+    "README.md",
+    "docs/readme/REPORT.md",
+    "docs/readme/verification.json",
+    "docs/readme/native-diagrams.json"
+  ],
+  "additionalRepair": "Question screenshot caption aligned with existing ASSETS.md provenance",
+  "sourceEvidence": {
+    "core": "src/core/exam.js:88-177",
+    "completion": "src/app.js:304-393",
+    "import": "src/app.js:119-200,411-438; src/core/storage.js:19-159,263-281"
+  },
+  "proof": {
+    "sourceLinks": 119,
+    "missingLocalLinks": [],
+    "missingAlt": [],
+    "headings": 33,
+    "diagrams": {
+      "method": "Structural source checks for the authored basic flowchart subset; not a Mermaid parser or renderer",
+      "diagrams": [
+        {
+          "block": 1,
+          "nodes": 7,
+          "edges": 14,
+          "sha256": "241fc8ee5fff3a96ac2b32c6c08423a874d16d6b8c124f2ca668a4c29a4d4c61",
+          "balancedDelimiters": true,
+          "declaredEndpoints": true
+        },
+        {
+          "block": 2,
+          "nodes": 10,
+          "edges": 11,
+          "sha256": "58b06357fbcc10153f69426ae3e404a18960bd3346c5f647d62216f7fe72f4f8",
+          "balancedDelimiters": true,
+          "declaredEndpoints": true
+        },
+        {
+          "block": 3,
+          "nodes": 7,
+          "edges": 9,
+          "sha256": "1044e394b4eea42e71aa726baf25ee8390b964276272da4e55eb56c740d10b94",
+          "balancedDelimiters": true,
+          "declaredEndpoints": true
+        }
+      ],
+      "syntaxReview": "Manual comparison with primary Mermaid flowchart documentation",
+      "semanticsReview": "Source evidence plus root trace of finish() and commit()",
+      "renderer": "unavailable locally; GitHub render unverified"
+    },
+    "browser": [
+      {
+        "name": "desktop-light",
+        "width": 1440,
+        "documentWidth": 1440,
+        "height": 21529,
+        "headings": 33,
+        "details": 14,
+        "missing": [],
+        "pictures": [
+          "hero.webp",
+          "bank-map.webp",
+          "learning-cycle.webp",
+          "question-light.webp"
+        ],
+        "nativeMermaidSourceBlocks": 3,
+        "sourceBlocks": [
+          {
+            "lines": 15,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          },
+          {
+            "lines": 12,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          },
+          {
+            "lines": 10,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          }
+        ],
+        "toc": [
+          {
+            "label": "Быстрый запуск",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Банк вопросов",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Практика",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Оценка",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Сохранения",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Материалы",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Команды",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Архитектура",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "GitHub Pages",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Участие",
+            "rowSpread": 3.2890625
+          }
+        ]
+      },
+      {
+        "name": "desktop-dark",
+        "width": 1440,
+        "documentWidth": 1440,
+        "height": 21529,
+        "headings": 33,
+        "details": 14,
+        "missing": [],
+        "pictures": [
+          "hero.webp",
+          "bank-map.webp",
+          "learning-cycle.webp",
+          "question-dark.webp"
+        ],
+        "nativeMermaidSourceBlocks": 3,
+        "sourceBlocks": [
+          {
+            "lines": 15,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          },
+          {
+            "lines": 12,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          },
+          {
+            "lines": 10,
+            "containerWidth": 916,
+            "contentWidth": 916,
+            "contained": true
+          }
+        ],
+        "toc": [
+          {
+            "label": "Быстрый запуск",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Банк вопросов",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Практика",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Оценка",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Сохранения",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Материалы",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Команды",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Архитектура",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "GitHub Pages",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Участие",
+            "rowSpread": 3.2890625
+          }
+        ]
+      },
+      {
+        "name": "mobile-light",
+        "width": 375,
+        "documentWidth": 375,
+        "height": 36019,
+        "headings": 33,
+        "details": 14,
+        "missing": [],
+        "pictures": [
+          "hero-mobile.webp",
+          "bank-map-mobile.webp",
+          "learning-cycle-mobile.webp",
+          "question-light.webp"
+        ],
+        "nativeMermaidSourceBlocks": 3,
+        "sourceBlocks": [
+          {
+            "lines": 15,
+            "containerWidth": 343,
+            "contentWidth": 605,
+            "contained": true
+          },
+          {
+            "lines": 12,
+            "containerWidth": 343,
+            "contentWidth": 679,
+            "contained": true
+          },
+          {
+            "lines": 10,
+            "containerWidth": 343,
+            "contentWidth": 581,
+            "contained": true
+          }
+        ],
+        "toc": [
+          {
+            "label": "Быстрый запуск",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Банк вопросов",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Практика",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Оценка",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Сохранения",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Материалы",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Команды",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Архитектура",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "GitHub Pages",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Участие",
+            "rowSpread": 3.2890625
+          }
+        ]
+      },
+      {
+        "name": "mobile-dark",
+        "width": 375,
+        "documentWidth": 375,
+        "height": 36019,
+        "headings": 33,
+        "details": 14,
+        "missing": [],
+        "pictures": [
+          "hero-mobile.webp",
+          "bank-map-mobile.webp",
+          "learning-cycle-mobile.webp",
+          "question-dark.webp"
+        ],
+        "nativeMermaidSourceBlocks": 3,
+        "sourceBlocks": [
+          {
+            "lines": 15,
+            "containerWidth": 343,
+            "contentWidth": 605,
+            "contained": true
+          },
+          {
+            "lines": 12,
+            "containerWidth": 343,
+            "contentWidth": 679,
+            "contained": true
+          },
+          {
+            "lines": 10,
+            "containerWidth": 343,
+            "contentWidth": 581,
+            "contained": true
+          }
+        ],
+        "toc": [
+          {
+            "label": "Быстрый запуск",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Банк вопросов",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Практика",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Оценка",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Сохранения",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Материалы",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Команды",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Архитектура",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "GitHub Pages",
+            "rowSpread": 3.2890625
+          },
+          {
+            "label": "Участие",
+            "rowSpread": 3.2890625
+          }
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "Mermaid structural source checks are not full parser validation",
+    "No local Mermaid renderer or target GitHub preview; actual native diagram layout unverified",
+    "No new runtime testing: README and docs are excluded from project lint/format; runtime and assets unchanged"
+  ],
+  "independentRechecksUsed": 1,
+  "rootAcceptance": "complete after source evidence, native syntax review, structural checks, four local full-page previews and diff check",
+  "finalSnapshot": [
+    {
+      "path": "README.md",
+      "sha256": "b43ec86dbe753bf1284987e05ca35fcb3e629cf9787983f4f07fd8ef949ec430"
+    },
+    {
+      "path": "docs/readme/REPORT.md",
+      "sha256": "a2c864b1af67943553dbf2ce5ff7ac68f827c7501c315e62b8589a2fea23d9fa"
+    },
+    {
+      "path": "docs/readme/verification.json",
+      "sha256": "0dcb8d0013004f05eb2638e7316e32754c2ce0cd8de41f129c2f6bb54136e795"
+    }
+  ]
+}

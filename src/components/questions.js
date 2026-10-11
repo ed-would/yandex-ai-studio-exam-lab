@@ -109,8 +109,8 @@ export function MatchQuestion({ question, response, locked, onChange }) {
       const rightText = question.right.find((item) => item.id === right)?.text;
       setMessage(
         next[left]
-          ? `Связь создана: ${leftText} — ${rightText}. Установлено ${Object.keys(next).length} из ${question.left.length} связей.`
-          : `Связь удалена: ${leftText} — ${rightText}.`,
+          ? `Связь создана между ${leftText} и ${rightText}. Установлено ${Object.keys(next).length} из ${question.left.length} связей.`
+          : `Связь удалена между ${leftText} и ${rightText}.`,
       );
     } else {
       setArmed({ side, id });
@@ -148,12 +148,12 @@ export function MatchQuestion({ question, response, locked, onChange }) {
     const rightText = question.right.find((item) => item.id === right)?.text;
     setMessage(
       next[left]
-        ? `Связь создана: ${leftText} — ${rightText}. Установлено ${Object.keys(next).length} из ${question.left.length} связей.`
-        : `Связь удалена: ${leftText} — ${rightText}.`,
+        ? `Связь создана между ${leftText} и ${rightText}. Установлено ${Object.keys(next).length} из ${question.left.length} связей.`
+        : `Связь удалена между ${leftText} и ${rightText}.`,
     );
   }
 
-  return html`<div class="match-question"><p class="answer-instruction"><span class="match-desktop-copy">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</span><span class="match-mobile-copy">Для каждого термина выбери соответствие в списке. Полное определение появится под полем.</span></p><div class="match-hint"><${Icon} name="link" size=${16}/><span><span class="match-desktop-copy">${locked ? 'Сохранены твои пары. Правильные соответствия — в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-mobile-copy">${locked ? 'Сохранены твои пары. Правильные соответствия — в разборе ниже.' : 'Чтобы удалить пару, выбери «Без соответствия».'}</span></span><span class="match-count">${Object.keys(response).length} / ${question.left.length}</span></div>
+  return html`<div class="match-question"><p class="answer-instruction"><span class="match-desktop-copy">Нажми на элемент в одной колонке, затем на пару в другой. Каждому элементу нужна одна связь.</span><span class="match-mobile-copy">Для каждого термина выбери соответствие в списке. Полное определение появится под полем.</span></p><div class="match-hint"><${Icon} name="link" size=${16}/><span><span class="match-desktop-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : armed ? 'Теперь выбери соответствие в другой колонке.' : 'Связь можно удалить крестиком или заменить новой парой.'}</span><span class="match-mobile-copy">${locked ? 'Сохранены твои пары. Правильные соответствия смотри в разборе ниже.' : 'Чтобы удалить пару, выбери «Без соответствия».'}</span></span><span class="match-count">${Object.keys(response).length} / ${question.left.length}</span></div>
     <div class="match-mobile-list" aria-label="Сопоставление по строкам">
       ${question.left.map((item, index) => {
         const rightId = response[item.id];

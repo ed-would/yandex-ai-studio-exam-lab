@@ -1,0 +1,40 @@
+{
+  "route": "STANDARD",
+  "initialSnapshot": "docs/readme/review-snapshot.json",
+  "repairSnapshot": "docs/readme/repair-snapshot.json",
+  "initialReviewsCompleted": 1,
+  "independentRechecksUsed": 1,
+  "maxIndependentRechecks": 1,
+  "initialFindings": {
+    "medium": 2,
+    "low": 2
+  },
+  "closedFindings": 4,
+  "remainingFindings": 0,
+  "independentVerdict": "APPROVE",
+  "rootAcceptance": "complete",
+  "scope": "Current bank provenance and historical report scope, image optimizer encodings, JSON vs single-attempt HTML export",
+  "limits": [
+    "GitHub renderer and native Mermaid not exercised",
+    "PowerPoint and Google Slides not opened",
+    "External-link DNS unavailable; source index is a mapping, not renewed content review"
+  ],
+  "finalFiles": [
+    {
+      "path": "README.md",
+      "sha256": "d1ef31113c894040486e57ed6b14f69db6ce8b2edc7671caf8d24d06b648b839"
+    },
+    {
+      "path": "docs/readme/SOURCES.md",
+      "sha256": "45d9f93f73e1b16a25082facdefe04de2ff0be205474d9d6127a282e27b84677"
+    },
+    {
+      "path": "docs/readme/REPORT.md",
+      "sha256": "f80413011c10e288f31ec3a780ab6475497515cc4c17ac4d45bee41f1ce60047"
+    },
+    {
+      "path": "docs/readme/verification.json",
+      "sha256": "3676aacb3ed67b45e10382ea25421e637d54301735ef9d03890603ab3454b8c6"
+    }
+  ]
+}

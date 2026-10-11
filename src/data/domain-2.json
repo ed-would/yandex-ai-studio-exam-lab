@@ -10,11 +10,11 @@
     "takeaway": "Задайте источник, аудиторию, действие, формат и поведение при нехватке данных.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Промпт и температура — документация AI Studio",
+        "title": "Промпт и температура: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary"
       }
     ],
@@ -55,11 +55,11 @@
     "takeaway": "Краткий пересказ должен сохранять важное и не добавлять новые договорённости.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       }
     ],
@@ -82,7 +82,7 @@
       {
         "id": "d",
         "text": "Перевод текста на другой язык.",
-        "explanation": "Смена языка не является целью описанной задачи."
+        "explanation": "Задача не требует менять язык."
       }
     ],
     "correct": [
@@ -97,14 +97,14 @@
     "topic": "Системный и пользовательский промпт",
     "prompt": "Как разумно разделить постоянную роль помощника и задачу на текущий день?",
     "explanation": "Системная инструкция задаёт общие правила поведения, роль, стиль и ограничения. Пользовательский запрос описывает конкретную задачу и её входные данные; оба слоя могут влиять на результат.",
-    "takeaway": "Системная инструкция задаёт правила работы, пользовательская — текущее поручение.",
+    "takeaway": "Системная инструкция задаёт правила работы, а пользовательская содержит текущее поручение.",
     "sources": [
       {
-        "title": "Системный промпт: роль, стиль и ограничения — AI Studio",
+        "title": "Системный промпт: роль, стиль и ограничения: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-voice-agent-ui"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -142,10 +142,10 @@
     "topic": "Открытые и проприетарные модели",
     "prompt": "Какой признак непосредственно относится к модели с открытыми весами?",
     "explanation": "Доступность весов позволяет при соблюдении условий лицензии запускать и адаптировать модель вне одного готового сервиса. Она не означает автоматически бесплатную эксплуатацию, отсутствие ограничений или публикацию всех обучающих данных.",
-    "takeaway": "Открытые веса — это доступ к параметрам; условия использования проверяют отдельно.",
+    "takeaway": "Открытые веса дают доступ к параметрам модели. Условия использования проверяйте отдельно.",
     "sources": [
       {
-        "title": "Открытые модели Gemma: веса, настройка и размещение — Google",
+        "title": "Открытые модели Gemma: веса, настройка и размещение: Google",
         "url": "https://ai.google.dev/gemma/docs?hl=ru"
       },
       {
@@ -172,7 +172,7 @@
       {
         "id": "d",
         "text": "Она может работать только в общедоступном облачном чате.",
-        "explanation": "Собственный запуск — одна из возможностей, для которых и полезен доступ к весам."
+        "explanation": "Доступ к весам позволяет, например, запустить модель на собственной инфраструктуре."
       }
     ],
     "correct": [
@@ -190,11 +190,11 @@
     "takeaway": "Задайте цель, контекст и формат; большую задачу разбейте на проверяемые шаги.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Основы машинного обучения — Yandex Cloud",
+        "title": "Основы машинного обучения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/machine-learning-guide"
       }
     ],
@@ -241,11 +241,11 @@
     "takeaway": "Проверяйте поддерживаемые входы и выходы, а затем качество на своих материалах.",
     "sources": [
       {
-        "title": "Визуально-языковые модели: возможности и ограничения — Yandex Cloud",
+        "title": "Визуально-языковые модели: возможности и ограничения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/vlm-visual-language-models"
       },
       {
-        "title": "Обзор моделей и сценариев — документация AI Studio",
+        "title": "Обзор моделей и сценариев: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/"
       }
     ],
@@ -293,11 +293,11 @@
     "takeaway": "Уточните, что анализировать, за какой период, зачем и в каком виде вернуть результат.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -346,11 +346,11 @@
     "takeaway": "Если задача полностью помещается в один запрос, начните с него.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "ИИ-агенты: модель, инструкция, инструменты, память — AI Studio",
+        "title": "ИИ-агенты: модель, инструкция, инструменты, память: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/"
       }
     ],
@@ -363,7 +363,7 @@
       {
         "id": "b",
         "text": "Сначала дообучить отдельную модель на этом единственном тексте.",
-        "explanation": "Для разовой переформулировки это не является необходимым шагом."
+        "explanation": "Для разовой переформулировки этот шаг не нужен."
       },
       {
         "id": "c",
@@ -396,11 +396,11 @@
     "takeaway": "Опишите требуемое преобразование исходного материала.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       }
     ],
@@ -459,7 +459,7 @@
       "l1": "Нужно создать новое содержание по условиям.",
       "l2": "Нужно сохранить главное при уменьшении объёма.",
       "l3": "Нужно перенести явно содержащиеся сведения в заданные поля.",
-      "l4": "Цель — сменить язык с сохранением смысла.",
+      "l4": "Нужно сменить язык, сохранив смысл.",
       "l5": "Нужно выбрать подходящий заранее известный класс."
     }
   },
@@ -470,15 +470,15 @@
     "type": "match",
     "topic": "Составные части промпта",
     "prompt": "Соотнесите фрагменты запроса с их назначением.",
-    "explanation": "Роль помогает задать способ работы, контекст сообщает исходные условия, задание определяет действие, а формат — вид результата. Эти элементы могут быть краткими, но должны согласовываться между собой.",
+    "explanation": "Роль задаёт способ работы, контекст сообщает исходные условия, задание определяет действие, а формат задаёт вид результата. Эти элементы могут быть краткими, но должны согласовываться между собой.",
     "takeaway": "Полезный промпт отвечает на вопросы: кто, с чем, что делает и что выдаёт.",
     "sources": [
       {
-        "title": "Промпт и температура — документация AI Studio",
+        "title": "Промпт и температура: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/glossary"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -539,14 +539,14 @@
     "topic": "Классификация и кластеризация",
     "prompt": "Есть 600 отзывов, но список тем ещё не определён. Нужно сначала обнаружить группы похожих проблем и предложить названия групп. Какой подход соответствует задаче?",
     "explanation": "Кластеризация группирует похожие объекты без заранее заданного набора категорий. После изучения групп человек может уточнить их смысл и превратить найденную структуру в классификатор для следующих отзывов.",
-    "takeaway": "Известные метки — классификация; поиск структуры без меток — кластеризация.",
+    "takeaway": "Известные метки помогают классифицировать, а поиск структуры без меток называют кластеризацией.",
     "sources": [
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       },
       {
-        "title": "Основы машинного обучения — Yandex Cloud",
+        "title": "Основы машинного обучения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/machine-learning-guide"
       }
     ],
@@ -628,11 +628,11 @@
     "takeaway": "Для большой изменяемой базы знаний используйте актуальный источник и поиск по нему.",
     "sources": [
       {
-        "title": "Поиск и обогащение контекста — документация AI Studio",
+        "title": "Поиск и обогащение контекста: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/"
       },
       {
-        "title": "Дообучение моделей — документация AI Studio",
+        "title": "Дообучение моделей: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/tuning/"
       }
     ],
@@ -670,14 +670,14 @@
     "topic": "Извлечение отсутствующих сведений",
     "prompt": "Из письма нужно извлечь номер заказа, дату и сумму. Сумма в письме не указана. Какое требование к ответу предпочтительно?",
     "explanation": "Извлечение должно сохранять различие между присутствующим и отсутствующим значением. Явная отметка о пропуске позволяет проверить результат и запросить недостающие сведения.",
-    "takeaway": "Отсутствующее значение — отдельное состояние, его нельзя подменять предположением.",
+    "takeaway": "Отсутствующее значение нужно хранить отдельно, не подменяя предположением.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -718,11 +718,11 @@
     "takeaway": "Показывайте точные, разнообразные и согласованные примеры.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -766,16 +766,16 @@
     "domain": 2,
     "type": "multi",
     "topic": "Работа с таблицами",
-    "prompt": "В таблице один столбец называется «Выручка», другой — «Период», часть ячеек пустая. Что полезно уточнить перед анализом динамики?",
+    "prompt": "В таблице один столбец называется «Выручка», другой называется «Период», часть ячеек пустая. Что полезно уточнить перед анализом динамики?",
     "explanation": "Для анализа важны определения, единицы, временные границы и правила обработки пропусков. Без них модель может корректно прочитать числа, но неверно их сопоставить.",
     "takeaway": "Перед анализом таблицы объясните смысл столбцов, периодов и пропусков.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -824,15 +824,15 @@
     "takeaway": "Для изображения задавайте содержание и конкретные визуальные свойства.",
     "sources": [
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       },
       {
-        "title": "Визуально-языковые модели: возможности и ограничения — Yandex Cloud",
+        "title": "Визуально-языковые модели: возможности и ограничения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/vlm-visual-language-models"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -882,15 +882,15 @@
     "takeaway": "Выбирайте инструмент по реальному содержимому и задаче.",
     "sources": [
       {
-        "title": "Визуально-языковые модели: возможности и ограничения — Yandex Cloud",
+        "title": "Визуально-языковые модели: возможности и ограничения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/vlm-visual-language-models"
       },
       {
-        "title": "Обзор моделей и сценариев — документация AI Studio",
+        "title": "Обзор моделей и сценариев: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -938,7 +938,7 @@
     "takeaway": "Уточнение должно устранять причину проблемы, а не просто удлинять промпт.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -1002,11 +1002,11 @@
     "takeaway": "Смотрите на действия решения, а не только на его название в рекламе.",
     "sources": [
       {
-        "title": "ИИ-агенты: модель, инструкция, инструменты, память — AI Studio",
+        "title": "ИИ-агенты: модель, инструкция, инструменты, память: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -1070,11 +1070,11 @@
     "takeaway": "Знания поступают из источников, действия выполняют инструменты, границы задаются правилами.",
     "sources": [
       {
-        "title": "ИИ-агенты: модель, инструкция, инструменты, память — AI Studio",
+        "title": "ИИ-агенты: модель, инструкция, инструменты, память: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/"
       },
       {
-        "title": "Поиск и обогащение контекста — документация AI Studio",
+        "title": "Поиск и обогащение контекста: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/"
       }
     ],
@@ -1111,11 +1111,11 @@
     "type": "single",
     "topic": "Лицензия и размещение",
     "prompt": "Поставщик предлагает модель с закрытыми весами, но по договору разрешает её работу внутри инфраструктуры заказчика. Что следует из этого описания?",
-    "explanation": "Доступность весов и место развёртывания — разные характеристики. Проприетарный продукт может иметь разрешённую локальную поставку; конкретные права и ограничения определяются условиями поставщика.",
+    "explanation": "Доступность весов и место развёртывания описывают разные характеристики. Проприетарный продукт может иметь разрешённую локальную поставку; конкретные права и ограничения определяются условиями поставщика.",
     "takeaway": "Не смешивайте открытость весов с возможностью локального размещения.",
     "sources": [
       {
-        "title": "Открытые модели Gemma: веса, настройка и размещение — Google",
+        "title": "Открытые модели Gemma: веса, настройка и размещение: Google",
         "url": "https://ai.google.dev/gemma/docs?hl=ru"
       },
       {
@@ -1160,11 +1160,11 @@
     "takeaway": "Для точных вычислений используйте исходные значения и проверяемые формулы.",
     "sources": [
       {
-        "title": "Визуально-языковые модели: возможности и ограничения — Yandex Cloud",
+        "title": "Визуально-языковые модели: возможности и ограничения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/vlm-visual-language-models"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -1205,15 +1205,15 @@
     "takeaway": "Точные данные визуализируйте по значениям; свободные иллюстрации можно генерировать.",
     "sources": [
       {
-        "title": "Визуально-языковые модели: возможности и ограничения — Yandex Cloud",
+        "title": "Визуально-языковые модели: возможности и ограничения: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/vlm-visual-language-models"
       },
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],
@@ -1254,11 +1254,11 @@
     "takeaway": "Извлечение, нормализацию и сравнение разделяйте на проверяемые действия.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -1303,10 +1303,10 @@
     "topic": "Выбор открытой модели для организации",
     "prompt": "Компания рассматривает модель с открытыми весами для собственных рабочих задач. Какие аспекты нужно проверить перед выбором?",
     "explanation": "Открытые веса дают больше вариантов запуска и настройки, но не гарантируют пригодности к конкретному процессу. Лицензия, возможности, качество, ресурсы и эксплуатация остаются отдельными условиями выбора.",
-    "takeaway": "Выбор модели — это одновременно права, качество, возможности и условия работы.",
+    "takeaway": "При выборе модели учитывайте права, качество, возможности и условия работы.",
     "sources": [
       {
-        "title": "Открытые модели Gemma: веса, настройка и размещение — Google",
+        "title": "Открытые модели Gemma: веса, настройка и размещение: Google",
         "url": "https://ai.google.dev/gemma/docs?hl=ru"
       },
       {
@@ -1314,7 +1314,7 @@
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/onprem/"
       },
       {
-        "title": "Обзор моделей и сценариев — документация AI Studio",
+        "title": "Обзор моделей и сценариев: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/"
       }
     ],
@@ -1364,11 +1364,11 @@
     "takeaway": "Примеры должны подтверждать требования, а не опровергать их.",
     "sources": [
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "Стратегии составления запросов — Google AI for Developers",
+        "title": "Стратегии составления запросов: Google AI for Developers",
         "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies?hl=ru"
       }
     ],
@@ -1420,11 +1420,11 @@
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/onprem/"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       },
       {
-        "title": "ИИ-агенты: модель, инструкция, инструменты, память — AI Studio",
+        "title": "ИИ-агенты: модель, инструкция, инструменты, память: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/"
       }
     ],
@@ -1437,7 +1437,7 @@
       {
         "id": "b",
         "text": "Обязательно приобрести собственное оборудование до первой попытки суммаризации.",
-        "explanation": "В условиях нет требования, которое делает собственную инфраструктуру обязательной."
+        "explanation": "Задача не требует собственной инфраструктуры."
       },
       {
         "id": "c",
@@ -1471,15 +1471,15 @@
     "takeaway": "Прежде чем переписывать запрос, определите: не хватает правила, данных, действия или способности модели.",
     "sources": [
       {
-        "title": "Системный промпт: роль, стиль и ограничения — AI Studio",
+        "title": "Системный промпт: роль, стиль и ограничения: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/operations/agents/create-voice-agent-ui"
       },
       {
-        "title": "Поиск и обогащение контекста — документация AI Studio",
+        "title": "Поиск и обогащение контекста: документация AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/search/"
       },
       {
-        "title": "ИИ-агенты: модель, инструкция, инструменты, память — AI Studio",
+        "title": "ИИ-агенты: модель, инструкция, инструменты, память: AI Studio",
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/agents/"
       }
     ],
@@ -1543,11 +1543,11 @@
     "takeaway": "Сложную работу раскладывайте по типам преобразований и проверяйте каждый результат.",
     "sources": [
       {
-        "title": "Что такое машинное обучение — Google for Developers",
+        "title": "Что такое машинное обучение: Google for Developers",
         "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml?hl=ru"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы — Yandex Cloud",
+        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
         "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
       }
     ],

@@ -1,0 +1,17 @@
+{
+  "generator": "OpenAI imagegen",
+  "sourceArchive": "docs/design-lab/artwork/",
+  "master": "stats-card-ribbon-wave-master.png",
+  "prompt": "Create a refined abstract geometric poster for an educational app: about 18 broad, smooth, continuous parallel bands that flow in a restrained S-shaped wave along the right edge. Keep the left 60% open for readable text. Flat black bands on white; no text, objects, gradients, or loose marks.",
+  "composition": "The master is tinted from black to each level accent at 5.5% opacity, placed over the matching existing level-pale surface, then rasterized at 1536x1690.",
+  "paletteSource": "public/theme-controls.css (--level-{1,2,3}-accent and --level-{1,2,3}-pale in both themes)",
+  "responsiveWidths": [384, 768, 1152, 1536],
+  "productionSources": [
+    "stats-level-1-ribbon-wave-light.png",
+    "stats-level-1-ribbon-wave-dark.png",
+    "stats-level-2-ribbon-wave-light.png",
+    "stats-level-2-ribbon-wave-dark.png",
+    "stats-level-3-ribbon-wave-light.png",
+    "stats-level-3-ribbon-wave-dark.png"
+  ]
+}

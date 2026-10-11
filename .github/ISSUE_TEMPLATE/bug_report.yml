@@ -23,7 +23,7 @@ body:
     id: environment
     attributes:
       label: Среда
-      description: Браузер и версия, ОС, адрес сайта или команда запуска, коммит или версия проекта. Для локального запуска — версии Node.js и npm.
+      description: Браузер и версия, ОС, адрес сайта или команда запуска, коммит или версия проекта. Для локального запуска – версии Node.js и npm.
     validations:
       required: true
   - type: textarea

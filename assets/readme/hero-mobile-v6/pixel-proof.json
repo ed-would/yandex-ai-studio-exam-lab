@@ -1,0 +1,118 @@
+{
+  "dark": {
+    "glyphBounds": [
+      142,
+      72,
+      805,
+      111
+    ],
+    "logoBounds": [
+      53,
+      66,
+      104,
+      116
+    ],
+    "centerDifferenceNativePx": 0.5,
+    "centerDifferenceAt375Px": 0.208,
+    "contrast": [
+      {
+        "text": "Тренажёр компетенций ИИ",
+        "minContrast": 6.86,
+        "corePixels": 7749
+      },
+      {
+        "text": "Основы",
+        "minContrast": 14.01,
+        "corePixels": 12732
+      },
+      {
+        "text": "работы с ИИ",
+        "minContrast": 14.44,
+        "corePixels": 19830
+      },
+      {
+        "text": "Практика перед экзаменом.",
+        "minContrast": 14.51,
+        "corePixels": 3959
+      },
+      {
+        "text": "Разбор после каждого ответа.",
+        "minContrast": 14.61,
+        "corePixels": 4184
+      },
+      {
+        "text": "180 вопросов",
+        "minContrast": 8.31,
+        "corePixels": 2064
+      },
+      {
+        "text": "3 уровня",
+        "minContrast": 6.88,
+        "corePixels": 1338
+      },
+      {
+        "text": "6 доменов",
+        "minContrast": 5.98,
+        "corePixels": 1626
+      }
+    ]
+  },
+  "light": {
+    "glyphBounds": [
+      142,
+      72,
+      805,
+      111
+    ],
+    "logoBounds": [
+      53,
+      66,
+      105,
+      116
+    ],
+    "centerDifferenceNativePx": 0.5,
+    "centerDifferenceAt375Px": 0.208,
+    "contrast": [
+      {
+        "text": "Тренажёр компетенций ИИ",
+        "minContrast": 5.45,
+        "corePixels": 7679
+      },
+      {
+        "text": "Основы",
+        "minContrast": 12.04,
+        "corePixels": 12532
+      },
+      {
+        "text": "работы с ИИ",
+        "minContrast": 11.76,
+        "corePixels": 19644
+      },
+      {
+        "text": "Практика перед экзаменом.",
+        "minContrast": 11.19,
+        "corePixels": 3881
+      },
+      {
+        "text": "Разбор после каждого ответа.",
+        "minContrast": 10.78,
+        "corePixels": 4092
+      },
+      {
+        "text": "180 вопросов",
+        "minContrast": 6.17,
+        "corePixels": 2003
+      },
+      {
+        "text": "3 уровня",
+        "minContrast": 6.49,
+        "corePixels": 1299
+      },
+      {
+        "text": "6 доменов",
+        "minContrast": 5.49,
+        "corePixels": 1589
+      }
+    ]
+  }
+}

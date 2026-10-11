@@ -1,0 +1,46 @@
+{
+  "route": "QUICK",
+  "part": "learning-cycle-desktop-v7",
+  "readerQuestion": "Что происходит после выбора ответа и как продолжить тренировку после разбора ошибок?",
+  "criteria": [
+    "New context-specific four-stage artwork; no three test sculptures, logo, hero copy, bank counts or neon wave backdrop reused",
+    "One cohesive generated scene per theme; project iridescent 3D visual language with new contextual objects",
+    "Exact local Unbounded450 headings and Arial body, correct Russian factual copy",
+    "Show editable draft, answer fixation on checking, explanations/memo/sources, errors and omissions in a separate new attempt after completion",
+    "Desktop dark/light previews first; existing hero unchanged; accepted bank desktop may integrate",
+    "Readable native typography with rendered text contrast >=4.5"
+  ],
+  "ownership": {
+    "root": "Generation, layout sources, desktop exports, production records, README accepted bank desktop integration and Playwright verification",
+    "workflow_facts": "Read-only runtime evidence for draft/check/explanation/retry conditions and copy implications"
+  },
+  "exclusions": [
+    "mobile learning-cycle variants",
+    "other new infographics",
+    "application code",
+    "presentations",
+    "commits and publication"
+  ],
+  "priorIndependentReviews": {
+    "initial": 1,
+    "rechecksUsed": 1,
+    "maxRechecks": 1
+  },
+  "newPlanBudget": 0,
+  "newReviewBudget": 0,
+  "validation": [
+    "View complete generated scenes and desktop960 exports",
+    "Playwright MCP native font/load/layout/contrast check",
+    "git diff --check and npm run check if code artifact change applies"
+  ],
+  "snapshot": {
+    "README.md": "dc9caf2d0d336ee0d7c97b600a588ad4e430311447e626b5079bbe5f6e7e186d",
+    "src/core/exam.js": "f85a497b07108616f8b7f120dcf30d93327fd3a5812454a822338055a8579447",
+    "assets/readme/bank-map-v6/bank-map-desktop-dark.webp": "60e416974bafa275e7632d49283e30bb83015287eb479cf1820304a69be13140",
+    "assets/readme/bank-map-v6/bank-map-desktop-light.webp": "12c0e3867839563b547778261dfe511e5b4e3f7ac0412f2edfc72d3441416ef6",
+    "assets/readme/hero-family-v5/hero-desktop-dark.webp": "dddc5eea2c4a782896eb57f8761e9a926d4e68bad5d9f6decd7f2a88a6d2babe",
+    "assets/readme/hero-family-v5/hero-desktop-light.webp": "647fcfd10095086cef8c603180eba7617001c1e3a335dc106988fc16abf48779"
+  },
+  "integration": "Accepted bank desktop and technically checked learning-cycle desktop connected to local README for review. Old root-level bank/cycle images are absent, so obsolete mobile sources were removed. No new mobile variants generated; desktop artwork scales responsively.",
+  "decision": "Within authorized README work, fix missing consumption paths using prepared local theme variants. Artistic acceptance of learning-cycle remains with user; no publication."
+}

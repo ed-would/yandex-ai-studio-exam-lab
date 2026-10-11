@@ -1,0 +1,9 @@
+Use case: precise-object-edit. Create the LIGHT THEME companion of reference 1, the finished dark question-bank gallery. Reference 2 is only the accepted hero's light-theme palette/material atmosphere.
+
+Change ONLY the surrounding atmosphere, floor and lighting into luminous pearl lilac with a quiet #f0edf4 canvas, very pale lavender gradients, soft white studio illumination and subtle flowing pastel ribbons. Keep the three sculptures in EXACTLY the same positions, sizes, geometry, apparent weight, colors, silhouettes, folds and arrangement as reference 1: one lime folded torus on the left, one mint double-arch with its single hovering sphere in the center, one lilac folded triangular loop on the right. The three groups share the same floor contact line. Do not move them or duplicate them. Preserve their rich glossy ceramic-metal finish and fine iridescent rim details; keep their identities recognizable. Adapt shadows and floor reflections naturally to the light scene, with soft grounded contact shadows, restrained glints and faint cropped reflections.
+
+Use the elegant calm light atmosphere of reference 2, but no logo. Keep the new balanced triptych layout from reference 1, not the original hero's right-weighted composition. Whole unified newly rendered scene, no pasted cutouts or object layers.
+
+Keep the top 0–36% very pale and quiet for dark native typography later. The lower 82–100% should be clean pale lilac foreground suitable for the shared equation. Flowing pastel ribbons can cross the scenery behind the sculptures, never their silhouettes; avoid high-contrast ribbon lines in the upper and bottom typography spaces. Preserve the 16:9 wide composition and all three sculptures fully in frame.
+
+Artwork only. NO text, numbers, letters, logo, watermark, badges, labels, cards, boxes, pedestals, charts, axes, UI or additional objects. Native typography will be added separately.

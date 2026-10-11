@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: 'Если используете этот проект в работе или публикации, пожалуйста, укажите автора и исходный репозиторий.'
 type: software
-title: 'Тренажёр компетенций ИИ — Yandex AI Studio Exam Lab'
+title: 'Тренажёр компетенций ИИ – Yandex AI Studio Exam Lab'
 authors:
   - family-names: Would
     given-names: Ed

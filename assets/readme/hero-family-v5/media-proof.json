@@ -1,0 +1,90 @@
+{
+  "combinations": [
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-desktop-dark.webp",
+      "naturalWidth": 1600,
+      "naturalHeight": 700,
+      "displayWidth": 960,
+      "displayHeight": 420,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 1440,
+      "theme": "dark",
+      "expected": "hero-desktop-dark.webp",
+      "pass": true
+    },
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-desktop-light.webp",
+      "naturalWidth": 1600,
+      "naturalHeight": 700,
+      "displayWidth": 960,
+      "displayHeight": 420,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 1440,
+      "theme": "light",
+      "expected": "hero-desktop-light.webp",
+      "pass": true
+    },
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-mobile-dark.webp",
+      "naturalWidth": 900,
+      "naturalHeight": 1300,
+      "displayWidth": 375,
+      "displayHeight": 541.6640625,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 375,
+      "theme": "dark",
+      "expected": "hero-mobile-dark.webp",
+      "pass": true
+    },
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-mobile-light.webp",
+      "naturalWidth": 900,
+      "naturalHeight": 1300,
+      "displayWidth": 375,
+      "displayHeight": 541.6640625,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 375,
+      "theme": "light",
+      "expected": "hero-mobile-light.webp",
+      "pass": true
+    },
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-mobile-dark.webp",
+      "naturalWidth": 900,
+      "naturalHeight": 1300,
+      "displayWidth": 600,
+      "displayHeight": 866.6640625,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 600,
+      "theme": "dark",
+      "expected": "hero-mobile-dark.webp",
+      "pass": true
+    },
+    {
+      "source": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-desktop-dark.webp",
+      "naturalWidth": 1600,
+      "naturalHeight": 700,
+      "displayWidth": 601,
+      "displayHeight": 262.9375,
+      "alt": "Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах",
+      "overflow": false,
+      "width": 601,
+      "theme": "dark",
+      "expected": "hero-desktop-dark.webp",
+      "pass": true
+    }
+  ],
+  "fallback": "http://127.0.0.1:5173/assets/readme/hero-family-v5/hero-mobile-light.webp",
+  "gallery": {
+    "loaded": true,
+    "images": 4,
+    "fonts": "loaded",
+    "overflow": false
+  },
+  "publishedGitHub": "not checked"
+}

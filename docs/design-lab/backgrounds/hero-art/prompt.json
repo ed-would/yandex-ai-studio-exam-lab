@@ -1,8 +1,0 @@
-{
-  "mode": "built-in image_gen",
-  "intent": "edit",
-  "asset": "public/images/artwork/hero-ribbon-expanded.webp",
-  "original": "docs/design-lab/backgrounds/hero-art/hero-ribbon-expanded.png",
-  "edited_from": "docs/design-lab/artwork/hero-ribbon.jpg",
-  "prompt": "Edit Image 1, the existing website hero artwork. Preserve its distinctive satin ribbon-knot sculpture, its exact recognizable silhouette, the two small floating oval forms, pearlescent lavender, pale citron and deep teal palette, lighting, material, and pale lavender background. Do not invent a different sculpture or add objects. Change only the framing and background extent: create more seamless, calm pale-lavender background around the sculpture by extending the canvas, especially above, to the right, and below. Recompose the same sculpture slightly leftward, so it sits comfortably in the center-left of the full wide canvas with clear visible breathing room at every edge. Leave a noticeably wider uninterrupted background margin on the right and a modest margin above and below; keep the whole sculpture, both ovals, and its shadow entirely inside the canvas. Retain the same flat, monotone lavender backdrop without gradients or decorative patterns. The artwork is a background illustration behind website text, so keep the new margin visually quiet. Wide landscape 3:2 composition, clean edges, no cropping at any edge, no text, no logo, no frame."
-}

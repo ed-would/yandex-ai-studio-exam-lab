@@ -1,0 +1,24 @@
+{
+  "source": "project-geometry-five/05-lenticular-resonance.svg",
+  "preview": "approved 2026-10-11",
+  "images": [
+    {
+      "name": "history-lens-light",
+      "width": 1536,
+      "height": 474,
+      "ink": "#6841ab",
+      "surface": "#f0edf4",
+      "level": 0,
+      "theme": "light"
+    },
+    {
+      "name": "history-lens-dark",
+      "width": 1536,
+      "height": 474,
+      "ink": "#c5a8f2",
+      "surface": "#24212d",
+      "level": 0,
+      "theme": "dark"
+    }
+  ]
+}

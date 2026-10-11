@@ -1,0 +1,199 @@
+{
+  "method": "Built-in Image Generation; native local Unbounded/Arial text via Playwright MCP; WebP quality93",
+  "status": "Desktop dark/light accepted and integrated; obsolete absent mobile source removed",
+  "size": [
+    1600,
+    900
+  ],
+  "reviewBudget": 0,
+  "priorReviews": {
+    "initial": 1,
+    "recheck": 1,
+    "maxRecheck": 1
+  },
+  "rootRepair": "Footer scope grouped in opaque shared equation card after actual contrast failure",
+  "files": {
+    "CHECKS.md": {
+      "sha256": "c49acbf5640a0c484762c58f16a8857f0ba96573779bd526845798dcb05226d1",
+      "bytes": 3561
+    },
+    "artwork-desktop-dark-balanced.png": {
+      "sha256": "881f7fc0b766a832ec120ee5e603dfb1096837e6cababaeb85a55417794fa9ff",
+      "bytes": 1794567,
+      "size": [
+        1672,
+        941
+      ],
+      "format": "PNG"
+    },
+    "artwork-desktop-dark-gaps-rejected.png": {
+      "sha256": "1d4edbcd81fb2b7fe39d4d102b6de44fe3938ca07c8f693ce083323bd3137ae6",
+      "bytes": 1761679,
+      "size": [
+        1672,
+        941
+      ],
+      "format": "PNG"
+    },
+    "artwork-desktop-dark-raw.png": {
+      "sha256": "c6ad55c904831c51e1a347d10310aa27f4ebedb88ef4a83e1194d80dcb02134c",
+      "bytes": 1813613,
+      "size": [
+        1672,
+        941
+      ],
+      "format": "PNG"
+    },
+    "artwork-desktop-dark.png": {
+      "sha256": "98ad51c2478baaba0b75bbdcb92d0b2d99fe31765c87396025bd481eebc34083",
+      "bytes": 1755716,
+      "size": [
+        1672,
+        941
+      ],
+      "format": "PNG"
+    },
+    "artwork-desktop-light.png": {
+      "sha256": "face83ca8c6ab089d1f5f01dfb97e65e293709d1686308f55d8ba6216e45e72c",
+      "bytes": 1668370,
+      "size": [
+        1672,
+        941
+      ],
+      "format": "PNG"
+    },
+    "background-desktop-dark.png": {
+      "sha256": "810c9fc403b877a7aa1ba335dd96999cb56ca8a95c11c71f4cf8f7895bc4ead2",
+      "bytes": 1295431,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "PNG"
+    },
+    "background-desktop-light.png": {
+      "sha256": "082c8ce9b27bcc620c08fb0188aed49640ef0a3479db862c0f0f3e1219f99970",
+      "bytes": 1207857,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "PNG"
+    },
+    "bank-map-desktop-dark.png": {
+      "sha256": "522ec224c191535cc561d374a208780540b0589f0b61e7005a64948589ad2282",
+      "bytes": 1350149,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "PNG"
+    },
+    "bank-map-desktop-dark.webp": {
+      "sha256": "60e416974bafa275e7632d49283e30bb83015287eb479cf1820304a69be13140",
+      "bytes": 148108,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "WEBP"
+    },
+    "bank-map-desktop-light.png": {
+      "sha256": "684069e88845ca75a12817611d5e1c763178d0b7b30fa98f07ed6906951532a5",
+      "bytes": 1262909,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "PNG"
+    },
+    "bank-map-desktop-light.webp": {
+      "sha256": "12c0e3867839563b547778261dfe511e5b4e3f7ac0412f2edfc72d3441416ef6",
+      "bytes": 132308,
+      "size": [
+        1600,
+        900
+      ],
+      "format": "WEBP"
+    },
+    "brief.json": {
+      "sha256": "67dcbe7b0c7d5a03e97c54e66d1894e9f426a1f6980a5d5619e737df3b35c66a",
+      "bytes": 1984
+    },
+    "contrast-proof.json": {
+      "sha256": "05340fff40a6112199e443f3001c3d27d6179eb2ad54c8235ac241724515c161",
+      "bytes": 2550
+    },
+    "desktop-dark.layout.html": {
+      "sha256": "dd952ae1f21bd9fc2c2f854c9de15f0e173661295e22e363447ab03fe3e536ac",
+      "bytes": 4473
+    },
+    "desktop-light.layout.html": {
+      "sha256": "7a3b8752b12baeda2c993493f6b22bfbb3c1b82e828665bd90171d8471b19af4",
+      "bytes": 4476
+    },
+    "generation-provenance.json": {
+      "sha256": "83ea53fa26ec3e007ab04e700967da7a4cd759b7d2e55ba703bb1666fac42e74",
+      "bytes": 5279
+    },
+    "layout-notes.json": {
+      "sha256": "237c3386b523e0bea1c7aa5c201e4b70164eebfcbf26630ad925e4812e6bb780",
+      "bytes": 1709
+    },
+    "layout-proof.json": {
+      "sha256": "7c07b043dd1ca65b37d77c458018087490d2e2ee62b3a1e0a95ad28c02ed93e1",
+      "bytes": 8223
+    },
+    "preview-dark-960.png": {
+      "sha256": "ff0402c02219cb994b356aa157ab8ab31adca3268db9e1ec023dc810317fc86d",
+      "bytes": 589144,
+      "size": [
+        960,
+        540
+      ],
+      "format": "PNG"
+    },
+    "preview-light-960.png": {
+      "sha256": "cb8e032b0f5c0b222645e8a49265759600062e41d7261b24534d4243dffe54bd",
+      "bytes": 547613,
+      "size": [
+        960,
+        540
+      ],
+      "format": "PNG"
+    },
+    "prompt-desktop-dark-balance.txt": {
+      "sha256": "8a38ee210a74d78129d2393f4c755c4d62425cbcb427729dcec9f92fc0994979",
+      "bytes": 1409
+    },
+    "prompt-desktop-dark-equal-air.txt": {
+      "sha256": "cc9038650e7f54723c461015389354196a2d630e7db99c15ba4eee1af1e3d6b3",
+      "bytes": 1248
+    },
+    "prompt-desktop-dark-gaps.txt": {
+      "sha256": "0f5918bd7f9c5d88dbff6db09a128de7be78f8897563a8a1e74c6d886d04654b",
+      "bytes": 886
+    },
+    "prompt-desktop-dark.txt": {
+      "sha256": "f69b63ab564d696f3d0061ee3223e9b0410d139a6b828033b3fb5775070f16c2",
+      "bytes": 3151
+    },
+    "prompt-desktop-light.txt": {
+      "sha256": "7686c4a2b69a99e09a90806df1bffa1ee942ba37f7537c2e030a8b759e705752",
+      "bytes": 1914
+    },
+    "source-initial.sha256": {
+      "sha256": "a855247506b55db705157657cfbc993e9e20afd2a92af295a1157c5dc9110f04",
+      "bytes": 1394
+    },
+    "source.sha256": {
+      "sha256": "9fcdcd2b12c2561a395debd03d0078beb1a18de6d414df1b6af49582d7d85eab",
+      "bytes": 183
+    }
+  },
+  "validationCommands": {
+    "npm run check": "passed",
+    "git diff --check": "passed"
+  },
+  "userAcceptance": "Отлично. Давай дальше дорабатывай следующий инфографик"
+}

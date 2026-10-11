@@ -263,7 +263,7 @@ test('карточки прогресса сохраняют места резу
   assert.equal(container.querySelectorAll('.mini-chart-empty').length, 3);
   assert.equal(container.querySelectorAll('.chart-column').length, 0);
   assert.ok(
-    [...container.querySelectorAll('.stats-value')].every((node) => node.textContent === '—пока нет результата'),
+    [...container.querySelectorAll('.stats-value')].every((node) => node.textContent === '–пока нет результата'),
   );
   await unmount();
 
@@ -285,7 +285,7 @@ test('карточки прогресса сохраняют места резу
   assert.equal(get('.stats-card.theme-1 .stats-value').textContent, '0%лучший результат');
   for (const level of [2, 3]) {
     const card = get(`.stats-card.theme-${level}`);
-    assert.equal(card.querySelector('.stats-value').textContent, '—пока нет результата');
+    assert.equal(card.querySelector('.stats-value').textContent, '–пока нет результата');
     assert.equal(card.querySelector('.mini-chart').getAttribute('aria-label'), 'Нет данных о результатах попыток');
     assert.equal(card.querySelector('.chart-column'), null);
     assert.equal(Boolean(card.querySelector('.stats-card-footer button')), level === 2);
