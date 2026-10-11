@@ -17,7 +17,7 @@
 
 Цвета соответствуют `DESIGN.md`: экспертный фиолетовый `#6841AB`, мягкая сирень, лайм базового, бирюза продвинутого и лиловый экспертного теста. Использованы оригинальные изображения `hero-ribbon-expanded-1152-optimized.webp`, три `level-*-512-optimized.webp` и собственный знак тренажёра `trainer-abstract-256-optimized.webp` из `public/`.
 
-Заголовки и числовые акценты набраны в Unbounded, основной текст в Arial. Браузерный макет загружает оба локальных Unbounded WOFF2: кириллицу и латиницу с цифрами. Лицензия шрифта находится в `public/fonts/Unbounded-OFL.txt`; точные хеши файлов записаны в `assets/readme/source/manifest.json`.
+Заголовки и числовые акценты набраны в Unbounded, основной текст в Arial. Браузерный макет загружает оба локальных Unbounded WOFF2: кириллицу и латиницу с цифрами. Лицензия шрифта находится в `public/fonts/Unbounded-OFL.txt`; точные хеши файлов записаны в `assets/readme-generation-attempts/source/manifest.json`.
 
 В готовых PDF и PNG шрифт отрисован браузером. PPTX сохраняет названия Unbounded и Arial в редактируемых объектах, но не встраивает шрифты. Для точного отображения заголовков в PowerPoint нужен установленный Unbounded.
 

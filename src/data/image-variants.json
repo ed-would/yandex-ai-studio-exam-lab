@@ -188,16 +188,6 @@
       [1942, "artwork/footer-orbital-sectors.webp"]
     ]
   },
-  "artwork/practice-folded-paths.webp": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/practice-folded-paths-384-optimized.webp"],
-      [768, "artwork/practice-folded-paths-768-optimized.webp"],
-      [1152, "artwork/practice-folded-paths-1152-optimized.webp"],
-      [1536, "artwork/practice-folded-paths.webp"]
-    ]
-  },
   "artwork/study-phase-rosettes.jpg": {
     "width": 1536,
     "height": 1024,
@@ -220,16 +210,6 @@
     "variants": [
       [384, "artwork/level-3-prisms-384-optimized.webp"],
       [1536, "artwork/level-3-prisms.jpg"]
-    ]
-  },
-  "artwork/outcome-phase-basket.webp": {
-    "width": 2400,
-    "height": 1328,
-    "variants": [
-      [384, "artwork/outcome-phase-basket-384-optimized.webp"],
-      [768, "artwork/outcome-phase-basket-768-optimized.webp"],
-      [1152, "artwork/outcome-phase-basket-1152-optimized.webp"],
-      [2400, "artwork/outcome-phase-basket.webp"]
     ]
   },
   "artwork/studio-03-mint-intersections.webp": {

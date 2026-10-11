@@ -85,6 +85,78 @@ afterEach(async () => {
   await unmount();
 });
 
+test('смена страницы переносит фокус в содержимое, сохраняя фокус вопросов и внутренних действий', async () => {
+  const state = freshState();
+  state.sessions['exam:1'] = makeAttempt(1, questions);
+  const result = finishAttempt(makeAttempt(1, questions));
+  state.history.push(result);
+  storage.setItem(key, JSON.stringify(state));
+  await mount();
+  const navigation = get('.primary-nav a[href="#/history"]');
+  navigation.focus();
+  await go(navigation.getAttribute('href'));
+  assert.equal(document.activeElement, get('h1'));
+  await go('#/study');
+  assert.equal(document.activeElement, get('h1'));
+  const search = get('.source-search input');
+  search.focus();
+  await act(() => {
+    search.value = 'модель';
+    search.dispatchEvent(new window.Event('input', { bubbles: true }));
+  });
+  assert.equal(document.activeElement, search);
+  const theme = get('.theme-toggle');
+  theme.focus();
+  await click(theme);
+  assert.equal(document.activeElement, theme);
+  await go('#levels');
+  assert.equal(document.activeElement, theme);
+  await go('#/exam/1');
+  assert.equal(document.activeElement, get('.question-prompt'));
+  await click(`input[value="${questions[0].correct[0]}"]`);
+  const bookmark = get('.bookmark-button');
+  bookmark.focus();
+  await click(bookmark);
+  assert.equal(document.activeElement, bookmark);
+  await go(`#/results/${result.id}`);
+  assert.equal(document.activeElement, get('h1'));
+  await click(findButton('Разобрать ответы'));
+  assert.equal(document.activeElement, get('#results-review-title'));
+  await go('#/');
+  assert.equal(document.activeElement, get('h1'));
+});
+
+test('страница без заголовка h1 получает фокус на main при смене маршрута', async () => {
+  await mount();
+  await go('#/results/missing-result');
+  assert.equal(container.querySelector('h1'), null);
+  assert.equal(document.activeElement, get('#main-content'));
+  await go('#/exam/2');
+  assert.equal(document.activeElement, get('#main-content'));
+});
+
+test('пустое повреждённое сохранение скачивается без подмены текущим прогрессом', async (t) => {
+  const downloads = [];
+  let blob;
+  t.mock.method(URL, 'createObjectURL', (value) => {
+    blob = value;
+    return 'blob:audit-original';
+  });
+  t.mock.method(window.HTMLAnchorElement.prototype, 'click', function () {
+    downloads.push({ name: this.download, blob });
+  });
+  storage.setItem(key, '');
+  await mount();
+  await click(findButton('Скачать исходную копию'));
+  await click(findButton('Скачать текущий прогресс'));
+  assert.equal(downloads[0].name, 'ai-basics-exam-trainer-original-data.json');
+  assert.equal(downloads[0].blob.size, 0);
+  assert.equal(await downloads[0].blob.text(), '');
+  assert.equal(downloads[1].name, 'ai-basics-exam-trainer-backup.json');
+  assert.equal(JSON.parse(await downloads[1].blob.text()).state.bankVersion, BANK_VERSION);
+  assert.equal(storage.getItem(key), '');
+});
+
 test('макеты переключают уровни и результаты, переживают повторный монтаж и не меняют настоящий прогресс', async (t) => {
   const realKey = 'ai-practicum:v1:/';
   const before = window.localStorage.getItem(realKey);
@@ -102,7 +174,7 @@ test('макеты переключают уровни и результаты, 
   assert.equal(get('.score-number').textContent, '80%');
   await click(findButton('Следующий'));
   assert.equal(window.location.hash, '#/results/preview-1-below95');
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(get('.score-number').textContent, '93%');
   const select = get('select[aria-label="Тест для просмотра"]');
   await act(() => {
     select.value = '3';
@@ -112,14 +184,14 @@ test('макеты переключают уровни и результаты, 
   assert.ok(get('.results-page.theme-3'));
   await unmount();
   await previewMount();
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(get('.score-number').textContent, '93%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.history-table'), null);
   await click(findButton('Открыть результат'));
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(get('.score-number').textContent, '93%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   assert.equal(window.localStorage.getItem(realKey), raw);
@@ -443,6 +515,11 @@ test('Сопоставление сохраняет единое состоян�
 
   const selects = () => [...container.querySelectorAll('.match-mobile-select')];
   assert.equal(selects().length, q.left.length);
+  assert.equal(container.querySelectorAll('.match-mobile-row p').length, 0);
+  assert.ok(selects().every((select) => !select.classList.contains('paired')));
+  const pairProgress = () => container.querySelector('.match-status [role="progressbar"]');
+  assert.equal(pairProgress().getAttribute('aria-valuenow'), '0');
+  assert.equal(pairProgress().getAttribute('aria-valuemax'), String(q.left.length));
   assert.ok(selects().every((select) => select.options.length === q.right.length + 1));
   assert.ok(
     selects().every((select, index) => select.getAttribute('aria-label') === `Соответствие для: ${q.left[index].text}`),
@@ -462,30 +539,34 @@ test('Сопоставление сохраняет единое состоян�
     [q.left[0].id]: q.right[0].id,
     [q.left[1].id]: q.right[1].id,
   });
-  assert.match(
-    selects()[0].closest('.match-mobile-row').textContent,
-    new RegExp(q.right[0].text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-  );
+  assert.ok(selects()[0].classList.contains('paired'));
+  assert.ok(selects()[1].classList.contains('paired'));
+  assert.equal(pairProgress().getAttribute('aria-valuenow'), '2');
 
   // Выбор занятого определения заменяет предыдущую связь.
   await change(1, q.right[0].id);
   assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[1].id]: q.right[0].id });
-  // Пустой option удаляет связь, а resize не меняет черновик.
+  assert.ok(!selects()[0].classList.contains('paired'));
+  assert.equal(pairProgress().getAttribute('aria-valuenow'), '1');
+  assert.ok(selects()[1].classList.contains('paired'));
+  // Пустой option удаляет связь и подсветку, а resize не меняет черновик.
   await change(1, '');
   assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  assert.ok(selects().every((select) => !select.classList.contains('paired')));
   await change(0, q.right[1].id);
   await act(() => window.dispatchEvent(new window.Event('resize')));
   assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[0].id]: q.right[1].id });
   await click('.clear-pairs');
   assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
 
-  // Полный корректный ответ блокирует обе презентации и показывает выбранные определения.
+  // Полный корректный ответ блокирует обе презентации и сохраняет выбранные значения.
   for (const [index, left] of q.left.entries()) await change(index, q.pairs[left.id]);
   assert.equal(get('[data-action="check-answer"]').disabled, false);
   await click('[data-action="check-answer"]');
   assert.ok(get('.feedback.correct'));
   assert.ok(selects().every((select) => select.disabled));
-  assert.equal(container.querySelectorAll('.match-mobile-definition').length, q.left.length);
+  assert.equal(container.querySelectorAll('.match-mobile-row p').length, 0);
+  assert.ok(selects().every((select) => select.classList.contains('paired')));
   assert.ok([...container.querySelectorAll('.match-board-desktop .match-node')].every((node) => node.disabled));
 });
 
@@ -742,7 +823,7 @@ test('все экранные аккордеоны используют общи
   await click(review.querySelector(':scope > summary'));
   assert.equal(review.open, true);
   assert.ok(review.querySelector('.review-feedback.feedback'));
-  assert.ok(review.querySelector('.reasoning-details.accordion--inline'));
+  assert.ok(review.querySelector('.reasoning-details.accordion--surface'));
   await click(review.querySelector(':scope > summary'));
   assert.equal(review.open, false);
 });

@@ -37,8 +37,17 @@ GitHub не требует обязательного набора community-ф�
 - В Security включите **Private vulnerability reporting**, если настройка доступна, и проверьте кнопку Report a vulnerability. В SECURITY есть резервный канал по почте.
 - После успешного deploy проверьте адрес из workflow и укажите его как Website в About репозитория. Не указывайте предполагаемый адрес до появления работающей публикации.
 - CI `ci.yml` проверяет pull request в `main`, push в `main` и ручные запуски без прав на deploy. Его статус не зависит от настроек GitHub Pages; workflow публикации также проверяет сборку перед deploy.
+
 - Dependabot еженедельно предлагает обновления npm и GitHub Actions. Обновления применяются после проверки; локальный патч `braces` обслуживается по `vendor/braces/README.md`.
 - При необходимости включите правило защиты `main` с обязательным CI и запретом force push. Наличие CODEOWNERS назначает владельца для review, но само по себе не требует его одобрения.
+
+## Social preview репозитория
+
+Утверждённая обложка находится в [`docs/design-lab/social-preview/github-social-preview.jpg`](design-lab/social-preview/github-social-preview.jpg). Это отдельная настройка репозитория, она не меняет сайт и README. Файл имеет формат JPEG, размер 1280 × 640 px и вес 283 421 байт.
+
+GitHub принимает PNG, JPG и GIF размером меньше 1 MB. Рекомендуемый минимум: 640 × 320 px, а размер 1280 × 640 px даёт лучшее отображение. Итоговый JPEG соответствует этим требованиям. Источник: [официальная документация GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview).
+
+Чтобы загрузить его, откройте **Settings → Social preview → Edit → Upload an image…**. Обложка не активируется от одного наличия файла в репозитории. Сейчас файл подготовлен локально, настройка GitHub не менялась. Метаданные, проверки и текущее состояние описаны в [Design Lab](design-lab/social-preview/README.md), редактируемый исходник находится в [`source/layout.html`](design-lab/social-preview/source/layout.html).
 
 ## Релизы и обнаружение
 

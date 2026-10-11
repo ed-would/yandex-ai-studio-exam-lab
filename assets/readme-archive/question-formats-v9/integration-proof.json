@@ -1,0 +1,133 @@
+{
+  "scope": "Local preview using literal README picture markup, not published GitHub",
+  "cases": [
+    {
+      "width": 375,
+      "theme": "dark",
+      "kind": "mobile",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme/question-formats-v9/question-formats-mobile-dark.jpg",
+      "natural": [
+        1000,
+        1800
+      ],
+      "display": [
+        375,
+        675
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "theme": "light",
+      "kind": "mobile",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme/question-formats-v9/question-formats-mobile-light.jpg",
+      "natural": [
+        1000,
+        1800
+      ],
+      "display": [
+        375,
+        675
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 600,
+      "theme": "dark",
+      "kind": "mobile",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme/question-formats-v9/question-formats-mobile-dark.jpg",
+      "natural": [
+        1000,
+        1800
+      ],
+      "display": [
+        600,
+        1080
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 600,
+      "theme": "light",
+      "kind": "mobile",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme/question-formats-v9/question-formats-mobile-light.jpg",
+      "natural": [
+        1000,
+        1800
+      ],
+      "display": [
+        600,
+        1080
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 601,
+      "theme": "dark",
+      "kind": "desktop",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme-generation-attempts/question-formats-v9/question-formats-desktop-dark.jpg",
+      "natural": [
+        1600,
+        1200
+      ],
+      "display": [
+        601,
+        450.75
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 601,
+      "theme": "light",
+      "kind": "desktop",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme-generation-attempts/question-formats-v9/question-formats-desktop-light.jpg",
+      "natural": [
+        1600,
+        1200
+      ],
+      "display": [
+        601,
+        450.75
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 960,
+      "theme": "dark",
+      "kind": "desktop",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme-generation-attempts/question-formats-v9/question-formats-desktop-dark.jpg",
+      "natural": [
+        1600,
+        1200
+      ],
+      "display": [
+        960,
+        720
+      ],
+      "loaded": true,
+      "overflow": false
+    },
+    {
+      "width": 960,
+      "theme": "light",
+      "kind": "desktop",
+      "currentSrc": "http://127.0.0.1:5173/assets/readme-generation-attempts/question-formats-v9/question-formats-desktop-light.jpg",
+      "natural": [
+        1600,
+        1200
+      ],
+      "display": [
+        960,
+        720
+      ],
+      "loaded": true,
+      "overflow": false
+    }
+  ]
+}

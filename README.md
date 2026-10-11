@@ -1,14 +1,13 @@
 <p align="center">
-  <picture>
-    <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset="assets/readme/hero-mobile-v6/hero-mobile-dark.webp">
-    <source media="(max-width: 600px) and (prefers-color-scheme: light)" srcset="assets/readme/hero-mobile-v6/hero-mobile-light.webp">
-    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero-family-v5/hero-desktop-dark.webp">
-    <source media="(prefers-color-scheme: light)" srcset="assets/readme/hero-family-v5/hero-desktop-light.webp">
-    <img src="assets/readme/hero-mobile-v6/hero-mobile-light.webp" width="960" alt="Тренажёр компетенций ИИ: основы работы с ИИ, 180 вопросов, три уровня и шесть доменов. Три формы тестов в лаймовой, бирюзовой и сиреневой палитрах">
-  </picture>
+  <img src="assets/readme/hero-social-v11/hero-dark.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
 </p>
 
-# Тренажёр компетенций ИИ
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/identity/title-dark-optimized.png">
+    <img src="assets/readme/identity/title-light-optimized.png" width="560" alt="Тренажёр компетенций ИИ">
+  </picture>
+</h1>
 
 **Практика перед экзаменом «Основы работы с ИИ» на платформе Yandex AI Studio.** Выберите уровень, ответьте на вопрос и разберите, почему ответ верен или ошибочен. Тренажёр сохраняет попытки, показывает темы для повторения и позволяет забрать свой прогресс с собой.
 
@@ -18,17 +17,17 @@
 
 Это **независимый учебный проект**. Он не создан и не одобрен Яндексом, не содержит официального банка экзамена, не выдаёт сертификаты и не гарантирует сдачу. Основа содержания: программа в редакции **4 октября 2026 года**. Ссылки текущего банка собраны в [индексе источников](docs/readme/SOURCES.md).
 
-<p align="center">
-  <a href="#быстрый-запуск"><img src="assets/readme/icons/rocket.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Быстрый&nbsp;запуск</a>&ensp;
-  <a href="#что-внутри"><img src="assets/readme/icons/levels.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Банк&nbsp;вопросов</a><br>
-  <a href="#как-проходить-тест"><img src="assets/readme/icons/practice.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Практика</a>&ensp;
-  <a href="#как-считается-результат"><img src="assets/readme/icons/score.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Оценка</a><br>
-  <a href="#сохранения-и-перенос"><img src="assets/readme/icons/storage.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Сохранения</a>&ensp;
-  <a href="#материалы-для-подготовки"><img src="assets/readme/icons/book.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Материалы</a><br>
-  <a href="#участие-и-обратная-связь"><img src="assets/readme/icons/contribute.svg" alt="" width="16" height="16" align="absmiddle">&nbsp;Участие</a>
-</p>
+## Содержание
 
-## <img src="assets/readme/icons/rocket.svg" width="24" height="24" alt=""> Быстрый запуск
+- <img src="assets/readme/icons/rocket-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Быстрый запуск](#быстрый-запуск)
+- <img src="assets/readme/icons/levels-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Банк вопросов](#что-внутри)
+- <img src="assets/readme/icons/practice-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Практика](#как-проходить-тест)
+- <img src="assets/readme/icons/score-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Оценка](#как-считается-результат)
+- <img src="assets/readme/icons/storage-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Сохранения](#сохранения-и-перенос)
+- <img src="assets/readme/icons/book-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Материалы](#материалы-для-подготовки)
+- <img src="assets/readme/icons/contribute-optimized.svg" alt="" width="16" height="16" align="absmiddle"> [Участие](#участие-и-обратная-связь)
+
+## <img src="assets/readme/icons/rocket-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Быстрый запуск
 
 Нужны **Node.js не ниже 22.12** и npm.
 
@@ -47,13 +46,16 @@ npm run dev
 
 Сервер разработки по умолчанию слушает только `127.0.0.1`.
 
-## <img src="assets/readme/icons/overview.svg" width="24" height="24" alt=""> Знакомство с тренажёром
+## <img src="assets/readme/icons/overview-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Знакомство с тренажёром
 
 Тренажёр подходит для самостоятельной подготовки, повторения отдельных тем и проверки понимания рабочих ситуаций с ИИ. На базовом уровне можно разобрать понятия; на следующих уровнях приходится выбирать подход и учитывать несколько ограничений одновременно. Все уровни доступны сразу.
 
-<img src="assets/readme/screenshots/home-light.webp" width="960" alt="Настоящий экран главной: выбор теста, карта подготовки и счётчик разобранных вопросов">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/home-dark.jpg">
+  <img src="assets/readme/screenshots/home-light.jpg" width="960" alt="Главная тренажёра: выбор уровня, карта подготовки и счётчик разобранных вопросов">
+</picture>
 
-*Главная работающего приложения в светлой теме. На снимке ещё нет пройденных вопросов.*
+*Главная тренажёра до начала первой попытки. Снимок соответствует выбранной теме.*
 
 | Задача | Что сделать | Что получите |
 | --- | --- | --- |
@@ -65,15 +67,15 @@ npm run dev
 | Перенести результаты | Скачать JSON в разделе «Прогресс» | Копию для восстановления в другом браузере или на устройстве |
 | Сохранить разбор | Скачать HTML после завершения | Самостоятельный файл с ответами, объяснениями и источниками |
 
-## <img src="assets/readme/icons/levels.svg" width="24" height="24" alt=""> Что внутри
+## <img src="assets/readme/icons/levels-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Что внутри
 
 ### Три уровня сложности
 
 | Уровень | Что проверяет | Вопросов |
-| --- | --- | ---: |
-| **1. Базовый** | Основные понятия ИИ и простые рабочие ситуации | 60 |
-| **2. Продвинутый** | Выбор подхода, диагностику ошибок, работу с ограничениями | 60 |
-| **3. Экспертный** | Комплексные ситуации с качеством, данными, доступами и экономикой | 60 |
+| --- | ---: | --- |
+| **1.&nbsp;Базовый** | Основные понятия ИИ и простые рабочие ситуации | 60 |
+| **2.&nbsp;Продвинутый** | Выбор подхода, диагностику ошибок, работу с ограничениями | 60 |
+| **3.&nbsp;Экспертный** | Комплексные ситуации с качеством, данными, доступами и экономикой | 60 |
 
 У каждого уровня свой набор. Наборы **фиксированы**: пересдача повторяет те же задания, переход на другой уровень открывает другие. Базовый обозначен лаймовым складчатым тором, продвинутый бирюзовыми арками со сферой, экспертный сиреневой треугольной лентой. Эти же формы используются в интерфейсе и на главном баннере.
 
@@ -82,7 +84,7 @@ npm run dev
 В каждом уровне на каждый домен приходится **ровно 10 заданий**. Программа настоящего экзамена задаёт другие доли: они нужны как ориентир при подготовке, но не меняют количество заданий в тренажёре.
 
 | Домен | Название | Вопросов на уровень | Доля в программе |
-| ---: | --- | ---: | ---: |
+| :---: | --- | :---: | :---: |
 | 1 | Основы ИИ и генеративного ИИ | 10 | около 14% |
 | 2 | Практическое применение в работе | 10 | около 18% |
 | 3 | Ответственный ИИ | 10 | около 12% |
@@ -94,16 +96,20 @@ npm run dev
 
 ### Три формата задания
 
+<p>
 <picture>
   <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset="assets/readme/question-formats-v9/question-formats-mobile-dark.jpg">
   <source media="(max-width: 600px) and (prefers-color-scheme: light)" srcset="assets/readme/question-formats-v9/question-formats-mobile-light.jpg">
-  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/question-formats-v9/question-formats-desktop-dark.jpg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/readme/question-formats-v9/question-formats-desktop-light.jpg">
-  <img src="assets/readme/question-formats-v9/question-formats-desktop-light.jpg" width="960" alt="Иллюстрация трёх способов ответа: один правильный вариант, весь набор верных вариантов и все пары между колонками. В банке 72 одиночных задания, 72 мультивыбора и 36 сопоставлений">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/question-formats-v10/question-formats-desktop-dark.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/readme/question-formats-v10/question-formats-desktop-light.jpg">
+  <img src="assets/readme/question-formats-v10/question-formats-desktop-light.jpg" width="960" alt="Иллюстрация трёх способов ответа: один правильный вариант, весь набор верных вариантов и все пары между колонками. В банке 72 одиночных задания, 72 мультивыбора и 36 сопоставлений">
 </picture>
+</p>
+
+Вид ответа меняется от задания к заданию. Таблица показывает, сколько раз каждый формат встречается в трёх тестах.
 
 | Формат | Что требуется | Всего в банке |
-| --- | --- | ---: |
+| --- | --- | :---: |
 | Один ответ | Выбрать один правильный вариант | 72 |
 | Мультивыбор | Выбрать весь набор правильных утверждений | 72 |
 | Сопоставление | Связать все элементы двух колонок | 36 |
@@ -112,14 +118,14 @@ npm run dev
 
 Каждое задание содержит общий разбор, объяснение каждого варианта или пары, короткую памятку и прямые ссылки на первичные материалы. Вопросы авторские; закрытые официальные задания не воспроизводятся.
 
-## <img src="assets/readme/icons/practice.svg" width="24" height="24" alt=""> Как проходить тест
+## <img src="assets/readme/icons/practice-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Как проходить тест
 
 <picture>
   <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset="assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-dark.jpg">
   <source media="(max-width: 600px) and (prefers-color-scheme: light)" srcset="assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-light.jpg">
-  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.webp">
-  <source media="(prefers-color-scheme: light)" srcset="assets/readme/learning-cycle-v7/learning-cycle-desktop-light.webp">
-  <img src="assets/readme/learning-cycle-v7/learning-cycle-desktop-light.webp" width="960" alt="Учебный цикл: редактируемый ответ, проверка с фиксацией, разбор причины и источников, повторение ошибок и пропусков в новой попытке">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/readme/learning-cycle-v7/learning-cycle-desktop-light.jpg">
+  <img src="assets/readme/learning-cycle-v7/learning-cycle-desktop-light.jpg" width="960" alt="Учебный цикл: редактируемый ответ, проверка с фиксацией, разбор причины и источников, повторение ошибок и пропусков в новой попытке">
 </picture>
 
 1. **Выберите уровень.** При необходимости включите таймер до начала попытки.
@@ -161,7 +167,9 @@ flowchart TD
 
 ### Сопоставление без перетаскивания
 
-Нажмите элемент одной колонки, затем другой. Начинать можно с любой стороны. Новая связь освобождает занятый элемент от прежней пары. Повторный выбор той же пары разрывает связь; крестик удаляет одну пару, «Сбросить связи» удаляет все пары текущего вопроса. Кнопка «Проверить» доступна после заполнения всех связей.
+На широком экране нажмите элемент одной колонки, затем другой. Начинать можно с любой стороны. Новая связь освобождает занятый элемент от прежней пары. Повторный выбор той же пары разрывает связь; крестик удаляет одну пару, «Сбросить связи» удаляет все пары текущего вопроса. Кнопка «Проверить» доступна после заполнения всех связей.
+
+На узком экране для каждого термина выберите соответствие в списке. Полное определение появится под полем. Чтобы удалить пару, выберите «Без соответствия»; выбранное соответствие освобождается от прежней пары. Проверка доступна после заполнения всех списков.
 
 ### Пример из настоящего банка
 
@@ -187,15 +195,15 @@ flowchart TD
 <summary>Посмотреть экран задания в обеих темах</summary>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/question-dark.webp">
-  <img src="assets/readme/screenshots/question-light.webp" width="960" alt="Настоящий экран первого задания: карта вопросов, варианты ответа и кнопка проверки">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/question-dark.jpg">
+  <img src="assets/readme/screenshots/question-light.jpg" width="960" alt="Настоящий экран первого задания: карта вопросов, варианты ответа и кнопка проверки">
 </picture>
 
 Снимки показывают первый вопрос работающего приложения в обычном режиме, в светлой и тёмной темах.
 
 </details>
 
-## <img src="assets/readme/icons/timer.svg" width="24" height="24" alt=""> Таймер и темп
+## <img src="assets/readme/icons/timer-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Таймер и темп
 
 По умолчанию ограничений времени нет. Переключатель **«Таймер для новых попыток»** находится над уровнями и на экране результата. Он применяется к новой полной попытке и работе над ошибками. Продолженная попытка сохраняет свой прежний режим; включить отсчёт посреди начатого теста нельзя.
 
@@ -214,7 +222,7 @@ flowchart TD
 
 Это тренировка темпа на фиксированных наборах, а не точная симуляция всех правил официального экзамена.
 
-## <img src="assets/readme/icons/score.svg" width="24" height="24" alt=""> Как считается результат
+## <img src="assets/readme/icons/score-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Как считается результат
 
 За полностью правильное задание начисляется **1 балл**, за ошибку или пропуск **0 баллов**. Частичного зачёта нет: в мультивыборе должен совпасть весь набор, в сопоставлении все пары. В полном тесте каждое из 60 заданий имеет одинаковый вес.
 
@@ -230,9 +238,12 @@ flowchart TD
 
 ### Результат, разбор и следующий шаг
 
-<img src="assets/readme/screenshots/results-light.webp" width="960" alt="Настоящий экран макета результата: 48 из 60, 80%, 12 ошибок и рекомендации по темам">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/results-dark.jpg">
+  <img src="assets/readme/screenshots/results-light.jpg" width="960" alt="Завершённая учебная попытка: 48 правильных ответов из 60, 80%, 12 ошибок и рекомендации по темам">
+</picture>
 
-*Работающее приложение, сценарий «Ровно 80%»: 48 правильных ответов, 12 ошибок, 0 пропусков. Это воспроизводимый макет для демонстрации интерфейса, а не результат реального ученика.*
+*Учебный пример: 48 правильных ответов, 12 ошибок, 0 пропусков. Данные демонстрационные; экран соответствует выбранной теме.*
 
 После завершения доступны общий итог, показатели шести доменов, приоритетные темы для повторения и план подготовки. В разборе можно отфильтровать ошибки, пропуски, правильные ответы, закладки и конкретный домен. Рекомендации различают ошибочный ответ и ещё не проверенную тему.
 
@@ -244,7 +255,7 @@ flowchart TD
 
 JSON-копия и HTML-разбор решают разные задачи: **JSON переносит прогресс**, **HTML сохраняет читаемый разбор**. Импорт HTML в тренажёр не предусмотрен.
 
-## <img src="assets/readme/icons/storage.svg" width="24" height="24" alt=""> Сохранения и перенос
+## <img src="assets/readme/icons/storage-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Сохранения и перенос
 
 В обычном режиме прогресс находится на устройстве в `localStorage` браузера. Учётной записи, серверной базы и автоматической синхронизации между устройствами нет. Сохраняются незавершённые попытки, позиция, черновики, связи, закладки, проверенные ответы и история результатов.
 
@@ -302,25 +313,28 @@ flowchart TD
 
 JSON содержит весь сохранённый прогресс и историю, HTML содержит ответы и разбор одной выбранной попытки. Храните эти файлы как свои учебные данные; для сообщения об ошибке лучше использовать искусственный пример.
 
-## <img src="assets/readme/icons/book.svg" width="24" height="24" alt=""> Материалы для подготовки
+## <img src="assets/readme/icons/book-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Материалы для подготовки
 
 В разделе «Материалы» собраны короткие опоры по шести доменам, темы заданий, поиск и фильтрация источников. Отсюда можно перейти к первичным материалам и семи официальным рекомендациям программы.
 
-<img src="assets/readme/screenshots/materials-light.webp" width="960" alt="Настоящий экран материалов: шесть областей знаний, поиск и краткие опоры по доменам">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/materials-dark.jpg">
+  <img src="assets/readme/screenshots/materials-light.jpg" width="960" alt="Материалы для подготовки: шесть областей знаний, поиск и краткие опоры по доменам">
+</picture>
 
 *Экран материалов работающего приложения.*
 
 Материалы помогают объяснить принцип своими словами, затем проверить его на задании. Внешние страницы и курсы принадлежат их правообладателям; в проекте находятся ссылки и самостоятельные объяснения, а не копии курсов.
 
-Источники текущего банка `2026-10-09.2` перечислены [по доменам и ID вопросов](docs/readme/SOURCES.md). Актуальные функции сервисов, тарифы и числовые лимиты проверяйте у их владельцев.
+В [списке источников](docs/readme/SOURCES.md) можно посмотреть, на какие материалы опираются вопросы и где используются ссылки.
 
-## <img src="assets/readme/icons/palette.svg" width="24" height="24" alt=""> Оформление и доступность
+## <img src="assets/readme/icons/palette-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Оформление и доступность
 
 Солнце и луна в шапке переключают светлую и тёмную темы. При первом открытии применяется тема системы, затем выбор сохраняется отдельно от результатов и синхронизируется между вкладками. Переключение не сбрасывает текущий вопрос или черновик. Анимации учитывают `prefers-reduced-motion`.
 
 Вопросы имеют текстовые статусы и видимые состояния выбора; оценка не должна считываться только по цвету. Есть ссылка «Перейти к содержимому», видимые фокусы, клавиатурное управление сопоставлением, поиск и фильтры. Модальное окно удерживает фокус и возвращает его после закрытия; доступна печать результата.
 
-## <img src="assets/readme/icons/help.svg" width="24" height="24" alt=""> Частые вопросы
+## <img src="assets/readme/icons/help-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Частые вопросы
 
 <details>
 <summary>Это официальный тренажёр Яндекса?</summary>
@@ -378,7 +392,7 @@ JSON содержит весь сохранённый прогресс и ист
 
 </details>
 
-## <img src="assets/readme/icons/contribute.svg" width="24" height="24" alt=""> Участие и обратная связь
+## <img src="assets/readme/icons/contribute-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Участие и обратная связь
 
 Ошибки приложения, неточности заданий, предложения и вопросы принимаются через [формы GitHub Issues](https://github.com/ed-would/yandex-ai-studio-exam-lab/issues/new/choose).
 
@@ -386,7 +400,7 @@ JSON содержит весь сохранённый прогресс и ист
 
 Порядок внесения изменений описан в [CONTRIBUTING.md](CONTRIBUTING.md), правила общения в [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), маршруты помощи в [SUPPORT.md](SUPPORT.md). О потенциальной уязвимости сообщайте **приватно по [SECURITY.md](SECURITY.md)**. Проект поддерживается добровольно; сроки ответа и исправления не гарантированы.
 
-## <img src="assets/readme/icons/license.svg" width="24" height="24" alt=""> Лицензия
+## <img src="assets/readme/icons/license-optimized.svg" width="24" height="24" align="absmiddle" alt=""> Лицензия
 
 Автор: [Ed Would](https://github.com/ed-would). Авторский код, вопросы, объяснения и собственная графика распространяются по [MIT](LICENSE): проект можно запускать, изменять, распространять и использовать коммерчески с сохранением уведомления об авторских правах и текста лицензии.
 
@@ -398,10 +412,3 @@ JSON содержит весь сохранённый прогресс и ист
 | Включённые зависимости | Лицензии формируются Vite в `dist/.vite/license.md` |
 | Обозначения продуктов и брендовые материалы Яндекса | Принадлежат правообладателям; MIT проекта на них не распространяется |
 | Внешние статьи и курсы | Условия соответствующих правообладателей; в проекте только ссылки |
-
-Если используете проект как основу тренажёра, курса или публикации, автор просит указать первоисточник:
-
-> Ed Would, «Тренажёр компетенций ИИ»: https://github.com/ed-would/yandex-ai-studio-exam-lab
-
-Это просьба автора, а не дополнительное ограничение MIT. Метаданные для цитирования находятся в [CITATION.cff](CITATION.cff).
-

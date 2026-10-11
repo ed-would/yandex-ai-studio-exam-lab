@@ -15,7 +15,7 @@ DARK = [
 ]
 GEOMETRY = [
     "studio-01-three-trajectories.webp", "footer-orbital-sectors.webp",
-    "practice-folded-paths.webp", "progress-light-facet-weave-v2.png",
+    "progress-light-facet-weave-v2.png",
     "study-phase-rosettes.jpg", "level-1-triangles.jpg",
     "level-2-woven-orbits-v2.jpg",
     "studio-03-mint-intersections.webp",

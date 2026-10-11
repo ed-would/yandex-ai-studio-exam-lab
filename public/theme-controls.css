@@ -43,8 +43,8 @@
   --control-ink: #fff;
   --success-text: #267045;
   --success-bg: #e8f3e9;
-  --error-text: #9d392b;
-  --error-bg: #fff0eb;
+  --error-text: #d32f2f;
+  --error-bg: #fff1f1;
   --warning-text: #8a5a00;
   --info-text: #215eae;
   --info-bg: #f3f7fd;
@@ -97,23 +97,14 @@ html[data-theme='dark'] {
   --action-active-ink: var(--ui-action-active-ink);
   --focus: var(--ui-accent);
   --control-ink: #172327;
-  --success-text: #9cddb1;
+  --success-text: #74d680;
   --success-bg: #20372e;
-  --error-text: #f1b3a4;
-  --error-bg: #412b32;
+  --error-text: #ff5c5c;
+  --error-bg: #3b2020;
   --warning-text: #f2c94c;
   --info-text: #9cbeff;
   --info-bg: #222b3a;
   --info-line: #455875;
-}
-.ui-icon-gradient > stop:nth-child(1) {
-  stop-color: var(--level-1-accent);
-}
-.ui-icon-gradient > stop:nth-child(2) {
-  stop-color: var(--level-2-accent);
-}
-.ui-icon-gradient > stop:nth-child(3) {
-  stop-color: var(--level-3-accent);
 }
 .theme-toggle {
   --accent: var(--ui-accent);

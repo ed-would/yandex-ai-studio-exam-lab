@@ -943,6 +943,27 @@ test('HTML-отчёт содержит исходные ответы, поясн
   assert.equal((html.match(/<article>/gu) || []).length, 60);
 });
 
+test('HTML-разбор локализует дробный, нулевой и полный результат одинаково с интерфейсом', () => {
+  const ids = questions
+    .filter((q) => q.level === 1)
+    .slice(0, 12)
+    .map((q) => q.id);
+  for (const [correct, percent] of [
+    [0, '0'],
+    [7, '58'],
+    [12, '100'],
+  ]) {
+    let a = makeAttempt(1, questions, 'mistakes', ids, start);
+    for (const id of ids.slice(0, correct)) {
+      const q = questions.find((item) => item.id === id);
+      a = submitAnswer(a, q, q.type === 'match' ? q.pairs : q.correct, checked);
+    }
+    const html = createHtmlReport(finishAttempt(a, ended), questions);
+    assert.ok(html.includes(`${percent}%`));
+    assert.doesNotMatch(html, /58\.3%/u);
+  }
+});
+
 test('HTML-отчёт экранирует тексты, пояснения, даты, пары и атрибуты ссылок', () => {
   const marker = `<img src=x onerror="alert('x')"> & <script>alert(1)</script>`;
   const q = clone(at('single'));
