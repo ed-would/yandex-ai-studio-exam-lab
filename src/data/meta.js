@@ -1,6 +1,6 @@
 export const APP_NAME = 'Тренажёр компетенций ИИ';
 export const APP_TAGLINE = 'Практика перед экзаменом';
-export const BANK_VERSION = '2026-10-09.2';
+export const BANK_VERSION = '2026-10-12.1';
 export const PROGRAM_DATE = '4 октября 2026';
 export const RESEARCH_DATE = '9 октября 2026';
 export const PROGRAM_URL = 'https://ai-basic-competencies.website.yandexcloud.net/';
