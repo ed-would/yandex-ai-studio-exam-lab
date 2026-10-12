@@ -890,8 +890,8 @@
         "url": "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/"
       },
       {
-        "title": "Как писать промпты и исправлять плохие ответы: Yandex Cloud",
-        "url": "https://yandex.cloud/ru/blog/gpt-prompting-guide"
+        "title": "Распознавание текста на изображениях: Yandex Vision OCR",
+        "url": "https://aistudio.yandex.ru/ru/docs/vision/concepts/ocr/"
       }
     ],
     "options": [
@@ -1096,7 +1096,7 @@
       },
       {
         "id": "d",
-        "text": "Агент с поиском правил, чтением заказа и подтверждением отправки.",
+        "text": "Агент с поиском правил, чтением заказа и подготовкой запроса на возврат, отправляющий его только после явного подтверждения сотрудника.",
         "explanation": "Все требуемые сведения и действия доступны, а контроль сотрудника сохраняется."
       }
     ],
