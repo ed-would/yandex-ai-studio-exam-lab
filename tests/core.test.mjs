@@ -943,14 +943,14 @@ test('HTML-отчёт содержит исходные ответы, поясн
   assert.equal((html.match(/<article>/gu) || []).length, 60);
 });
 
-test('HTML-разбор локализует дробный, нулевой и полный результат одинаково с интерфейсом', () => {
+test('HTML-разбор показывает десятые и убирает лишний ноль у целого процента', () => {
   const ids = questions
     .filter((q) => q.level === 1)
     .slice(0, 12)
     .map((q) => q.id);
   for (const [correct, percent] of [
     [0, '0'],
-    [7, '58'],
+    [7, '58,3'],
     [12, '100'],
   ]) {
     let a = makeAttempt(1, questions, 'mistakes', ids, start);

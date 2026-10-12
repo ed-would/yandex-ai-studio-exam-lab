@@ -14,7 +14,7 @@ window.scrollTo = () => {};
 window.HTMLElement.prototype.scrollIntoView = () => {};
 const { render } = await import('preact');
 const { act } = await import('preact/test-utils');
-const { html } = await import('../src/components/ui.js');
+const { formatPercent, html } = await import('../src/components/ui.js');
 const { App } = await import('../src/app.js');
 const { freshState, makeBackup, writeTabProgress } = await import('../src/core/storage.js');
 const { makeAttempt, finishAttempt, moveCursor, scoreAttempt, setDraft, submitAnswer } =
@@ -157,6 +157,12 @@ test('пустое повреждённое сохранение скачива�
   assert.equal(storage.getItem(key), '');
 });
 
+test('процент показывает десятые и не добавляет ноль к целому значению', () => {
+  assert.equal(formatPercent(65.8), '65,8');
+  assert.equal(formatPercent(80), '80');
+  assert.equal(formatPercent(100), '100');
+});
+
 test('макеты переключают уровни и результаты, переживают повторный монтаж и не меняют настоящий прогресс', async (t) => {
   const realKey = 'ai-practicum:v1:/';
   const before = window.localStorage.getItem(realKey);
@@ -174,7 +180,7 @@ test('макеты переключают уровни и результаты, 
   assert.equal(get('.score-number').textContent, '80%');
   await click(findButton('Следующий'));
   assert.equal(window.location.hash, '#/results/preview-1-below95');
-  assert.equal(get('.score-number').textContent, '93%');
+  assert.equal(get('.score-number').textContent, '93,3%');
   const select = get('select[aria-label="Тест для просмотра"]');
   await act(() => {
     select.value = '3';
@@ -182,16 +188,17 @@ test('макеты переключают уровни и результаты, 
   });
   assert.equal(window.location.hash, '#/results/preview-3-below95');
   assert.ok(get('.results-page.theme-3'));
+  assert.equal(get('.score-number').textContent, '93,3%');
   await unmount();
   await previewMount();
-  assert.equal(get('.score-number').textContent, '93%');
+  assert.equal(get('.score-number').textContent, '93,3%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.history-table'), null);
   await click(findButton('Открыть результат'));
-  assert.equal(get('.score-number').textContent, '93%');
+  assert.equal(get('.score-number').textContent, '93,3%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   assert.equal(window.localStorage.getItem(realKey), raw);

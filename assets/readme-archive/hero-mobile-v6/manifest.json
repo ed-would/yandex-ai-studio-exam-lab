@@ -1,0 +1,33 @@
+{
+  "family": "hero-mobile-v6",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "4c3b47b"
+  ],
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-dark-final.txt"
+  ],
+  "finalOutputs": [
+    {
+      "theme": "dark",
+      "layout": "mobile",
+      "archive": "hero-mobile-dark.webp",
+      "historicalPath": "assets/readme/hero-mobile-v6/hero-mobile-dark.webp",
+      "publishedIn": [
+        "4c3b47b"
+      ],
+      "sha256": "b6f1bdf4df0754b742d54fbba9fff18df15616ae60f928ec022145ad1a25d2c1"
+    },
+    {
+      "theme": "light",
+      "layout": "mobile",
+      "archive": "hero-mobile-light.webp",
+      "historicalPath": "assets/readme/hero-mobile-v6/hero-mobile-light.webp",
+      "publishedIn": [
+        "4c3b47b"
+      ],
+      "sha256": "c71cfd2549029489b255c4bf06022137751a5413d28af92c6b889b2213a660ad"
+    }
+  ]
+}

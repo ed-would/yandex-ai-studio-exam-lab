@@ -1,97 +1,37 @@
 {
-  "nativeGeneration": true,
-  "artworkEditability": "Flattened raster; prompt and originals retained. Redraw with imagegen for scene edits.",
-  "labelsEditability": "Local HTML, exact Unbounded450 and Arial; export through Playwright MCP.",
-  "jpgExport": {
-    "quality": 95,
-    "subsampling": 0,
-    "progressive": true
-  },
-  "files": [
+  "family": "learning-cycle-mobile-v8",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "4c3b47b",
+    "d492c44"
+  ],
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-dark.txt",
+    "prompt-light.txt"
+  ],
+  "finalOutputs": [
     {
-      "file": "artwork-mobile-dark.png",
-      "bytes": 1985450,
-      "sha256": "4f15a1db3298bcb8e7f03834bc9167095ed9b6e9e86b839db9fd5ef5d9fe31db"
+      "theme": "dark",
+      "layout": "mobile",
+      "readme": "assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-dark.jpg",
+      "historicalPath": "assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-dark.jpg",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "5401ddebc326824e5ed9c42438f52f8a13f4aaf8ec7677931aa9860fec03d474"
     },
     {
-      "file": "artwork-mobile-light.png",
-      "bytes": 1807727,
-      "sha256": "c6794eb932b4ddd0c3ed56a3cbba8333f06326e5015670a07d619cfc954cb321"
-    },
-    {
-      "file": "background-mobile-dark.png",
-      "bytes": 1824522,
-      "sha256": "b920720f1ca8921800a39d711d3e00e3e0713317f2887c98fe146cb7b0fe9016"
-    },
-    {
-      "file": "background-mobile-light.png",
-      "bytes": 1650834,
-      "sha256": "722e565c25bf2faca3bd1258d27f15a0fce2ebaa74984ac7d198e093dec9dcfd"
-    },
-    {
-      "file": "comparison.png",
-      "bytes": 672730,
-      "sha256": "62ca6d30541e6b2e71812ef6616e0dfd649e380c89d5357ce92c5d701b2b48a9"
-    },
-    {
-      "file": "learning-cycle-mobile-dark.jpg",
-      "bytes": 452129,
-      "sha256": "0bdcb8b67dc9d2904dac37a7b9646148b3d203bfb4e6ed69e1e377f060132da5"
-    },
-    {
-      "file": "learning-cycle-mobile-dark.png",
-      "bytes": 1883066,
-      "sha256": "8f278d2753b07dbec45bf34d18c0b7e8d741d8eb5fb7ac30cc65e1499024742a"
-    },
-    {
-      "file": "learning-cycle-mobile-dark.webp",
-      "bytes": 191890,
-      "sha256": "50d15032eb3ae01afd6a4adc01d7526502859f03a2401153676b6c6178a4a57d"
-    },
-    {
-      "file": "learning-cycle-mobile-light.jpg",
-      "bytes": 412828,
-      "sha256": "e2cf6fde9ed74cd75e1748e0d32d71623de2a7a604b6f9a28bb8f7f679204db5"
-    },
-    {
-      "file": "learning-cycle-mobile-light.png",
-      "bytes": 1708327,
-      "sha256": "c1779239fce9b72508d3c0fa4395faaa573439b44aeffc0a9428e9c23e70acd0"
-    },
-    {
-      "file": "learning-cycle-mobile-light.webp",
-      "bytes": 155700,
-      "sha256": "19dc2b3a897e006c6c3d45e142bbcffc9beab175990ad9d259e381bdadb4d169"
-    },
-    {
-      "file": "mobile-dark.layout.html",
-      "bytes": 3449,
-      "sha256": "e38f20193f1f29706384f1984534f95beab9af8a1ea6bed07f93262adae59f8d"
-    },
-    {
-      "file": "mobile-light.layout.html",
-      "bytes": 3451,
-      "sha256": "2353aff4719ef6928808db098e7e422d9398ca252bf2c10e179da9f1dbebdbe0"
-    },
-    {
-      "file": "preview-375.png",
-      "bytes": 526063,
-      "sha256": "45591cc1ac299f14e2ebfedfa2fbdddc8f59f96f28f973412881c3dde0ae76f1"
-    },
-    {
-      "file": "preview.html",
-      "bytes": 964,
-      "sha256": "4028aec5e33aeded88bc04a58c0f652dfe48d42ecc4d7a817fc3fd901e4de282"
-    },
-    {
-      "file": "prompt-dark.txt",
-      "bytes": 1818,
-      "sha256": "a63f4eec14c0ca95a965aeb2448b80de78d9f7f9758f359f3fabe82569f5b51e"
-    },
-    {
-      "file": "prompt-light.txt",
-      "bytes": 1052,
-      "sha256": "a0eb843744869078dcacfd6e2ecb540e5a727f1958f1d916eabcacf151121742"
+      "theme": "light",
+      "layout": "mobile",
+      "readme": "assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-light.jpg",
+      "historicalPath": "assets/readme/learning-cycle-mobile-v8/learning-cycle-mobile-light.jpg",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "0b43fd74382bf7ec44eea159c7a77b997a5d0b6b1b933ec528d3c40c311cd844"
     }
   ]
 }

@@ -1,112 +1,32 @@
 {
-  "generator": "built-in image_gen",
-  "rawArtwork": "Flattened regenerated 3D scenes; no raster post-painting",
-  "editableSources": [
-    "desktop-light.layout.html",
-    "desktop-dark.layout.html"
+  "family": "question-formats-v10",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "d492c44"
   ],
-  "export": "Playwright MCP PDF after fonts/images ready; Poppler raster at 96 dpi; sips JPEG quality92",
-  "dimensions": {
-    "nativeArtwork": [
-      1402,
-      1122
-    ],
-    "final": [
-      1600,
-      1280
-    ]
-  },
-  "paletteSource": "DESIGN.md and public/theme-controls.css",
-  "fonts": "Unbounded 450 (SIL OFL 1.1) and Arial",
-  "facts": {
-    "single": 72,
-    "multiple": 72,
-    "matching": 36,
-    "radioHoles": 4,
-    "radioSelected": 1,
-    "checkboxes": 5,
-    "checkboxesSelected": 2,
-    "matchingPairs": 3
-  },
-  "captionPositions": {
-    "light": {
-      "single": [
-        70,
-        855
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-desktop-dark.md",
+    "prompt-desktop-light.md"
+  ],
+  "finalOutputs": [
+    {
+      "theme": "dark",
+      "layout": "desktop",
+      "readme": "assets/readme/question-formats-v10/question-formats-desktop-dark.jpg",
+      "publishedIn": [
+        "d492c44"
       ],
-      "multiple": [
-        835,
-        495
-      ],
-      "matching": [
-        915,
-        1100
-      ]
-    },
-    "dark": {
-      "single": [
-        70,
-        900
-      ],
-      "multiple": [
-        835,
-        530
-      ],
-      "matching": [
-        915,
-        1100
-      ]
-    }
-  },
-  "userCorrection": "Matching title, count and description aligned to image left edge at x915; prior shared-column x835 removed",
-  "readmeChangedOnly": {
-    "light": 2,
-    "dark": 1
-  },
-  "files": {
-    "question-formats-desktop-light.png": {
-      "bytes": 1177071,
-      "sha256": "e9772e3b86c28c26b37a1adbf6c445910b8ce162449f0d8fe4338934ccd616b9"
-    },
-    "question-formats-desktop-light.jpg": {
-      "bytes": 322653,
-      "sha256": "8911d3e0373744a20a2667ae3b64e98e701d55f12695d4bfaf4f4e94dd79248c"
-    },
-    "brief.json": {
-      "bytes": 1144,
-      "sha256": "c3128f5d0bab7c2d090b5cd54b9ae1fe1bed32dbbe3485c476fdb42c23915af1"
-    },
-    "desktop-light.layout.html": {
-      "bytes": 3510,
-      "sha256": "f2e4cd89911b1b30bb3d4936530c5dbe5d917af8ad192c97ffb4e17514869716"
-    },
-    "desktop-dark.layout.html": {
-      "bytes": 3480,
-      "sha256": "ab37c1a0e2056bf4cadd19c63f4c97120d51201f8273297e5a5ca2cc2906c8fd"
-    },
-    "artwork-desktop-light.png": {
-      "bytes": 1550865,
-      "sha256": "ccf74ec3004c650816152c3e18012a9995958f2c1ab997c6c18b76d64ca3a21e"
-    },
-    "prompt-desktop-light.txt": {
-      "bytes": 2930,
-      "sha256": "b98ac863beada2ede9d918ff0e1dd0b8f85fdecf3e78325b953d36bc3ad07445"
-    },
-    "artwork-desktop-dark.png": {
-      "bytes": 1760826,
-      "sha256": "ebea3d711d705c47c3952967abc19691b56f23388104338286809655413574ae"
-    },
-    "question-formats-desktop-dark.jpg": {
-      "bytes": 352301,
       "sha256": "01f5f3a9e826a3692f9afb48e9dba4cdc168b576151a5afbf4129bbdadd7bbde"
     },
-    "question-formats-desktop-dark.png": {
-      "bytes": 1327558,
-      "sha256": "d0dae702ae1c0538ff83593916c3d341ace5186298d2f5f22174a4c1c9e8220c"
-    },
-    "prompt-desktop-dark.txt": {
-      "bytes": 2948,
-      "sha256": "a4818875ddc94906e756f72d1f0581be0e9b7afec39908cb66820daa85094d09"
+    {
+      "theme": "light",
+      "layout": "desktop",
+      "readme": "assets/readme/question-formats-v10/question-formats-desktop-light.jpg",
+      "publishedIn": [
+        "d492c44"
+      ],
+      "sha256": "8911d3e0373744a20a2667ae3b64e98e701d55f12695d4bfaf4f4e94dd79248c"
     }
-  }
+  ]
 }
