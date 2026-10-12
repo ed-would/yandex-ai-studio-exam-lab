@@ -31,10 +31,8 @@
   "project_references": [
     "public/fonts/unbounded-cyrillic-variable.woff2",
     "public/fonts/unbounded-latin-variable.woff2",
-    "public/fonts/OFL.txt",
     "public/images/brand/trainer-abstract-256-optimized.webp",
     "public/images/brand/ai-studio-white.svg"
   ],
-  "style_reference": "assets/readme-generation-attempts/question-formats-v9/question-formats-desktop-dark.png",
   "notes": "Rendered from the unchanged editable composition at GitHub recommended dimensions. Original HTML and SVG marks rasterized afresh at the target dimensions. Source artwork PNGs retain their material texture."
 }

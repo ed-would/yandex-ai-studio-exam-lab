@@ -9,8 +9,8 @@ Preact + htm + Vite; Russian AI exam trainer. Load only task-relevant references
 - Progress and import: [storage](src/core/storage.js), [core tests](tests/core.test.mjs).
 - UI and themes: [design system](DESIGN.md), [components](src/components/), [styles](src/styles.css), [theme](src/theme.css), [HIG plan](docs/plans/audit-apple-hig.md).
 - Result previews: [dev fixtures](src/dev/); `npm run dev:results`.
-- Design assets: [design lab](docs/design-lab/), [public assets](public/).
-- Verification: [tests](tests/), [test report](docs/TEST_REPORT.md), [code audit](docs/CODE_AUDIT.md).
+- Design assets: [public assets](public/).
+- Verification: [tests](tests/).
 - Plans and publication: [plans](docs/plans/), [publication guide](docs/GITHUB_PUBLICATION.md).
 
 Code changes: `npm run check`. Browser verification: global `/pw` (Playwright MCP).

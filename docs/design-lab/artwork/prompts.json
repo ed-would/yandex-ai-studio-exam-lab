@@ -28,21 +28,21 @@
     },
     {
       "file": "docs/design-lab/artwork/level-1-foundations.png",
-      "source": "foundations.jpg",
+      "source": "public/images/artwork/foundations.jpg",
       "prompt": "Image 1 is the only edit target: the existing basic-level training artwork. Make a transparent-background cutout while preserving the exact recognizable sculpture from the source: one tilted open oval vessel made of layered concentric satin lime-yellow fins, with the same broad opening, same number and order of fins, same proportions, same angle, pale aqua edge accents, faint lilac iridescence, and soft studio lighting. Do not redesign or add details. Remove the pale green backdrop completely; the central open aperture between the fins must also be transparent. Preserve only the sculpture and a very subtle natural contact shadow as soft semitransparent pixels. Recompose the complete silhouette, without cropping any tip or edge, in the center of a square 1024 by 1024 transparent RGBA canvas. Leave at least 15 percent clear transparent padding around the full silhouette on all four sides; sculpture should occupy about 68 percent of the square. High-quality clean antialiased edge, no color fringe or halo. Deliver a PNG with genuine transparency. No backdrop, platform, text, logo, border, new objects, or extra ornaments.",
       "format": "PNG with transparency",
       "usage": "Progress cards only"
     },
     {
       "file": "docs/design-lab/artwork/level-2-application.png",
-      "source": "applied.jpg",
+      "source": "public/images/artwork/applied.jpg",
       "prompt": "Image 1 is the only edit target: the existing advanced-level training artwork. Make a transparent-background cutout while preserving the exact recognizable source sculpture: two broad satin aqua and mint arches interlocking as the same asymmetric bridge, same openings, same proportions and direction, with the one small floating aqua-lime orb above. Keep the original cool teal inner surfaces, subtle citron highlights, smooth tactile material, and diffuse studio lighting. Do not redesign the arches, move the orb relative to the sculpture, or add details. Remove the pale aqua backdrop completely; all visible negative-space openings through and between the arches must also be transparent. Preserve only the full sculpture and a very subtle natural ground/contact shadow as semitransparent pixels. Recompose the entire sculpture and orb, without cropping any part, centered on a square 1024 by 1024 transparent RGBA canvas. Leave at least 15 percent clear transparent padding around the complete assembly on all four sides; the assembly should occupy about 68 percent of the square. High-quality clean antialiased edges, no matte fringe or halo. Deliver a PNG with genuine transparency. No backdrop, platform, text, logo, border, new objects, or ornaments.",
       "format": "PNG with transparency",
       "usage": "Progress cards only"
     },
     {
       "file": "docs/design-lab/artwork/level-3-expert.png",
-      "source": "systems.jpg",
+      "source": "public/images/artwork/systems.jpg",
       "prompt": "Image 1 is the only edit target: the existing expert-level training artwork. Make a transparent-background cutout while preserving the exact recognizable source sculpture: a compact interwoven open knot of broad folded fanlike sheets, same layered lavender and violet fins, same triangular center opening, same three dark teal inset ends, same restrained pale-lime edge highlights, same proportions, angles, depth, and diffuse studio lighting. Do not redesign or add details. Remove the pale lilac backdrop completely; the negative space inside the central opening and between separate folded layers must be transparent. Preserve only the complete sculpture and a very subtle natural contact shadow as semitransparent pixels. Recompose the whole form, without cropping any tip or edge, centered on a square 1024 by 1024 transparent RGBA canvas. Leave at least 15 percent clear transparent padding around the silhouette on every side; sculpture should occupy about 68 percent of the square. High-quality clean antialiased edges, no matte fringe or halo. Deliver a PNG with genuine transparency. No backdrop, platform, text, logo, border, new objects, or extra ornaments.",
       "format": "PNG with transparency",
       "usage": "Progress cards only"
@@ -80,7 +80,6 @@
       "webp_bytes": 775632
     },
     {
-      "file": "public/images/artwork/studio-02-lilac-phase.webp",
       "title": "Сиреневый сдвиг",
       "prompt": "Use case: stylized-concept. Asset type: original geometric website backdrop, a sibling in a coherent AI-study visual collection. Image 1 is a STYLE REFERENCE ONLY: preserve its refined flat mathematical geometry, crisp curves, clean negative-space gaps, softly shaded planar bands, gentle pastel contrast, and airy composition. Create a completely new pattern and silhouette; do not repeat the reference's paired orbital spirals. No typography, logo, watermark, interface, photographed 3D objects, glossy materials, thick walls, staircase sculpture, hexagons, bubbles, neon, glow, dark shadows, fine noisy texture, or rainbow mixing. Gradients must be restrained and confined to individual clearly defined geometric bands. This is an entire block background, not an isolated object on a pedestal. Wide landscape 2:1 canvas, about 2000x1000 proportions. Dominant pale dusty-lilac background #ddd4e8. On the right 45 percent, invent a parametric optical pattern of nested rounded rhombi and offset superellipses, each contour rotated a few degrees and slightly shifted. Their intersections create a precise asymmetric lattice of curved diamond-shaped openings, smooth pinched corners, and separated lilac bands. Medium muted violet #a78bbd is the main pattern color, with two small mint-teal #a0c6be intervals and a very restrained pale-citron edge. Planar graphic with soft internal gradients, not a folded-paper sculpture or hard triangular tiles. Keep the left 55 percent uniformly calm for text. Geometry gradually opens up towards the center; deliberate rhythm and expressive large forms, no orbital rings or spirals.",
       "original": "docs/design-lab/artwork/backgrounds/studio-series-01/studio-02-lilac-phase.png",

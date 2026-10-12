@@ -1,11 +1,9 @@
 {
   "generated_with": "built-in image_gen",
   "created": "2026-10-11",
-  "reference": "public/images/artwork/studio-02-lilac-phase.webp",
   "generation_mode": "New generation from a unified geometric construction description, without an input image.",
   "design": "Five matching nested rounded-diamond modules on a staggered lattice; closed contours, consistent spacing and fixed color roles.",
   "source": "docs/design-lab/artwork/studio-02-lilac-phase-refined.png",
-  "web_asset": "public/images/artwork/studio-02-lilac-phase-refined.webp",
   "width": 1774,
   "height": 887,
   "png_bytes": 1382847,

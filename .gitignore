@@ -8,3 +8,11 @@ coverage/
 !.env.example
 .playwright-mcp/
 .readme-atelier-preview*.html
+/artifacts/
+/.presentation-build/
+/test-results/
+/playwright-report/
+/blob-report/
+__pycache__/
+*.py[cod]
+/.venv/

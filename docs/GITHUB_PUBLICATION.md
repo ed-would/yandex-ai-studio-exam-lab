@@ -47,7 +47,7 @@ GitHub не требует обязательного набора community-ф�
 
 GitHub принимает PNG, JPG и GIF размером меньше 1 MB. Рекомендуемый минимум: 640 × 320 px, а размер 1280 × 640 px даёт лучшее отображение. Итоговый JPEG соответствует этим требованиям. Источник: [официальная документация GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview).
 
-Чтобы загрузить его, откройте **Settings → Social preview → Edit → Upload an image…**. Обложка не активируется от одного наличия файла в репозитории. Сейчас файл подготовлен локально, настройка GitHub не менялась. Метаданные, проверки и текущее состояние описаны в [Design Lab](design-lab/social-preview/README.md), редактируемый исходник находится в [`source/layout.html`](design-lab/social-preview/source/layout.html).
+Чтобы загрузить его, откройте **Settings → Social preview → Edit → Upload an image…**. Обложка не активируется от одного наличия файла в репозитории. Сейчас файл подготовлен локально, настройка GitHub не менялась.
 
 ## Релизы и обнаружение
 

@@ -17,4 +17,4 @@
 
 Исторические записи взяты из Git-коммита `4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d`; текущие ссылки на изображения сверены с `d492c44`.
 
-Отдельный промпт для текущего баннера `hero-social-v11` в истории Git не найден. Промпт GitHub social preview хранится отдельно в [Design Lab](../../docs/design-lab/social-preview/source/generation-prompts.md).
+Отдельный промпт для текущего баннера `hero-social-v11` в истории Git не найден.
