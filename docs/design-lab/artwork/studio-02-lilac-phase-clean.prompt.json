@@ -1,10 +1,8 @@
 {
   "generated_with": "built-in image_gen",
   "created": "2026-10-11",
-  "reference": "public/images/artwork/studio-02-lilac-phase.webp",
   "generation_mode": "New generation from a geometric construction description, without an input image.",
   "source": "docs/design-lab/artwork/studio-02-lilac-phase-clean.png",
-  "web_asset": "public/images/artwork/studio-02-lilac-phase-clean.webp",
   "width": 1774,
   "height": 887,
   "png_bytes": 1316665,
