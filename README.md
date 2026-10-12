@@ -4,6 +4,10 @@
 
 # <img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="absmiddle" alt=""> Тренажёр компетенций ИИ
 
+[![Тематика: Yandex AI Studio](https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat)](https://aistudio.yandex.ru/)
+[![Quiz: 180 вопросов](https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-6841AB?style=flat)](#банк-вопросов)
+[![Лицензия MIT](https://img.shields.io/badge/License-MIT-6841AB?style=flat)](LICENSE)
+
 **Практика перед экзаменом «Основы работы с ИИ» на платформе Yandex AI Studio.** Выберите уровень, ответьте на вопрос и разберите, почему ответ верен или ошибочен. Тренажёр сохраняет попытки, показывает темы для повторения и позволяет забрать свой прогресс с собой.
 
 **180 авторских вопросов · 3 уровня сложности по 60 заданий · 6 доменов · русский язык · без регистрации.**
