@@ -102,7 +102,7 @@ export function History({ state, questions, hasProtectedData = false, onClearLev
         hasAnswered
           ? stats.exams.slice(-8).map((a) => {
               const score = scoreAttempt(a, questions);
-              return html`<a href=${`#/results/${a.id}`} class="chart-column" aria-label=${`Открыть разбор результата: ${formatDate(a.completedAt)}, ${formatPercent(score.percent)}%`} title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${Math.round(score.percent)}</span><i aria-hidden="true" style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`;
+              return html`<a href=${`#/results/${a.id}`} class="chart-column" aria-label=${`Открыть разбор результата: ${formatDate(a.completedAt)}, ${formatPercent(score.percent)}%`} title=${`${formatDate(a.completedAt)}: ${formatPercent(score.percent)}%`}><span>${formatPercent(score.percent)}</span><i aria-hidden="true" style=${{ height: `${Math.max(score.percent, 3)}%` }}/></a>`;
             })
           : html`<span aria-hidden="true">–</span>`
       }</div><div class="stats-card-footer"><span>${plural(stats.exams.length, ['полная попытка', 'полные попытки', 'полных попыток'])}</span>${savedAttempts.some((a) => a.level === level.id) && html`<button class="text-button" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button>`}</div></article>`;

@@ -1,0 +1,34 @@
+{
+  "family": "hero-family-v5",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "4c3b47b"
+  ],
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-desktop-dark-final.txt",
+    "prompt-desktop-light.txt"
+  ],
+  "finalOutputs": [
+    {
+      "theme": "dark",
+      "layout": "desktop",
+      "archive": "hero-desktop-dark.webp",
+      "historicalPath": "assets/readme/hero-family-v5/hero-desktop-dark.webp",
+      "publishedIn": [
+        "4c3b47b"
+      ],
+      "sha256": "dddc5eea2c4a782896eb57f8761e9a926d4e68bad5d9f6decd7f2a88a6d2babe"
+    },
+    {
+      "theme": "light",
+      "layout": "desktop",
+      "archive": "hero-desktop-light.webp",
+      "historicalPath": "assets/readme/hero-family-v5/hero-desktop-light.webp",
+      "publishedIn": [
+        "4c3b47b"
+      ],
+      "sha256": "647fcfd10095086cef8c603180eba7617001c1e3a335dc106988fc16abf48779"
+    }
+  ]
+}

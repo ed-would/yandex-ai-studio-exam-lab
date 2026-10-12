@@ -1,211 +1,59 @@
 {
-  "sourceOriginals": "ImageGen raw PNG; editable native lettering in four layout.html files; prompts do not reconstruct raster layers",
-  "JPEG": "Pillow RGB export, quality95, subsampling0, optimize=true, progressive=true",
-  "files": [
+  "family": "question-formats-v9",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "4c3b47b",
+    "d492c44"
+  ],
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-desktop-dark.txt",
+    "prompt-desktop-light.txt",
+    "prompt-mobile-dark-final.txt",
+    "prompt-mobile-light.txt"
+  ],
+  "finalOutputs": [
     {
-      "path": "CHECKS.md",
-      "bytes": 6988,
-      "sha256": "b6550e80ee0b36b3438daee34980efbca8e02ba39abebc3c41b3f19593d56455"
-    },
-    {
-      "path": "acceptance-proof.json",
-      "bytes": 1056,
-      "sha256": "b2fdc1fa851fa4dd420f4ef96e8d664004269600a0fddd525fa23a969a5821b4"
-    },
-    {
-      "path": "artwork-desktop-dark.png",
-      "bytes": 1956486,
-      "sha256": "d062502430d2f288bdd3280222d5e0eabcac1b52067bfc8599d2e8756b2fb4c7"
-    },
-    {
-      "path": "artwork-desktop-light.png",
-      "bytes": 1897766,
-      "sha256": "15df906944fb63699bc6de1d06681cb3f9fb4356f32cace08664a80aa94350d3"
-    },
-    {
-      "path": "artwork-mobile-dark-initial.png",
-      "bytes": 2096376,
-      "sha256": "31ab71c7bd472211baf1516f1338c254fa53ad1cac357377965eb2146183ab89"
-    },
-    {
-      "path": "artwork-mobile-dark.png",
-      "bytes": 1977049,
-      "sha256": "3b5db581bdc244390c550d124516ba8698af14f5e75f0226bca73fb60f1721e8"
-    },
-    {
-      "path": "artwork-mobile-light.png",
-      "bytes": 1861508,
-      "sha256": "276402ed5d7aed6cd3df799809cce742d821ae9c062d875eb8c9852deb7eefc6"
-    },
-    {
-      "path": "background-desktop-dark.png",
-      "bytes": 1853426,
-      "sha256": "1825b9d59812de65bb005d6f7b3c464c5c57f6f2002cca3c9d3932fb58e844cf"
-    },
-    {
-      "path": "background-desktop-light.png",
-      "bytes": 1798320,
-      "sha256": "17528777712d12b2557bd173446c7be136beaf98b3e08e0bb5143aa9c347a0fe"
-    },
-    {
-      "path": "background-mobile-dark.png",
-      "bytes": 1700753,
-      "sha256": "6b082c4b52578444a8718e72b000ef34733990c454b8d60bd8ff14fe7511c876"
-    },
-    {
-      "path": "background-mobile-light.png",
-      "bytes": 1617419,
-      "sha256": "d50ab515e9927bf305d523f72dda325270d5c1c6c9d29d34c34ac2b9fefa2175"
-    },
-    {
-      "path": "brief.json",
-      "bytes": 1565,
-      "sha256": "1d8be9066beae32f94958d0df4f9d7fb246426186a1a12f7f5d9205202a67b53"
-    },
-    {
-      "path": "browser-proof.json",
-      "bytes": 15181,
-      "sha256": "3cc2152b9ee00ce6f1eb82ab93d7cf8f9d4026827bb6f1cb013dfe203f4f294a"
-    },
-    {
-      "path": "contrast-proof.json",
-      "bytes": 8974,
-      "sha256": "81c587f2eb6b4636a2b149caf3515edc6ed9e5e6c7c2f5bd7f0733fd67c9336e"
-    },
-    {
-      "path": "desktop-dark.layout.html",
-      "bytes": 3480,
-      "sha256": "b052e1c82e4f96b0059c5f9e360c45a2669c4fcaa73cd833b2c37d23aa3c23ac"
-    },
-    {
-      "path": "desktop-light.layout.html",
-      "bytes": 3510,
-      "sha256": "b7dd2dfff8eb44499a920066a73ad2eb518ad7e7c2511a58f3c9d610ffd62daf"
-    },
-    {
-      "path": "facts.json",
-      "bytes": 1311,
-      "sha256": "71caa049b4422cf41ba707ee36b56fc0a42f453857ab843d1d0c9677214960b6"
-    },
-    {
-      "path": "generation-provenance.json",
-      "bytes": 869,
-      "sha256": "c20e56a819082522a24b97cd9aa1ff130a6efa2f61065822fec2b5014663d99e"
-    },
-    {
-      "path": "integration-preview.html",
-      "bytes": 1469,
-      "sha256": "237870fb6617c0626aa59ac8d8a367ec313b8dc72e1182f60f14cc22aa4625cf"
-    },
-    {
-      "path": "integration-proof.json",
-      "bytes": 2898,
-      "sha256": "0315a14ef0e326033b6cc63b3003c427f5593cd4482d90dc1b279d609851216f"
-    },
-    {
-      "path": "mobile-dark.layout.html",
-      "bytes": 3840,
-      "sha256": "90d9416950d68ce4371a08926c45e1171e878a963347b0381c23383666ff27a3"
-    },
-    {
-      "path": "mobile-light.layout.html",
-      "bytes": 3870,
-      "sha256": "cdd45522f1324c49428ee2a63e8cb45267062758cf74e67f0f8a303f246f5f7e"
-    },
-    {
-      "path": "preserved-snapshot.json",
-      "bytes": 15938,
-      "sha256": "c55f119fad24ab559dc75d780a1ebc6962af59ab4bdde49a0620114d2a570d20"
-    },
-    {
-      "path": "preview.html",
-      "bytes": 2083,
-      "sha256": "75752aa5823d087a2396af287be96f13f2670cf97a547ef7d1f7b74d53ed9957"
-    },
-    {
-      "path": "prompt-desktop-dark.txt",
-      "bytes": 1344,
-      "sha256": "f15ab646475e8717bdde477ef9ebd7deb6cc0f709a7c697c7afac9155cb649d7"
-    },
-    {
-      "path": "prompt-desktop-light.txt",
-      "bytes": 1298,
-      "sha256": "22b866fe52b5e0235c4a2f99e3077480869a19cbec134c09f2051698c5854d91"
-    },
-    {
-      "path": "prompt-mobile-dark-layout-repair.txt",
-      "bytes": 1776,
-      "sha256": "40544fefb08d6d0ff333fa0dab7ead55f7642a48c2619d383ce2a1851f67da2b"
-    },
-    {
-      "path": "prompt-mobile-dark.txt",
-      "bytes": 2539,
-      "sha256": "e117257768989ff63944d3bce4b42aaecb725b259833754c883c69e4a3ff1ae2"
-    },
-    {
-      "path": "prompt-mobile-light.txt",
-      "bytes": 1406,
-      "sha256": "ec4a4cf554cf14ef479331035c3ccc09beca43110a711012defc0cc390564139"
-    },
-    {
-      "path": "proof-375-dark.png",
-      "bytes": 300532,
-      "sha256": "b91e1b98de4e5d33bbaa0931ba035ca4ce96db1645a5d5263aca790e96afafe2"
-    },
-    {
-      "path": "proof-375-light.png",
-      "bytes": 300454,
-      "sha256": "909f961acaab8490b4577a607da4f041a5850c2436652397e0ad9de0e66abb10"
-    },
-    {
-      "path": "proof-960-dark.png",
-      "bytes": 780296,
-      "sha256": "caafa56862ef4c4d1fc53db302c3bf60024e052630f298f56e567d1fc7b12ada"
-    },
-    {
-      "path": "proof-960-light.png",
-      "bytes": 773543,
-      "sha256": "2089bfb80f0dabd8b121d55a4d99279c6b06630e8d95e3a21824b1be3d32069d"
-    },
-    {
-      "path": "question-formats-desktop-dark.jpg",
-      "bytes": 442948,
+      "theme": "dark",
+      "layout": "desktop",
+      "archive": "question-formats-desktop-dark.jpg",
+      "historicalPath": "assets/readme/question-formats-v9/question-formats-desktop-dark.jpg",
+      "publishedIn": [
+        "4c3b47b"
+      ],
       "sha256": "4651b19a1de96fedf716a80b67bc11b60838e85023539c76f3db1cc074d03246"
     },
     {
-      "path": "question-formats-desktop-dark.png",
-      "bytes": 1902618,
-      "sha256": "f0b8cfc24117e1c48263f96bc7ede1f4762d43664713c72e6eed33aaaa47ba57"
-    },
-    {
-      "path": "question-formats-desktop-light.jpg",
-      "bytes": 438549,
+      "theme": "light",
+      "layout": "desktop",
+      "archive": "question-formats-desktop-light.jpg",
+      "historicalPath": "assets/readme/question-formats-v9/question-formats-desktop-light.jpg",
+      "publishedIn": [
+        "4c3b47b"
+      ],
       "sha256": "b3687dda82137d73a87e99be9c6b9c43a4b9d3ad3f6b0a4cd2ae24fb8e375e23"
     },
     {
-      "path": "question-formats-desktop-light.png",
-      "bytes": 1849702,
-      "sha256": "91c5ca4669a96273e3831a4453f166e3869e0c6c385ae8c85f7298f53785e848"
+      "theme": "dark",
+      "layout": "mobile",
+      "readme": "assets/readme/question-formats-v9/question-formats-mobile-dark.jpg",
+      "historicalPath": "assets/readme/question-formats-v9/question-formats-mobile-dark.jpg",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "6d26ee27fea51aaa28afb1caf24ce10321b95e2f24c1d71f7e7ddbdff5cba857"
     },
     {
-      "path": "question-formats-mobile-dark.jpg",
-      "bytes": 432176,
-      "sha256": "101b971fd8d9527540c6705e0a069cb91a014cc22fb2348d7e549c4b75aef3bf"
-    },
-    {
-      "path": "question-formats-mobile-dark.png",
-      "bytes": 1752224,
-      "sha256": "2dde39a7389dec260563d1db180f71c903723520d95403f7c6dc0ede55706741"
-    },
-    {
-      "path": "question-formats-mobile-light.jpg",
-      "bytes": 411897,
-      "sha256": "cedfe96d5da045c5f60678c08a59a0f43248189cf074f8b443996cff4c322307"
-    },
-    {
-      "path": "question-formats-mobile-light.png",
-      "bytes": 1671910,
-      "sha256": "236e6eb92ffa915f6a5fa939f28efd4e4d797fb969f0f017305ae535b7144766"
+      "theme": "light",
+      "layout": "mobile",
+      "readme": "assets/readme/question-formats-v9/question-formats-mobile-light.jpg",
+      "historicalPath": "assets/readme/question-formats-v9/question-formats-mobile-light.jpg",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "e06463847fb1d95fa527e62cabc129f98e9184ae8220117f07cda1e9ceee8f7e"
     }
   ]
 }

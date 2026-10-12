@@ -119,7 +119,7 @@ export function SectionBackdrop({ name, level, format = 'jpg', sizes }) {
   return html`<picture class=${`section-backdrop ${night ? 'has-night-art' : ''}`} aria-hidden="true">${night && html`<source media=${dark ? 'all' : 'not all'} srcset=${responsiveSources(nightPath) || assetUrl(nightPath)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading="lazy" decoding="async"/></picture>`;
 }
 
-const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const percentFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
 const dateFormat = new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric',
   month: 'short',

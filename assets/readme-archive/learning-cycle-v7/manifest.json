@@ -1,0 +1,37 @@
+{
+  "family": "learning-cycle-v7",
+  "sourceCommit": "4c3b47bf76cd2035acfbfa774de9ceddb67f9e3d",
+  "publishedReadmeCommits": [
+    "4c3b47b",
+    "d492c44"
+  ],
+  "brief": "brief.md",
+  "finalPrompts": [
+    "prompt-desktop-dark-final.txt",
+    "prompt-desktop-light.txt"
+  ],
+  "finalOutputs": [
+    {
+      "theme": "dark",
+      "layout": "desktop",
+      "readme": "assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.jpg",
+      "historicalPath": "assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.webp",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "f3b3f537b667007b1b3b0701ce9f4e64d36c306662438d82d17999d0a227bc0f"
+    },
+    {
+      "theme": "light",
+      "layout": "desktop",
+      "readme": "assets/readme/learning-cycle-v7/learning-cycle-desktop-light.jpg",
+      "historicalPath": "assets/readme/learning-cycle-v7/learning-cycle-desktop-light.webp",
+      "publishedIn": [
+        "4c3b47b",
+        "d492c44"
+      ],
+      "sha256": "d804f74bd44877f9bedea5fe9b9b315067437ddf73359e4f9d055fa32858190c"
+    }
+  ]
+}
