@@ -2,11 +2,13 @@
   <img src="assets/readme/hero-social-v11/hero-dark.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
 </p>
 
-# <img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="absmiddle" alt=""> Тренажёр компетенций ИИ
+<p align="center">
+  <a href="https://aistudio.yandex.ru/"><img src="https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat" alt="Тематика: Yandex AI Studio"></a>
+  <a href="#банк-вопросов"><img src="https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-6841AB?style=flat" alt="Quiz: 180 вопросов"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-6841AB?style=flat" alt="Лицензия MIT"></a>
+</p>
 
-[![Тематика: Yandex AI Studio](https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat)](https://aistudio.yandex.ru/)
-[![Quiz: 180 вопросов](https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-6841AB?style=flat)](#банк-вопросов)
-[![Лицензия MIT](https://img.shields.io/badge/License-MIT-6841AB?style=flat)](LICENSE)
+# <img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="absmiddle" alt=""> Тренажёр компетенций ИИ
 
 **Практика перед экзаменом «Основы работы с ИИ» на платформе Yandex AI Studio.** Выберите уровень, ответьте на вопрос и разберите, почему ответ верен или ошибочен. Тренажёр сохраняет попытки, показывает темы для повторения и позволяет забрать свой прогресс с собой.
 
@@ -208,14 +210,14 @@ flowchart TD
 </details>
 
 <details>
-<summary>Посмотреть экран экспертного задания (уровень 3) в обеих темах</summary>
+<summary>Посмотреть экран экспертного задания (уровень 3)</summary>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/question-dark.jpg">
   <img src="assets/readme/screenshots/question-light.jpg" width="960" alt="Экспертный уровень: вопрос о вместимости контекста, карта вопросов, варианты ответа и кнопка проверки">
 </picture>
 
-Снимки показывают первый вопрос экспертного уровня в светлой и тёмной темах. Кадр заканчивается перед подвалом.
+Скриншот соответствует теме README: в тёмном оформлении показана тёмная версия, в светлом — светлая.
 
 </details>
 
@@ -256,14 +258,14 @@ flowchart TD
 ### Результат, разбор и следующий шаг
 
 <details>
-<summary>Посмотреть результат экспертного уровня в обеих темах</summary>
+<summary>Посмотреть результат экспертного уровня</summary>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/results-dark.jpg">
   <img src="assets/readme/screenshots/results-light.jpg" width="960" alt="Результат экспертного уровня: 48 правильных ответов из 60, 80%, 12 ошибок и три рекомендации по темам">
 </picture>
 
-Учебный пример экспертного уровня: 48 правильных ответов, 12 ошибок, 0 пропусков. Данные демонстрационные. Кадр показывает итог и рекомендации, заканчивается до разбора заданий и подвала.
+Учебный пример экспертного уровня: 48 правильных ответов, 12 ошибок, 0 пропусков. Данные демонстрационные. Кадр показывает итог и рекомендации, заканчивается до разбора заданий.
 
 </details>
 
@@ -282,14 +284,12 @@ JSON-копия и HTML-разбор решают разные задачи: **J
 В разделе «Материалы» собраны короткие опоры по шести доменам, темы заданий, поиск и фильтрация источников. Отсюда можно перейти к первичным материалам и семи официальным рекомендациям программы.
 
 <details>
-<summary>Посмотреть материалы без подвала в обеих темах</summary>
+<summary>Посмотреть материалы</summary>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/readme/screenshots/materials-dark.jpg">
   <img src="assets/readme/screenshots/materials-light.jpg" width="960" alt="Материалы для подготовки: шесть областей знаний, поиск и краткие опоры по доменам">
 </picture>
-
-Экран материалов работающего приложения от верхней панели до конца основного содержимого; подвал не включён.
 
 </details>
 
