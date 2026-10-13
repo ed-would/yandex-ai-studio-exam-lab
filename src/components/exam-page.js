@@ -16,6 +16,11 @@ export function ExamPage({ attempt, questions, onDraft, onAnswer, onMove, onBook
   const expired = seconds === 0 && !answer;
   const locked = Boolean(answer) || expired;
   const level = levelById(attempt.level);
+  const banner = {
+    1: 'banner-level-1-folded-planes-light',
+    2: 'banner-level-2-wave-fins-light',
+    3: 'banner-level-3-faceted-prisms-light',
+  }[attempt.level];
   const score = scoreAttempt(attempt, questions);
   const starred = attempt.bookmarks.includes(question.id);
   const heading = useRef(null);
@@ -37,7 +42,7 @@ export function ExamPage({ attempt, questions, onDraft, onAnswer, onMove, onBook
     setMapOpen(false);
   };
 
-  return html`<div class=${`page exam-page theme-${attempt.level}`}><div class="exam-topline"><${SectionBackdrop} level=${attempt.level}/><a href="#/" class="text-button exam-back-link"><${Icon} name="back" size=${17}/><span>К тестам</span></a><div class="exam-identity"><span class="badge">Уровень ${attempt.level}</span><strong>${level.name}</strong><span class="exam-level-art"><${Art} variant=${attempt.level} compact=${true}/></span>${attempt.mode === 'mistakes' && html`<span class="mode-label">Работа над ошибками</span>`}</div><button class="button primary small" onClick=${onFinish}><span>Завершить</span><${Icon} name="flag" size=${16}/></button></div><div class="exam-progress"><${ProgressBar} value=${score.answered} max=${score.total} label="Проверено вопросов"/><span><strong>${score.answered}</strong> / ${score.total} проверено</span></div>
+  return html`<div class=${`page exam-page theme-${attempt.level}`}><div class="exam-topline"><${SectionBackdrop} name=${banner} format="webp"/><a href="#/" class="text-button exam-back-link"><${Icon} name="back" size=${17}/><span>К тестам</span></a><div class="exam-identity"><span class="badge">Уровень ${attempt.level}</span><strong>${level.name}</strong><span class="exam-level-art"><${Art} variant=${attempt.level} compact=${true}/></span>${attempt.mode === 'mistakes' && html`<span class="mode-label">Работа над ошибками</span>`}</div><button class="button primary small" onClick=${onFinish}><span>Завершить</span><${Icon} name="flag" size=${16}/></button></div><div class="exam-progress"><${ProgressBar} value=${score.answered} max=${score.total} label="Проверено вопросов"/><span><strong>${score.answered}</strong> / ${score.total} проверено</span></div>
     ${!attempt.timing && html`<p class="exam-timing-note"><${Icon} name="clock" size=${16}/><span>Без таймера. <a href="#/">Настроить перед новым тестом</a></span></p>`}
     <div class="exam-layout"><aside class="question-map"><button class="accordion-trigger map-toggle" aria-expanded=${mapOpen} aria-controls="question-map-content" onClick=${() => setMapOpen(!mapOpen)}><${Icon} name="menu" size=${19}/><span>Карта вопросов</span><span>${attempt.cursor + 1} / ${score.total}</span><${Icon} name="chevron" size=${16}/></button><div id="question-map-content" class="map-body accordion-panel"><div class="accordion-panel-inner"><div class="map-content"><div class="map-title"><span class="eyebrow">Карта вопросов</span><span class="mini-label">${plural(new Set(attempt.questionIds.map((id) => bank.get(id).domain)).size, ['домен', 'домена', 'доменов'])}</span></div>${DOMAINS.map(
       (domain) => {

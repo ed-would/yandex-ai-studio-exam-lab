@@ -11,16 +11,17 @@ IMAGES = ROOT / "public/images"
 DARK = [
     "footer-night.webp", "hero-night.webp", "level-1.webp", "level-2.webp",
     "level-3.webp", "levels-night.webp", "study-night.webp", "progress-night-facet-weave-v2.png",
-    "level-2-woven-orbits-v2-dark.webp",
 ]
 GEOMETRY = [
     "studio-01-three-trajectories.webp", "footer-orbital-sectors.webp",
     "progress-light-facet-weave-v2.png",
-    "study-phase-rosettes.jpg", "level-1-triangles.jpg",
-    "level-2-woven-orbits-v2.jpg",
+    "study-phase-rosettes.jpg",
     "studio-03-mint-intersections.webp",
     "studio-04-citron-arcades.webp", "studio-05-rose-hourglass.webp",
     "banner-level-1-braid-light.webp", "banner-level-1-braid-dark.webp",
+    "banner-level-1-folded-planes-light.webp", "banner-level-1-folded-planes-dark.webp",
+    "banner-level-2-wave-fins-light.webp", "banner-level-2-wave-fins-dark.webp",
+    "banner-level-3-faceted-prisms-light.webp", "banner-level-3-faceted-prisms-dark.webp",
     "banner-level-2-chevron-weave-light.webp", "banner-level-2-chevron-weave-dark.webp",
     "banner-level-3-gates-light.webp", "banner-level-3-gates-dark.webp",
     "practice-meander-light.png", "practice-meander-dark.png",
@@ -78,7 +79,7 @@ for relative in sources:
             target = IMAGES / Path(relative).parent / f"{source.stem}-{size}-optimized.webp"
             target.parent.mkdir(parents=True, exist_ok=True)
             output = image if size == width else image.resize((size, round(height * size / width)), Image.Resampling.LANCZOS)
-            compressed_banner = source.name.startswith("banner-level-") or source.stem.startswith("level-2-woven-orbits-v2")
+            compressed_banner = source.name.startswith("banner-level-")
             options = {"quality": 92} if compressed_banner else {"lossless": True, "exact": True}
             output.save(target, "WEBP", method=6, icc_profile=original.info.get("icc_profile", b""), **options)
             if size == width and target.stat().st_size >= source.stat().st_size:

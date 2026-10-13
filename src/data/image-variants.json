@@ -196,22 +196,6 @@
       [1536, "artwork/study-phase-rosettes.jpg"]
     ]
   },
-  "artwork/level-1-triangles.jpg": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/level-1-triangles-384-optimized.webp"],
-      [1536, "artwork/level-1-triangles.jpg"]
-    ]
-  },
-  "artwork/level-3-prisms.jpg": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/level-3-prisms-384-optimized.webp"],
-      [1536, "artwork/level-3-prisms.jpg"]
-    ]
-  },
   "artwork/studio-03-mint-intersections.webp": {
     "width": 1536,
     "height": 1024,
@@ -300,26 +284,6 @@
       [768, "artwork/banner-level-3-gates-dark-768-optimized.webp"],
       [1152, "artwork/banner-level-3-gates-dark-1152-optimized.webp"],
       [1860, "artwork/banner-level-3-gates-dark.webp"]
-    ]
-  },
-  "artwork/level-2-woven-orbits-v2.jpg": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/level-2-woven-orbits-v2-384-optimized.webp"],
-      [768, "artwork/level-2-woven-orbits-v2-768-optimized.webp"],
-      [1152, "artwork/level-2-woven-orbits-v2-1152-optimized.webp"],
-      [1536, "artwork/level-2-woven-orbits-v2-1536-optimized.webp"]
-    ]
-  },
-  "artwork/level-2-woven-orbits-v2-dark.webp": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/level-2-woven-orbits-v2-dark-384-optimized.webp"],
-      [768, "artwork/level-2-woven-orbits-v2-dark-768-optimized.webp"],
-      [1152, "artwork/level-2-woven-orbits-v2-dark-1152-optimized.webp"],
-      [1536, "artwork/level-2-woven-orbits-v2-dark-1536-optimized.webp"]
     ]
   },
   "artwork/practice-meander-light.png": {
@@ -420,6 +384,66 @@
       [768, "artwork/stats-level-3-ribbon-wave-dark-768-optimized.webp"],
       [1152, "artwork/stats-level-3-ribbon-wave-dark-1152-optimized.webp"],
       [1536, "artwork/stats-level-3-ribbon-wave-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-1-folded-planes-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-1-folded-planes-light-384-optimized.webp"],
+      [768, "artwork/banner-level-1-folded-planes-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-1-folded-planes-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-1-folded-planes-light-1860-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-1-folded-planes-dark.webp": {
+    "width": 1859,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-1-folded-planes-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-1-folded-planes-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-1-folded-planes-dark-1152-optimized.webp"],
+      [1859, "artwork/banner-level-1-folded-planes-dark-1859-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-3-faceted-prisms-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-3-faceted-prisms-light-384-optimized.webp"],
+      [768, "artwork/banner-level-3-faceted-prisms-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-3-faceted-prisms-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-3-faceted-prisms-light-1860-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-3-faceted-prisms-dark.webp": {
+    "width": 1859,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-3-faceted-prisms-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-3-faceted-prisms-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-3-faceted-prisms-dark-1152-optimized.webp"],
+      [1859, "artwork/banner-level-3-faceted-prisms-dark-1859-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-2-wave-fins-light.webp": {
+    "width": 1860,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-2-wave-fins-light-384-optimized.webp"],
+      [768, "artwork/banner-level-2-wave-fins-light-768-optimized.webp"],
+      [1152, "artwork/banner-level-2-wave-fins-light-1152-optimized.webp"],
+      [1860, "artwork/banner-level-2-wave-fins-light-1860-optimized.webp"]
+    ]
+  },
+  "artwork/banner-level-2-wave-fins-dark.webp": {
+    "width": 1859,
+    "height": 846,
+    "variants": [
+      [384, "artwork/banner-level-2-wave-fins-dark-384-optimized.webp"],
+      [768, "artwork/banner-level-2-wave-fins-dark-768-optimized.webp"],
+      [1152, "artwork/banner-level-2-wave-fins-dark-1152-optimized.webp"],
+      [1859, "artwork/banner-level-2-wave-fins-dark-1859-optimized.webp"]
     ]
   }
 }
