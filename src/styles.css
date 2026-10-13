@@ -7410,7 +7410,8 @@ input[type='search']::-webkit-search-cancel-button {
   :is(.button, .text-button):not(:disabled, [aria-disabled='true']):hover > .icon[data-icon='back'] {
     transform: translateX(-2px);
   }
-  :is(.button, .text-button, .source-links a, .official-grid > a):hover > .icon[data-icon='external'] {
+  :is(.button, .text-button, .source-links a, .official-grid > a):not(:disabled, [aria-disabled='true']):hover
+    > .icon[data-icon='external'] {
     transform: translate(1px, -1px);
   }
   :is(.button, .text-button):not(:disabled, [aria-disabled='true']):hover > .icon[data-icon='refresh'] {
@@ -7484,8 +7485,12 @@ input[type='search']::-webkit-search-cancel-button:active {
   opacity: 0.5;
 }
 :is(.button, .text-button, .source-links a, .official-grid > a):not(:disabled):active
-  > .icon[data-icon]:not([data-icon='refresh'], [data-icon='arrow'], [data-icon='back']) {
+  > .icon[data-icon]:not([data-icon='refresh'], [data-icon='arrow'], [data-icon='back'], [data-icon='external']) {
   transform: none;
+}
+:is(.button, .text-button, .source-links a, .official-grid > a):not(:disabled, [aria-disabled='true']):active
+  > .icon[data-icon='external'] {
+  transform: translate(2px, -2px);
 }
 :is(.button, .text-button):not(:disabled, [aria-disabled='true']):active > .icon[data-icon='arrow'] {
   transform: translateX(4px);

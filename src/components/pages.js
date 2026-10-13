@@ -107,11 +107,15 @@ export function History({ state, questions, hasProtectedData = false, onClearLev
           : html`<span aria-hidden="true">–</span>`
       }</div><div class="stats-card-footer"><span>${plural(stats.exams.length, ['полная попытка', 'полные попытки', 'полных попыток'])}</span>${savedAttempts.some((a) => a.level === level.id) && html`<button class="button secondary danger small" aria-label=${`Очистить результаты уровня ${level.id}`} onClick=${() => onClearLevel(level.id)}><${Icon} name="trash" size=${15}/>Очистить</button>`}</div></article>`;
     },
-  )}</div><section class="history-list-section"><div class="section-heading"><div><span class="eyebrow">Все сохранённые результаты</span><h2>История попыток</h2></div><div class="history-filters"><${SelectField} label="Уровень в истории" value=${levelFilter} onChange=${setLevelFilter} options=${[{ value: 'all', label: 'Все уровни' }, ...LEVELS.map((l) => ({ value: String(l.id), label: `Уровень ${l.id}` }))]}/><${SelectField} label="Режим в истории" value=${modeFilter} onChange=${setModeFilter} options=${[
-    { value: 'all', label: 'Все попытки' },
-    { value: 'exam', label: 'Полные экзамены' },
-    { value: 'mistakes', label: 'Работа над ошибками' },
-  ]}/></div></div>${
+  )}</div><section class="history-list-section"><div class="section-heading"><div><span class="eyebrow">Все сохранённые результаты</span><h2>История попыток</h2></div>${
+    state.history.length
+      ? html`<div class="history-filters"><${SelectField} label="Уровень в истории" value=${levelFilter} onChange=${setLevelFilter} options=${[{ value: 'all', label: 'Все уровни' }, ...LEVELS.map((l) => ({ value: String(l.id), label: `Уровень ${l.id}` }))]}/><${SelectField} label="Режим в истории" value=${modeFilter} onChange=${setModeFilter} options=${[
+          { value: 'all', label: 'Все попытки' },
+          { value: 'exam', label: 'Полные экзамены' },
+          { value: 'mistakes', label: 'Работа над ошибками' },
+        ]}/></div>`
+      : null
+  }</div>${
     history.length
       ? html`<div class="history-table-wrap"><table class="history-table" role="table"><thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Тест</th><th scope="col" role="columnheader">Дата</th><th scope="col" role="columnheader">Результат</th><th scope="col" role="columnheader"><span class="sr-only">Действие</span></th></tr></thead><tbody role="rowgroup">${history.map(
           (a) => {

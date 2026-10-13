@@ -668,6 +668,7 @@ test('пустой прогресс скрывает очистку, черно�
     if (raw !== null) storage.setItem(key, raw);
     await mount();
     await go('#/history');
+    assert.equal(container.querySelector('.history-filters'), null);
     assert.equal(container.querySelector('[aria-label^="Очистить результаты уровня"]'), null);
     assert.equal(findButton('Очистить все результаты'), undefined);
     await unmount();
@@ -678,6 +679,7 @@ test('пустой прогресс скрывает очистку, черно�
   await click('[data-start="1"]');
   await click(`input[value="${questions[0].correct[0]}"]`);
   await go('#/history');
+  assert.equal(container.querySelector('.history-filters'), null);
   assert.ok(get('[aria-label="Очистить результаты уровня 1"]'));
   assert.equal(container.querySelectorAll('[aria-label^="Очистить результаты уровня"]').length, 1);
   assert.match(get('.stats-card-footer').textContent, /0 полных попыток/);
