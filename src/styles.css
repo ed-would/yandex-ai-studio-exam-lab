@@ -8111,7 +8111,7 @@ input[type='search']::-webkit-search-cancel-button:active {
   border-top: 1px solid var(--line);
 }
 html:not([data-theme='dark']) .history-page .data-clear-actions {
-  border-color: color-mix(in srgb, var(--line) 65%, var(--ink));
+  border-color: color-mix(in srgb, var(--line) 82%, var(--ink));
 }
 .history-page .data-clear-actions .data-clear-link {
   min-height: 44px;
