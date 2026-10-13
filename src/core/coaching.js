@@ -4,7 +4,7 @@ import { evaluate, scoreAttempt } from './exam.js';
 const OUTCOMES = {
   excellent: {
     id: 'excellent',
-    icon: 'shield',
+    icon: 'rosette',
     achievement: 'Точность в деталях',
     title: 'Сильный результат.',
     description:
@@ -12,7 +12,7 @@ const OUTCOMES = {
   },
   confident: {
     id: 'confident',
-    icon: 'check',
+    icon: 'shield',
     achievement: 'Учебная цель достигнута',
     title: 'Есть уверенная опора.',
     description:

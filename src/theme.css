@@ -111,7 +111,6 @@ picture.section-backdrop {
       .stats-card-footer,
       .history-table td,
       .history-title small,
-      .history-fraction,
       .review-topic,
       .match-hint,
       .node-number,
@@ -125,10 +124,13 @@ picture.section-backdrop {
     ) {
     color: var(--muted);
   }
+  html[data-theme='dark'] .history-fraction {
+    color: var(--muted);
+  }
   html[data-theme='dark'] :is(.study-nav button.active strong, .study-nav button.active > .icon, .guide-index) {
     color: var(--accent);
   }
-  html[data-theme='dark'] :is(.preparation-steps h3, .skipped-note strong, .history-title strong) {
+  html[data-theme='dark'] :is(.preparation-steps h3, .skipped-note strong) {
     color: var(--ink);
   }
   html[data-theme='dark'] :is(.format-coaching, .skipped-note) {
