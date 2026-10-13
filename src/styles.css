@@ -8043,6 +8043,58 @@ input[type='search']::-webkit-search-cancel-button:active {
     gap: 8px;
   }
 }
+/* История: действия с копией сгруппированы, очистка отделена. */
+.history-page .data-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-content: center;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.history-page .data-backup-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 9px;
+  width: 100%;
+  max-width: 540px;
+  justify-self: end;
+}
+.history-page .data-backup-actions .button {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding-inline: 14px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.history-page .data-clear-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+html:not([data-theme='dark']) .history-page .data-clear-actions {
+  border-color: color-mix(in srgb, var(--line) 65%, var(--ink));
+}
+.history-page .data-clear-actions .data-clear-link {
+  min-height: 44px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+@media (max-width: 1050px) {
+  .history-page .data-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+@media (max-width: 570px) {
+  .history-page .data-backup-actions {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .timer-switch,
   .timer-switch::after {
