@@ -68,14 +68,22 @@ export function PlatformMark() {
 
 export function Art({ variant = 1, hero = false, progress = false, compact = false }) {
   const dark = useTheme() === 'dark';
+  const demoCard =
+    import.meta.env?.DEV &&
+    !hero &&
+    !progress &&
+    !compact &&
+    new URLSearchParams(window.location.search).has('art-demo');
   const file = hero
     ? 'hero-ribbon-expanded.webp'
     : progress || compact
       ? `level-${variant}-${['foundations', 'application', 'expert'][variant - 1] || 'foundations'}.png`
       : `${['foundations', 'applied', 'systems'][variant - 1] || 'foundations'}.jpg`;
   const path = `artwork/${file}`;
-  const night = `artwork/${hero ? 'hero-night' : `level-${variant}`}.webp`;
-  const useNightArt = dark && (hero || progress);
+  const night = demoCard
+    ? `artwork/card-level-${variant}-dark-demo.png`
+    : `artwork/${hero ? 'hero-night' : `level-${variant}`}.webp`;
+  const useNightArt = dark && (hero || progress || demoCard);
   const size = hero
     ? '(max-width: 570px) calc(100vw - 32px), (max-width: 900px) 60vw, (max-width: 1296px) calc(61vw - 40px), 752px'
     : progress
@@ -106,6 +114,9 @@ export function SectionBackdrop({ name, format = 'jpg', sizes }) {
     'banner-level-3-faceted-prisms-light': 'banner-level-3-faceted-prisms-dark.webp',
     'banner-level-2-chevron-weave-light': 'banner-level-2-chevron-weave-dark.webp',
     'banner-level-3-gates-light': 'banner-level-3-gates-dark.webp',
+    'result-level-1-mono-light': 'result-level-1-mono-dark.png',
+    'result-level-2-mono-light': 'result-level-2-mono-dark.png',
+    'result-level-3-mono-light': 'result-level-3-mono-dark.png',
   }[file];
   const path = `artwork/${file}.${format}`;
   const nightPath = night && `artwork/${night}`;

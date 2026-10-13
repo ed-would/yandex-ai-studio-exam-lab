@@ -445,5 +445,95 @@
       [1152, "artwork/banner-level-2-wave-fins-dark-1152-optimized.webp"],
       [1859, "artwork/banner-level-2-wave-fins-dark-1859-optimized.webp"]
     ]
+  },
+  "artwork/card-level-1-dark-demo.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/card-level-1-dark-demo-384-optimized.webp"],
+      [768, "artwork/card-level-1-dark-demo-768-optimized.webp"],
+      [1152, "artwork/card-level-1-dark-demo-1152-optimized.webp"],
+      [1536, "artwork/card-level-1-dark-demo-1536-optimized.webp"]
+    ]
+  },
+  "artwork/card-level-2-dark-demo.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/card-level-2-dark-demo-384-optimized.webp"],
+      [768, "artwork/card-level-2-dark-demo-768-optimized.webp"],
+      [1152, "artwork/card-level-2-dark-demo-1152-optimized.webp"],
+      [1536, "artwork/card-level-2-dark-demo-1536-optimized.webp"]
+    ]
+  },
+  "artwork/card-level-3-dark-demo.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/card-level-3-dark-demo-384-optimized.webp"],
+      [768, "artwork/card-level-3-dark-demo-768-optimized.webp"],
+      [1152, "artwork/card-level-3-dark-demo-1152-optimized.webp"],
+      [1536, "artwork/card-level-3-dark-demo-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-1-mono-light.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-1-mono-light-384-optimized.webp"],
+      [768, "artwork/result-level-1-mono-light-768-optimized.webp"],
+      [1152, "artwork/result-level-1-mono-light-1152-optimized.webp"],
+      [1536, "artwork/result-level-1-mono-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-1-mono-dark.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-1-mono-dark-384-optimized.webp"],
+      [768, "artwork/result-level-1-mono-dark-768-optimized.webp"],
+      [1152, "artwork/result-level-1-mono-dark-1152-optimized.webp"],
+      [1536, "artwork/result-level-1-mono-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-2-mono-light.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-2-mono-light-384-optimized.webp"],
+      [768, "artwork/result-level-2-mono-light-768-optimized.webp"],
+      [1152, "artwork/result-level-2-mono-light-1152-optimized.webp"],
+      [1536, "artwork/result-level-2-mono-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-2-mono-dark.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-2-mono-dark-384-optimized.webp"],
+      [768, "artwork/result-level-2-mono-dark-768-optimized.webp"],
+      [1152, "artwork/result-level-2-mono-dark-1152-optimized.webp"],
+      [1536, "artwork/result-level-2-mono-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-3-mono-light.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-3-mono-light-384-optimized.webp"],
+      [768, "artwork/result-level-3-mono-light-768-optimized.webp"],
+      [1152, "artwork/result-level-3-mono-light-1152-optimized.webp"],
+      [1536, "artwork/result-level-3-mono-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/result-level-3-mono-dark.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/result-level-3-mono-dark-384-optimized.webp"],
+      [768, "artwork/result-level-3-mono-dark-768-optimized.webp"],
+      [1152, "artwork/result-level-3-mono-dark-1152-optimized.webp"],
+      [1536, "artwork/result-level-3-mono-dark-1536-optimized.webp"]
+    ]
   }
 }

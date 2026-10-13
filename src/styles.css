@@ -297,7 +297,7 @@ h3 {
 }
 .button.danger {
   background: var(--error-text);
-  color: #fff;
+  color: var(--action-ink);
 }
 .button:disabled {
   opacity: 0.4;
@@ -2004,6 +2004,12 @@ select {
   color: #68636f;
   gap: 4px;
 }
+.stats-card-footer .button.small {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 11px;
+  gap: 4px;
+}
 .history-list-section {
   margin-top: 43px;
 }
@@ -2053,6 +2059,7 @@ select {
   border-radius: 9px;
   color: var(--accent);
   background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--line);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   vertical-align: middle;
@@ -7291,7 +7298,7 @@ input[type='search']::-webkit-search-cancel-button {
     border-color: var(--accent);
   }
   .button.danger:not(:disabled, [aria-disabled='true']):hover {
-    background-color: #832f24;
+    background-color: color-mix(in srgb, var(--error-text) 82%, var(--ink));
   }
   .text-button:not(:disabled, [aria-disabled='true']):hover {
     color: color-mix(in srgb, var(--accent) 80%, #25212b);
@@ -7407,7 +7414,7 @@ input[type='search']::-webkit-search-cancel-button {
   border-color: var(--accent);
 }
 .button.danger:not(:disabled, [aria-disabled='true']):active {
-  background-color: #6c271e;
+  background-color: color-mix(in srgb, var(--error-text) 68%, var(--ink));
 }
 :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a):active {
   opacity: 0.72;
