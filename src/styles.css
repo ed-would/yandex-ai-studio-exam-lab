@@ -2052,17 +2052,36 @@ select {
   text-align: end;
 }
 .history-score {
+  --history-status: var(--accent);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 8px;
   border-radius: 9px;
-  color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--history-status);
+  background: color-mix(in srgb, var(--history-status) 12%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--history-status) 42%, var(--line));
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   vertical-align: middle;
+}
+.history-score.outcome-starting {
+  --history-status: var(--error-text);
+}
+.history-score.outcome-close {
+  --history-status: var(--warning-text);
+}
+.history-score:is(.outcome-confident, .outcome-excellent) {
+  --history-status: var(--success-text);
+}
+.history-fraction-earned.outcome-starting {
+  color: var(--error-text);
+}
+.history-fraction-earned.outcome-close {
+  color: var(--warning-text);
+}
+.history-fraction-earned:is(.outcome-confident, .outcome-excellent) {
+  color: var(--success-text);
 }
 .history-title {
   display: inline-flex;
@@ -2138,19 +2157,20 @@ select {
   }
 }
 .history-title strong {
-  color: #4c6542;
+  color: var(--accent);
   font-size: 12px;
   font-weight: 560;
 }
 .history-title small {
   font-size: 11px;
-  color: #68636f;
+  color: var(--muted);
 }
 .history-level {
   display: inline-grid;
   place-items: center;
   background: var(--accent-soft);
   color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
   width: 33px;
   height: 37px;
   border-radius: 9px;
