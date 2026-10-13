@@ -4,7 +4,7 @@
 
 Репозиторий: [ed-would/yandex-ai-studio-exam-lab](https://github.com/ed-would/yandex-ai-studio-exam-lab). Автор: [Ed Would](https://github.com/ed-would). Лицензия авторских материалов – [MIT](../LICENSE). При сборке Vite автоматически формирует `dist/.vite/license.md` с лицензиями включённых зависимостей; [лицензия шрифта](../public/fonts/Unbounded-OFL.txt) поставляется отдельно вместе со шрифтом.
 
-GitHub не требует обязательного набора community-файлов для создания репозитория. Здесь подготовлены README, лицензия, SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, SUPPORT, CITATION, CODEOWNERS, формы Issues, шаблон pull request, CI и Dependabot, чтобы проект было проще использовать и сопровождать.
+GitHub не требует обязательного набора community-файлов для создания репозитория. Здесь подготовлены README, лицензия, SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, SUPPORT, CITATION, CODEOWNERS, формы Issues, шаблон pull request и CI, чтобы проект было проще использовать и сопровождать.
 
 ## Перед открытием доступа
 
@@ -38,7 +38,7 @@ GitHub не требует обязательного набора community-ф�
 - После успешного deploy проверьте адрес из workflow и укажите его как Website в About репозитория. Не указывайте предполагаемый адрес до появления работающей публикации.
 - CI `ci.yml` проверяет pull request в `main`, push в `main` и ручные запуски без прав на deploy. Его статус не зависит от настроек GitHub Pages; workflow публикации также проверяет сборку перед deploy.
 
-- Dependabot еженедельно предлагает обновления npm и GitHub Actions. Обновления применяются после проверки; локальный патч `braces` обслуживается по `vendor/braces/README.md`.
+- Обновления зависимостей проверяются вручную; локальный патч `braces` обслуживается по `vendor/braces/README.md`.
 - При необходимости включите правило защиты `main` с обязательным CI и запретом force push. Наличие CODEOWNERS назначает владельца для review, но само по себе не требует его одобрения.
 
 ## Social preview репозитория
