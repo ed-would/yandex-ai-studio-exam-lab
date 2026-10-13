@@ -6320,7 +6320,7 @@ html[data-theme='dark'] .exam-topline > .exam-identity {
   overscroll-behavior: contain;
   border: 1px solid var(--line);
   border-radius: 17px;
-  background: var(--surface);
+  background: var(--surface-solid);
   box-shadow: 0 12px 35px #2821331f;
 }
 .select-menu.opens-above {
@@ -7404,17 +7404,17 @@ input[type='search']::-webkit-search-cancel-button {
     background-color: #ffffff26;
     color: #fff;
   }
-  :is(.button, .text-button):not(:disabled):hover > .icon[data-icon='arrow'] {
+  :is(.button, .text-button):not(:disabled, [aria-disabled='true']):hover > .icon[data-icon='arrow'] {
     transform: translateX(2px);
   }
-  :is(.button, .text-button):not(:disabled):hover > .icon[data-icon='back'] {
+  :is(.button, .text-button):not(:disabled, [aria-disabled='true']):hover > .icon[data-icon='back'] {
     transform: translateX(-2px);
   }
   :is(.button, .text-button, .source-links a, .official-grid > a):hover > .icon[data-icon='external'] {
     transform: translate(1px, -1px);
   }
-  :is(.button, .text-button):not(:disabled):hover > .icon[data-icon='refresh'] {
-    transform: rotate(25deg);
+  :is(.button, .text-button):not(:disabled, [aria-disabled='true']):hover > .icon[data-icon='refresh'] {
+    transform: rotate(-35deg);
   }
 }
 
@@ -7483,8 +7483,18 @@ select:not(:disabled):active {
 input[type='search']::-webkit-search-cancel-button:active {
   opacity: 0.5;
 }
-:is(.button, .text-button, .source-links a, .official-grid > a):not(:disabled):active > .icon[data-icon] {
+:is(.button, .text-button, .source-links a, .official-grid > a):not(:disabled):active
+  > .icon[data-icon]:not([data-icon='refresh'], [data-icon='arrow'], [data-icon='back']) {
   transform: none;
+}
+:is(.button, .text-button):not(:disabled, [aria-disabled='true']):active > .icon[data-icon='arrow'] {
+  transform: translateX(4px);
+}
+:is(.button, .text-button):not(:disabled, [aria-disabled='true']):active > .icon[data-icon='back'] {
+  transform: translateX(-4px);
+}
+:is(.button, .text-button):not(:disabled, [aria-disabled='true']):active > .icon[data-icon='refresh'] {
+  transform: rotate(-70deg);
 }
 .brand-link:active .brand-symbol {
   transform: rotate(0deg) scale(0.93);
@@ -8063,6 +8073,7 @@ input[type='search']::-webkit-search-cancel-button:active {
     gap: 8px;
   }
 }
+
 /* История: действия с копией сгруппированы, очистка отделена. */
 .history-page .data-actions {
   display: grid;

@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 IMAGES = ROOT / "public/images"
 DARK = [
     "footer-night.webp", "hero-night.webp", "level-1.webp", "level-2.webp",
-    "level-3.webp", "levels-night.webp", "study-night.webp", "progress-night-facet-weave-v2.png",
+    "levels-night.webp", "study-night.webp", "progress-night-facet-weave-v2.png",
 ]
 GEOMETRY = [
     "studio-01-three-trajectories.webp", "footer-orbital-sectors.webp",
@@ -29,14 +29,15 @@ GEOMETRY = [
     "stats-level-1-ribbon-wave-light.png", "stats-level-1-ribbon-wave-dark.png",
     "stats-level-2-ribbon-wave-light.png", "stats-level-2-ribbon-wave-dark.png",
     "stats-level-3-ribbon-wave-light.png", "stats-level-3-ribbon-wave-dark.png",
-    "card-level-1-dark-demo.png", "card-level-2-dark-demo.png", "card-level-3-dark-demo.png",
+    "card-level-1-dark-demo.png", "card-level-2-dark-demo.png",
+    "expert-sculpture-light.png", "expert-sculpture-dark.png",
     "result-level-1-mono-light.png", "result-level-1-mono-dark.png",
     "result-level-2-mono-light.png", "result-level-2-mono-dark.png",
     "result-level-3-mono-light.png", "result-level-3-mono-dark.png",
 ]
-PROGRESS = ["level-1-foundations.png", "level-2-application.png", "level-3-expert.png"]
+PROGRESS = ["level-1-foundations.png", "level-2-application.png", "expert-sculpture-cutout.png"]
 sources = ["brand/trainer-abstract.png", "artwork/hero-ribbon-expanded.webp"]
-sources += [f"artwork/{name}.jpg" for name in ["foundations", "applied", "systems"]]
+sources += [f"artwork/{name}.jpg" for name in ["foundations", "applied"]]
 sources += [f"artwork/{name}" for name in PROGRESS + DARK + GEOMETRY]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -83,8 +84,8 @@ for relative in sources:
             target = IMAGES / Path(relative).parent / f"{source.stem}-{size}-optimized.webp"
             target.parent.mkdir(parents=True, exist_ok=True)
             output = image if size == width else image.resize((size, round(height * size / width)), Image.Resampling.LANCZOS)
-            compressed_banner = source.name.startswith("banner-level-")
-            options = {"quality": 92} if compressed_banner else {"lossless": True, "exact": True}
+            compressed_art = source.name.startswith("banner-level-") or source.stem in ["expert-sculpture-light", "expert-sculpture-dark"]
+            options = {"quality": 92} if compressed_art else {"lossless": True, "exact": True}
             output.save(target, "WEBP", method=6, icc_profile=original.info.get("icc_profile", b""), **options)
             if size == width and target.stat().st_size >= source.stat().st_size:
                 target.unlink()

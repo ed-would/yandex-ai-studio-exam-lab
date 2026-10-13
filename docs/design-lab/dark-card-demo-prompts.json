@@ -1,5 +1,5 @@
 {
-  "purpose": "Development-only dark card artwork comparison",
+  "purpose": "Dark card artwork: levels 1 and 2 development previews; level 3 approved production source",
   "prompts": [
     {
       "level": 1,
@@ -19,9 +19,9 @@
     },
     {
       "level": 3,
-      "reference": "public/images/artwork/systems.jpg",
+      "reference": "docs/design-lab/artwork/archive/expert-before-mono/systems.jpg",
       "generated_path": "/Users/23apples/.codex/generated_images/01a13650-108c-77c2-910b-08796c164666/exec-56c7ecb7-5135-4891-8968-55980ab20ca7.png",
-      "workspace_path": "docs/design-lab/artwork/card-level-3-dark-demo.png",
+      "workspace_path": "docs/design-lab/artwork/expert-sculpture-dark.png",
       "prompt": "Use case: lighting-weather / precise-object-edit. Asset type: dark-theme test-level card artwork, landscape 3:2.\nInput image is the EDIT TARGET. Keep exactly the same sculptural folded ribbon geometry, number of folds, silhouette, camera, composition, object size and placement as the input. This is a matched dark companion, not a new sculpture.\nChange the pale backdrop and ground into a seamless deep purple #2e273d to #3b304d studio background belonging to this lilac purple test palette. Change lighting to soft, controlled night studio lighting: readable edges, soft contact shadow, restrained luminous rim, no bright patch of floor or pale rectangle anywhere. The sculptural object stays clearly identifiable and uses only lilac #c5a8f2, violet mids; neutral silvery highlights may remain. Remove cross-palette colored accents and reflections. This should blend naturally into the dark test card surface.\nPremium smooth satin-metallic 3D render, quiet and sharp, no grain. Preserve reference geometry and 3:2 framing. No text, logos, borders, UI, added objects or new motifs. Entire output is a single opaque artwork.",
       "tool": "built-in image_gen"
     }

@@ -30,6 +30,28 @@ picture.section-backdrop {
   color: var(--error-text);
 }
 @media screen {
+  .history-page {
+    --clear-surface: var(--surface-inset);
+    --clear-hover-surface: var(--surface);
+    --clear-line: var(--line);
+  }
+  html .history-page .button.secondary.danger {
+    color: color-mix(in srgb, var(--error-text) 88%, var(--ink));
+    background: var(--clear-surface);
+    border-color: var(--clear-line);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html .history-page .button.secondary.danger:not(:disabled, [aria-disabled='true']):hover {
+      color: color-mix(in srgb, var(--error-text) 88%, var(--ink));
+      background: var(--clear-hover-surface);
+      border-color: var(--error-text);
+    }
+  }
+  html .history-page .button.secondary.danger:not(:disabled, [aria-disabled='true']):active {
+    color: color-mix(in srgb, var(--error-text) 88%, var(--ink));
+    background: color-mix(in srgb, var(--clear-hover-surface) 96%, var(--ink));
+    border-color: var(--error-text);
+  }
   html:not([data-theme='dark']) .data-panel .button.secondary {
     background: var(--surface-inset);
   }
@@ -533,8 +555,7 @@ picture.section-backdrop {
   html[data-theme='dark'] .empty-chart-column {
     background: color-mix(in srgb, var(--accent) 20%, transparent);
   }
-  html[data-theme='dark']
-    :is(.study-nav button, .official-grid > a, .source-search, select, .select-trigger, .select-menu) {
+  html[data-theme='dark'] :is(.study-nav button, .official-grid > a, .source-search, select, .select-trigger) {
     color: var(--ink);
     background: var(--surface);
     border-color: var(--line);
@@ -792,12 +813,15 @@ html[data-theme] .home-lower .domain-icon,
 html[data-theme] .study-page .study-nav button.active:hover .study-nav-icon {
   color: var(--accent) !important;
 }
+html[data-theme] .study-page .study-nav button :is(.study-nav-icon, .icon) {
+  color: var(--lilac-accent) !important;
+}
 
 html[data-theme] .home-lower a.domain-row:is(:hover, :active) {
   color: var(--accent);
 }
 html[data-theme] :is(.home-lower a.domain-row, .study-page .study-nav button) strong {
-  color: inherit !important;
+  color: var(--lilac-accent) !important;
 }
 html[data-theme] .accordion--score.scoring-info > summary {
   color: var(--accent);
