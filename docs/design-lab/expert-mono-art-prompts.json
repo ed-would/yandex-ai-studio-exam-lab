@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-13",
+  "reference": "docs/design-lab/artwork/expert-sculpture-dark.png",
+  "assets": [
+    {
+      "path": "docs/design-lab/artwork/expert-sculpture-light.png",
+      "published": "artwork/expert-sculpture-light.png",
+      "prompt": "Use case: lighting-weather. Asset type: expert test card illustration, matching light-theme counterpart. Edit target: the supplied purple sculpture image. Preserve EXACT sculpture identity, three folded ribbon fans forming a triangular loop, all folds, silhouette, camera angle, perspective, size and central composition. Change only scene lighting and backdrop to a bright light-theme render: very pale lilac background and floor (#f5effc), soft studio light, gentle lavender contact shadow, luminous satin lavender sculpture with defined deeper purple recesses. Strict MONOCHROME PURPLE: every visible surface, inner curl, rim, reflection, shadow and background stays in the violet/lavender hue family, from #6841ab through #c5a8f2 to pale lilac. No yellow, lime, teal, green, blue, pink, gold or multicolour reflected edges. Same premium tactile material as reference. Full object visible, identical framing. Landscape 1536x1024. No text, logos, UI, watermark or border."
+    },
+    {
+      "path": "docs/design-lab/artwork/expert-sculpture-cutout.png",
+      "prompt": "Use case: background-extraction. Asset type: transparent PNG expert-level emblem used at 72px and 120px in a learning website. Edit target: supplied monochrome purple sculpture. Produce the SAME three-folded-fan triangular loop sculpture with exact silhouette, fold topology and camera angle, isolated on a genuinely TRANSPARENT alpha background, including transparency through its central triangular hole. Keep the full sculpture, no crop; center it in a square 1024x1024 canvas with about 6 percent transparent margins. Preserve premium satin-metal 3D material and readable folds. Use ONLY a coherent purple/lavender hue family on ALL surfaces, curl interiors, highlights and rims: #6841ab, #a88acb, #c5a8f2 and pale lavender highlights. Moderate soft studio illumination so it reads on both pale and dark website backgrounds. Remove the background/floor entirely. No drop shadow on a floor, no opaque background, no checkerboard drawn, no yellow, lime, teal, green, blue, gold or rainbow accents. No text, logo, watermark or frame.",
+      "published": "artwork/expert-sculpture-cutout.png"
+    },
+    {
+      "path": "docs/design-lab/artwork/expert-sculpture-dark.png",
+      "published": "artwork/expert-sculpture-dark.png",
+      "source_record": "docs/design-lab/dark-card-demo-prompts.json",
+      "role": "Approved dark source reused without regeneration."
+    }
+  ],
+  "dark": "Existing approved reference reused without regeneration."
+}

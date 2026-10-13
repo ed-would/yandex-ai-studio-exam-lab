@@ -15,7 +15,7 @@
       "prompt": "Use case: stylized-concept. Asset type: original abstract artwork for advanced-level training card. Landscape 1536x1024. Two thick sculptural sweeping arches interlock diagonally in an asymmetric bridge with a single small floating orb. Satin cool aqua and mint material with soft citron highlights, deep petrol teal on inner surfaces. Smooth light aqua backdrop #ddf3f0. Centered composition, occupies 75% frame, generous margins. Premium editorial 3D illustration for AI learning, calm diffuse studio light, beautifully soft shadows, crisp curved edges. Entirely original silhouette inspired generally by pastel technological geometry, no branded spiral, no replication of existing artwork. Absolutely no text, letters, logos, watermark, interface."
     },
     {
-      "file": "public/images/artwork/systems.jpg",
+      "file": "docs/design-lab/artwork/archive/expert-before-mono/systems.jpg",
       "prompt": "Use case: stylized-concept. Asset type: original abstract artwork for expert-level training card. Landscape 1536x1024. A compelling impossible-looking arrangement of three layered rounded fanlike sheets intertwined into an angular open loop, satin lilac and rich violet surfaces, pale citron edge highlights and tiny petrol teal details. Smooth pale lavender backdrop #eee1fb. Centered object fills 75% frame, generous margins. Sophisticated minimalist 3D editorial illustration suggesting systems and connections, soft diffuse studio lighting, tactile surfaces, crisp sculptural edges, soft shadows. Original shape and arrangement, general pastel AI design vocabulary only, not an official spiral or branded glyph. Absolutely no text, letters, logos, watermark or interface."
     },
     {
@@ -41,8 +41,8 @@
       "usage": "Progress cards only"
     },
     {
-      "file": "docs/design-lab/artwork/level-3-expert.png",
-      "source": "public/images/artwork/systems.jpg",
+      "file": "docs/design-lab/artwork/archive/expert-before-mono/level-3-expert.png",
+      "source": "docs/design-lab/artwork/archive/expert-before-mono/systems.jpg",
       "prompt": "Image 1 is the only edit target: the existing expert-level training artwork. Make a transparent-background cutout while preserving the exact recognizable source sculpture: a compact interwoven open knot of broad folded fanlike sheets, same layered lavender and violet fins, same triangular center opening, same three dark teal inset ends, same restrained pale-lime edge highlights, same proportions, angles, depth, and diffuse studio lighting. Do not redesign or add details. Remove the pale lilac backdrop completely; the negative space inside the central opening and between separate folded layers must be transparent. Preserve only the complete sculpture and a very subtle natural contact shadow as semitransparent pixels. Recompose the whole form, without cropping any tip or edge, centered on a square 1024 by 1024 transparent RGBA canvas. Leave at least 15 percent clear transparent padding around the silhouette on every side; sculpture should occupy about 68 percent of the square. High-quality clean antialiased edges, no matte fringe or halo. Deliver a PNG with genuine transparency. No backdrop, platform, text, logo, border, new objects, or extra ornaments.",
       "format": "PNG with transparency",
       "usage": "Progress cards only"

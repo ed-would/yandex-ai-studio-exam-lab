@@ -34,14 +34,6 @@
       [1536, "artwork/applied.jpg"]
     ]
   },
-  "artwork/systems.jpg": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/systems-384-optimized.webp"],
-      [1536, "artwork/systems.jpg"]
-    ]
-  },
   "artwork/level-1-foundations.png": {
     "width": 1254,
     "height": 1254,
@@ -62,17 +54,6 @@
       [512, "artwork/level-2-application-512-optimized.webp"],
       [768, "artwork/level-2-application-768-optimized.webp"],
       [1254, "artwork/level-2-application-1254-optimized.webp"]
-    ]
-  },
-  "artwork/level-3-expert.png": {
-    "width": 1254,
-    "height": 1254,
-    "variants": [
-      [128, "artwork/level-3-expert-128-optimized.webp"],
-      [256, "artwork/level-3-expert-256-optimized.webp"],
-      [512, "artwork/level-3-expert-512-optimized.webp"],
-      [768, "artwork/level-3-expert-768-optimized.webp"],
-      [1254, "artwork/level-3-expert-1254-optimized.webp"]
     ]
   },
   "artwork/footer-night.webp": {
@@ -115,17 +96,6 @@
       [512, "artwork/level-2-application-512-optimized.webp"],
       [768, "artwork/level-2-application-768-optimized.webp"],
       [1254, "artwork/level-2-1254-optimized.webp"]
-    ]
-  },
-  "artwork/level-3.webp": {
-    "width": 1254,
-    "height": 1254,
-    "variants": [
-      [128, "artwork/level-3-expert-128-optimized.webp"],
-      [256, "artwork/level-3-expert-256-optimized.webp"],
-      [512, "artwork/level-3-expert-512-optimized.webp"],
-      [768, "artwork/level-3-expert-768-optimized.webp"],
-      [1254, "artwork/level-3-1254-optimized.webp"]
     ]
   },
   "artwork/levels-night.webp": {
@@ -466,16 +436,6 @@
       [1536, "artwork/card-level-2-dark-demo-1536-optimized.webp"]
     ]
   },
-  "artwork/card-level-3-dark-demo.png": {
-    "width": 1536,
-    "height": 1024,
-    "variants": [
-      [384, "artwork/card-level-3-dark-demo-384-optimized.webp"],
-      [768, "artwork/card-level-3-dark-demo-768-optimized.webp"],
-      [1152, "artwork/card-level-3-dark-demo-1152-optimized.webp"],
-      [1536, "artwork/card-level-3-dark-demo-1536-optimized.webp"]
-    ]
-  },
   "artwork/result-level-1-mono-light.png": {
     "width": 1536,
     "height": 1024,
@@ -534,6 +494,37 @@
       [768, "artwork/result-level-3-mono-dark-768-optimized.webp"],
       [1152, "artwork/result-level-3-mono-dark-1152-optimized.webp"],
       [1536, "artwork/result-level-3-mono-dark-1536-optimized.webp"]
+    ]
+  },
+  "artwork/expert-sculpture-cutout.png": {
+    "width": 1254,
+    "height": 1254,
+    "variants": [
+      [128, "artwork/expert-sculpture-cutout-128-optimized.webp"],
+      [256, "artwork/expert-sculpture-cutout-256-optimized.webp"],
+      [512, "artwork/expert-sculpture-cutout-512-optimized.webp"],
+      [768, "artwork/expert-sculpture-cutout-768-optimized.webp"],
+      [1254, "artwork/expert-sculpture-cutout-1254-optimized.webp"]
+    ]
+  },
+  "artwork/expert-sculpture-light.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/expert-sculpture-light-384-optimized.webp"],
+      [768, "artwork/expert-sculpture-light-768-optimized.webp"],
+      [1152, "artwork/expert-sculpture-light-1152-optimized.webp"],
+      [1536, "artwork/expert-sculpture-light-1536-optimized.webp"]
+    ]
+  },
+  "artwork/expert-sculpture-dark.png": {
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      [384, "artwork/expert-sculpture-dark-384-optimized.webp"],
+      [768, "artwork/expert-sculpture-dark-768-optimized.webp"],
+      [1152, "artwork/expert-sculpture-dark-1152-optimized.webp"],
+      [1536, "artwork/expert-sculpture-dark-1536-optimized.webp"]
     ]
   }
 }
