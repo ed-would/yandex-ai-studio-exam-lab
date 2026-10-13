@@ -582,7 +582,7 @@ picture.section-backdrop {
     border-color: var(--line);
   }
   html[data-theme='dark'] .button.danger {
-    color: #27191e;
+    color: var(--action-ink);
     background: var(--error-text);
   }
   html[data-theme='dark'] :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a) {
@@ -656,8 +656,8 @@ picture.section-backdrop {
       border-color: var(--error-text);
     }
     html[data-theme='dark'] .button.danger:hover {
-      color: #27191e;
-      background: #ffcfbf;
+      color: var(--action-ink);
+      background: color-mix(in srgb, var(--error-text) 82%, var(--ink));
     }
     html[data-theme='dark'] :is(.source-search, select):hover {
       background: var(--surface-raised);
@@ -687,8 +687,8 @@ picture.section-backdrop {
     background: var(--accent-soft);
   }
   html[data-theme='dark'] .button.danger:active {
-    color: #27191e;
-    background: #fff0e8;
+    color: var(--action-ink);
+    background: color-mix(in srgb, var(--error-text) 68%, var(--ink));
   }
   html[data-theme='dark'] .disconnect:active {
     color: #fff0e8;

@@ -29,6 +29,10 @@ GEOMETRY = [
     "stats-level-1-ribbon-wave-light.png", "stats-level-1-ribbon-wave-dark.png",
     "stats-level-2-ribbon-wave-light.png", "stats-level-2-ribbon-wave-dark.png",
     "stats-level-3-ribbon-wave-light.png", "stats-level-3-ribbon-wave-dark.png",
+    "card-level-1-dark-demo.png", "card-level-2-dark-demo.png", "card-level-3-dark-demo.png",
+    "result-level-1-mono-light.png", "result-level-1-mono-dark.png",
+    "result-level-2-mono-light.png", "result-level-2-mono-dark.png",
+    "result-level-3-mono-light.png", "result-level-3-mono-dark.png",
 ]
 PROGRESS = ["level-1-foundations.png", "level-2-application.png", "level-3-expert.png"]
 sources = ["brand/trainer-abstract.png", "artwork/hero-ribbon-expanded.webp"]

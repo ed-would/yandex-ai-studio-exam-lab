@@ -4,7 +4,6 @@ import { evaluate, scoreAttempt } from './exam.js';
 const OUTCOMES = {
   excellent: {
     id: 'excellent',
-    background: 'studio-04-citron-arcades',
     icon: 'shield',
     achievement: 'Точность в деталях',
     title: 'Сильный результат.',
@@ -13,7 +12,6 @@ const OUTCOMES = {
   },
   confident: {
     id: 'confident',
-    background: 'studio-03-mint-intersections',
     icon: 'check',
     achievement: 'Учебная цель достигнута',
     title: 'Есть уверенная опора.',
@@ -22,7 +20,6 @@ const OUTCOMES = {
   },
   close: {
     id: 'close',
-    background: 'banner-level-1-braid-light',
     icon: 'spark',
     achievement: 'На пути к цели',
     title: 'До цели осталось несколько шагов.',
@@ -31,7 +28,6 @@ const OUTCOMES = {
   },
   starting: {
     id: 'starting',
-    background: 'studio-05-rose-hourglass',
     icon: 'seed',
     achievement: 'Точка старта найдена',
     title: 'Теперь есть маршрут.',
@@ -40,10 +36,10 @@ const OUTCOMES = {
   },
 };
 
-const CLOSE_RESULT_BACKGROUNDS = {
-  1: 'banner-level-1-braid-light',
-  2: 'banner-level-2-chevron-weave-light',
-  3: 'banner-level-3-gates-light',
+const RESULT_BACKGROUNDS = {
+  1: 'result-level-1-mono-light',
+  2: 'result-level-2-mono-light',
+  3: 'result-level-3-mono-light',
 };
 
 export function resultOutcome(percent) {
@@ -103,8 +99,7 @@ export function resultCoaching(attempt, questions) {
   );
   const skipped = domains.filter((row) => row.skipped > 0);
   const isPractice = attempt.mode === 'mistakes';
-  const outcome = { ...resultOutcome(score.percent) };
-  if (outcome.id === 'close') outcome.background = CLOSE_RESULT_BACKGROUNDS[attempt.level] || outcome.background;
+  const outcome = { ...resultOutcome(score.percent), background: RESULT_BACKGROUNDS[attempt.level] };
   if (score.unanswered) {
     outcome.achievement = 'Попытка завершена досрочно';
     outcome.title = score.answered ? 'Есть ещё что проверить.' : 'Начни с первого ответа.';

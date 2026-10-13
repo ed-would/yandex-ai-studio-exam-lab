@@ -80,7 +80,7 @@ export function Results({
     <${CompletionConfetti} enabled=${celebrate && score.answered > 0} onConsumed=${onCelebrationConsumed} vivid=${score.percent >= TRAINING_TARGET && !score.unanswered}/>
     <div class="breadcrumb"><a href="#/">Тесты</a><span>/</span><span>Уровень ${attempt.level} · ${level.name}</span></div>
     <section class="outcome-hero" aria-labelledby="outcome-title">
-      <${SectionBackdrop} name=${outcome.background} format="webp"/>
+      <${SectionBackdrop} name=${outcome.background} format="png"/>
       <div class="outcome-copy">
         <div class="outcome-context"><span class="badge">${isPractice ? 'Работа над ошибками' : `${level.name} уровень`}</span><time class="outcome-date" datetime=${attempt.completedAt}><${Icon} name="calendar" size=${16}/><span class="sr-only">Завершено </span><span>${formatDate(attempt.completedAt)}</span></time></div>
         <span class="achievement-label"><${Icon} name=${outcome.icon} size=${21}/>${outcome.achievement}</span>
