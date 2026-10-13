@@ -5385,6 +5385,9 @@ h1,
 html:not([data-theme='dark']) .exam-topline > .exam-identity {
   background: color-mix(in srgb, var(--accent) var(--test-raised-opacity), transparent);
 }
+html[data-theme='dark'] .exam-topline > .exam-identity {
+  background: var(--test-fill-soft);
+}
 .exam-topline .exam-identity .badge {
   padding: 0;
   background: transparent;

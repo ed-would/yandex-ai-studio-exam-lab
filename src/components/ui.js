@@ -87,22 +87,23 @@ export function Art({ variant = 1, hero = false, progress = false, compact = fal
   return html`<picture class=${`generative-art art-${variant} ${hero ? 'art-hero' : ''} ${progress ? 'art-progress' : ''}`}>${useNightArt && html`<source media="all" srcset=${responsiveSources(night) || assetUrl(night)} sizes=${size}/>`}<img src=${assetUrl(path)} srcset=${responsiveSources(path)} sizes=${size} alt="" width=${dimensions?.width || 1536} height=${dimensions?.height || 1024} loading=${hero ? 'eager' : 'lazy'} decoding="async" fetchpriority=${hero ? 'high' : 'auto'}/></picture>`;
 }
 
-export function SectionBackdrop({ name, level, format = 'jpg', sizes }) {
+export function SectionBackdrop({ name, format = 'jpg', sizes }) {
   const dark = useTheme() === 'dark';
-  const file =
-    name || ['level-1-triangles', 'level-2-woven-orbits-v2', 'level-3-prisms'][level - 1] || 'level-1-triangles';
+  const file = name;
   const night = {
     'studio-01-three-trajectories': 'levels-night.webp',
     'footer-orbital-sectors': 'footer-night.webp',
     'progress-light-facet-weave-v2': 'progress-night-facet-weave-v2.png',
     'study-phase-rosettes': 'study-night.webp',
-    'level-2-woven-orbits-v2': 'level-2-woven-orbits-v2-dark.webp',
     'practice-meander-light': 'practice-meander-dark.png',
     'history-lens-light': 'history-lens-dark.png',
     'stats-level-1-ribbon-wave-light': 'stats-level-1-ribbon-wave-dark.png',
     'stats-level-2-ribbon-wave-light': 'stats-level-2-ribbon-wave-dark.png',
     'stats-level-3-ribbon-wave-light': 'stats-level-3-ribbon-wave-dark.png',
     'banner-level-1-braid-light': 'banner-level-1-braid-dark.webp',
+    'banner-level-1-folded-planes-light': 'banner-level-1-folded-planes-dark.webp',
+    'banner-level-2-wave-fins-light': 'banner-level-2-wave-fins-dark.webp',
+    'banner-level-3-faceted-prisms-light': 'banner-level-3-faceted-prisms-dark.webp',
     'banner-level-2-chevron-weave-light': 'banner-level-2-chevron-weave-dark.webp',
     'banner-level-3-gates-light': 'banner-level-3-gates-dark.webp',
   }[file];

@@ -35,7 +35,7 @@
       "placement": "Уровень 1 – Базовый",
       "prompt": "Use case: stylized-concept. Create ORIGINAL premium geometric abstract artwork for an AI competency training website. Landscape 1536 x 1024, full-bleed section background, not a UI mockup and not an isolated object on a blank photo. Geometry is precise but softly beveled, tactile satin material, broad legible silhouettes, refined editorial 3D/2.5D lighting. Colour discipline is essential: ONE overwhelmingly dominant hue family, 92–97% of the visible image; secondary hue is only a very fine rim or a tiny reflected shadow. No rainbow gradients, no multicolour stripes, no liquid waves or ribbons, no pebble/bubble mosaic. Original geometry, never copy an existing company mark. No text, letters, logos, icons, interface, watermark or border. Composition: pale lime/chartsreuse #f0f4d9, 95% lime hue family. Repeated NESTED ROUNDED TRIANGULAR frames, stepped solid rounded triangle pyramids and triangular voids create a precise isometric geometric relief at the far RIGHT and lower corners. Dominant satin lime #dce88b, pale yellow-green #eaf1bd, olive-lime recessed shadows #acbd68. A few hairline teal reflected edges only, less than 3%. LEFT 65% quiet pale lime. Mathematical foundations expressed as layered triangular geometry. Large abstract shapes, no central isolated object, no purple fields.",
       "original": "docs/design-lab/artwork/backgrounds/geometric-v2/level-1-triangles.png",
-      "web": "public/images/artwork/level-1-triangles.jpg"
+      "web": "docs/design-lab/artwork/level-1-triangles.jpg"
     },
     {
       "name": "level-2-woven-orbits",
@@ -50,7 +50,7 @@
       "placement": "Уровень 3 – Экспертный",
       "prompt": "Use case: stylized-concept. Create ORIGINAL premium geometric abstract artwork for an AI competency training website. Landscape 1536 x 1024, full-bleed section background, not a UI mockup and not an isolated object on a blank photo. Geometry is precise but softly beveled, tactile satin material, broad legible silhouettes, refined editorial 3D/2.5D lighting. Colour discipline is essential: ONE overwhelmingly dominant hue family, 92–97% of the visible image; secondary hue is only a very fine rim or a tiny reflected shadow. No rainbow gradients, no multicolour stripes, no liquid waves or ribbons, no pebble/bubble mosaic. Original geometry, never copy an existing company mark. No text, letters, logos, icons, interface, watermark or border. Composition: very pale lilac #eee5f6, 95% purple/lavender hue family. A crystalline geometric array of broad rhombus planes, truncated polygon prisms and triangular facets fits together into an off-centre abstract multidimensional structure at the RIGHT margin. Purple #a88acb, lavender #cfbce6 and violet #7956ac, tonal shadows, satin ceramic rather than shiny glass. A hair-thin very muted pale mint reflection on a few bevels only, under 3%. LEFT 65% almost flat pale lilac. Complex pieces aligned into one system, precise facets, no liquid waves and no ribbons.",
       "original": "docs/design-lab/artwork/backgrounds/geometric-v2/level-3-prisms.png",
-      "web": "public/images/artwork/level-3-prisms.jpg"
+      "web": "docs/design-lab/artwork/level-3-prisms.jpg"
     },
     {
       "name": "reserve-kaleido-folds",
