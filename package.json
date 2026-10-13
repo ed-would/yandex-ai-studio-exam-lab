@@ -42,7 +42,9 @@
     "postinstall": "npm run hooks:install",
     "validate": "node scripts/validate-bank.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "npm run lint && npm run validate && npm test && vite build"
+    "check": "npm run lint && npm run validate && npm test && vite build",
+    "ci:dispatch": "gh workflow run ci.yml --ref main",
+    "pages:dispatch": "gh workflow run pages.yml --ref main"
   },
   "dependencies": {
     "htm": "3.1.1",
