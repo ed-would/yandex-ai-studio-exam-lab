@@ -46,6 +46,8 @@
   --error-text: #d32f2f;
   --error-bg: #fff1f1;
   --warning-text: #8a5a00;
+  --warning-bg: #fff4df;
+  --warning-line: #e3c28f;
   --info-text: #215eae;
   --info-bg: #f3f7fd;
   --info-line: #c9d8ed;
@@ -101,7 +103,9 @@ html[data-theme='dark'] {
   --success-bg: #20372e;
   --error-text: #ff5c5c;
   --error-bg: #3b2020;
-  --warning-text: #f2c94c;
+  --warning-text: #eaa743;
+  --warning-bg: #392d20;
+  --warning-line: #6a5134;
   --info-text: #9cbeff;
   --info-bg: #222b3a;
   --info-line: #455875;

@@ -303,7 +303,7 @@ test('досрочная попытка выше 80% показывает про
   assert.equal(container.querySelectorAll('.coaching-card').length, 0);
   assert.equal(findButton('К уровню 2'), undefined);
   assert.match(get('.competency-untested').textContent, /Не проверено/);
-  await click(get('.skipped-note button'));
+  await click(get('.unanswered-summary-action'));
   assert.equal(container.querySelectorAll('.review-item.status-unanswered').length, 10);
   assert.equal(findButton('Пропущено 10').getAttribute('aria-pressed'), 'true');
 });
@@ -806,7 +806,7 @@ test('все экранные аккордеоны используют общи
   await go('#/');
   await go('#/study/1');
   const topics = get('.topic-coverage');
-  assert.ok(topics.matches('.accordion.accordion--inline'));
+  assert.ok(topics.matches('.accordion.accordion--surface'));
   await click(topics.querySelector(':scope > summary'));
   assert.equal(topics.open, true);
   assert.ok(topics.querySelector(':scope > .details-content > .details-content-inner'));
@@ -1732,13 +1732,14 @@ test('таймер включается перед стартом, а продо
   assert.equal(currentState().sessions['exam:1'].timing.deadlines[timed.questionIds[0]], deadline);
 });
 
-test('таймер красный в последние 10 секунд и автоматически блокирует просроченный вопрос', async () => {
+test('таймер показывает warning в последние 10 секунд и ошибку после истечения времени', async () => {
   const start = new Date(Date.now() - 65000).toISOString();
   const timed = makeAttempt(1, questions, 'exam', null, start, true);
   storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': timed } }));
   await go('#/exam/1');
   await mount();
   assert.ok(get('[role="timer"].urgent'));
+  assert.equal(get('.question-timer.urgent').classList.contains('expired'), false);
   assert.match(text(), /Время истекает/);
   await unmount();
   const past = new Date(Date.now() - 74000).toISOString();
@@ -1750,7 +1751,11 @@ test('таймер красный в последние 10 секунд и ав�
   assert.equal(currentState().sessions['exam:1'].cursor, 1);
   assert.ok(currentState().sessions['exam:1'].answers[q.id].timedOut);
   assert.match(text(), /Вопрос засчитан как ошибка/);
+  assert.ok(get('.toast.toast-warning'));
+  assert.equal(get('.toast').getAttribute('role'), 'alert');
+  assert.equal(get('.toast-icon .icon').getAttribute('width'), '22');
   await click('[data-question-index="0"]');
+  assert.ok(get('[role="timer"].expired'));
   assert.ok(get('input[type="radio"]').disabled);
   assert.match(get('.feedback-heading').textContent, /Время вышло/);
   assert.equal(container.querySelector('.check-answer'), null);

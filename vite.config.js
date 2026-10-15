@@ -6,7 +6,7 @@ const imageVariants = JSON.parse(readFileSync(new URL('./src/data/image-variants
 export default defineConfig({
   // Относительные пути работают и в корне, и в /имя-репозитория/ на GitHub Pages.
   base: './',
-  server: { port: 5173 },
+  server: { host: '0.0.0.0', port: 5173 },
   preview: { port: 4173 },
   build: {
     target: 'baseline-widely-available',

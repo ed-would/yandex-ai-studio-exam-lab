@@ -199,12 +199,15 @@ export function MatchQuestion({ question, response, locked, onChange }) {
 
 export function ExplanationDetails({ question, response }) {
   if (question.type === 'match')
-    return html`<div class="pair-explanations">${question.left.map((item, index) => {
-      const correct = question.right.find((r) => r.id === question.pairs[item.id]);
-      const selected = question.right.find((r) => r.id === response?.[item.id]);
-      const right = selected?.id === correct.id;
-      return html`<div class="pair-explanation"><span class=${`rationale-symbol ${right ? 'correct' : 'wrong'}`}><${Icon} name=${right ? 'check' : 'close'} size=${15}/><span class="sr-only">${right ? 'Верно' : selected ? 'Ошибка' : 'Пропущено'}</span></span><div><span class="rationale-meta">Правильная пара</span><div class="pair-title"><strong>${index + 1}. ${item.text}</strong><span class="pair-arrow" aria-hidden="true">→</span><span class="sr-only">соответствует</span><strong>${correct.text}</strong></div>${!right && html`<p class="your-answer">Твой ответ: ${selected?.text || 'нет ответа'}.</p>`}<p>${question.pairExplanations[item.id]}</p></div></div>`;
-    })}</div>`;
+    return html`<ol class="pair-explanations" aria-label="Разбор правильных соответствий">${question.left.map(
+      (item, index) => {
+        const correct = question.right.find((r) => r.id === question.pairs[item.id]);
+        const selected = question.right.find((r) => r.id === response?.[item.id]);
+        const right = selected?.id === correct.id;
+        const definition = correct.text.charAt(0).toLocaleLowerCase('ru-RU') + correct.text.slice(1);
+        return html`<li class="pair-explanation"><span class=${`rationale-symbol ${right ? 'correct' : 'wrong'}`}><${Icon} name=${right ? 'check' : 'close'} size=${15}/><span class="sr-only">${right ? 'Верно' : selected ? 'Ошибка' : 'Пропущено'}</span></span><div><div class="pair-title"><strong>${index + 1}. ${item.text}:</strong> <span class="pair-definition">${definition}</span></div>${!right && html`<p class="your-answer">Твой ответ: ${selected?.text || 'нет ответа.'}</p>`}<p>${question.pairExplanations[item.id]}</p></div></li>`;
+      },
+    )}</ol>`;
   return html`<div class="option-explanations">${question.options.map((option, index) => {
     const correct = question.correct.includes(option.id);
     const selected = response?.includes(option.id);

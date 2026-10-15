@@ -31,6 +31,7 @@ import {
   downloadFile,
   EmptyState,
   Icon,
+  ExternalLinkLabel,
   Modal,
   Wordmark,
   PlatformMark,
@@ -111,7 +112,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     celebration.current = null;
   }, []);
 
-  const notify = (message) => setToast(message);
+  const notify = (message, type = 'info') => setToast({ message, type });
   function navigate(path) {
     if (path !== `#/results/${celebration.current}`) celebration.current = null;
     window.location.hash = path;
@@ -130,7 +131,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     };
     const save = () => {
       if (driver.current.conflict) {
-        notify('Сначала обнови данные из другой вкладки.');
+        notify('Сначала обнови данные из другой вкладки.', 'warning');
         return false;
       }
       let next = transform(liveState.current);
@@ -221,7 +222,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
           ? [result.warning, MEMORY_WARNING].filter(Boolean).join(' ')
           : result.warning,
     );
-    notify('Сохранения обновлены.');
+    notify('Сохранения обновлены.', 'success');
   }
   useEffect(() => {
     const onHash = () => {
@@ -335,6 +336,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
         expired === 1
           ? 'Время вышло. Вопрос засчитан как ошибка.'
           : `Время вышло для ${expired} вопросов. Они засчитаны как ошибки.`,
+        'warning',
       );
     }
     if (saved && completed && isVisible()) {
@@ -417,7 +419,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
       onConfirm: async () => {
         if (await commit((current) => (level ? clearLevel(current, level) : freshState()), !level, true)) {
           setModal(null);
-          notify(level ? `Результаты уровня ${level} удалены.` : 'Все результаты удалены.');
+          notify(level ? `Результаты уровня ${level} удалены.` : 'Все результаты удалены.', 'success');
         }
       },
     });
@@ -427,7 +429,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     event.currentTarget.value = '';
     if (!file) return;
     if (file.size > MAX_BACKUP_BYTES) {
-      notify(`Файл больше 10 МБ. Выбери резервную копию приложения ${APP_NAME}.`);
+      notify(`Файл больше 10 МБ. Выбери резервную копию приложения ${APP_NAME}.`, 'error');
       return;
     }
     try {
@@ -440,12 +442,12 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
           if (await commit(() => imported, true)) {
             setModal(null);
             navigate('#/history');
-            notify('Результаты восстановлены.');
+            notify('Результаты восстановлены.', 'success');
           }
         },
       });
     } catch (error) {
-      notify(error.message || 'Не удалось прочитать резервную копию.');
+      notify(error.message || 'Не удалось прочитать резервную копию.', 'error');
     }
   }
   const backup = () =>
@@ -467,8 +469,8 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
       ${route.page === 'history' && html`<${History} state=${state} questions=${questions} hasProtectedData=${driver.current.protected && driver.current.raw !== null} onClearLevel=${clearScores} onClearAll=${() => clearScores()} onBackup=${backup} onImport=${importBackup}/>`}
       ${route.page === 'study' && html`<${Study} key=${route.id} questions=${questions} initialDomain=${Number(route.id) || 1}/>`}
     </main>
-    <footer class="site-footer"><${SectionBackdrop} name="footer-orbital-sectors" format="webp"/><div class="footer-inner"><div class="footer-card"><div class="footer-intro"><span class="footer-title">${APP_NAME}</span><p>Независимый учебный проект для подготовки к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. Вопросы авторские; три уровня и учебная цель ${TRAINING_TARGET}% относятся к тренажёру.</p></div><div class="footer-exam-weights"><span class="footer-note-label">Веса доменов настоящего экзамена</span><div class="footer-weight-grid">${DOMAINS.map((domain) => html`<div><span>${domain.short}</span><strong>${domain.weight}%</strong></div>`)}</div></div><div class="footer-meta"><div class="footer-platform"><${PlatformMark}/><span class="footer-count">3 теста · 180 вопросов</span></div><a class="button secondary" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer">Программа экзамена<${Icon} name="external" size=${15}/></a></div></div></div></footer>
+    <footer class="site-footer"><${SectionBackdrop} name="footer-orbital-sectors" format="webp"/><div class="footer-inner"><div class="footer-card"><div class="footer-intro"><span class="footer-title">${APP_NAME}</span><p>Независимый учебный проект для подготовки к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. Вопросы авторские; три уровня и учебная цель ${TRAINING_TARGET}% относятся к тренажёру.</p></div><div class="footer-exam-weights"><span class="footer-note-label">Веса доменов настоящего экзамена</span><div class="footer-weight-grid">${DOMAINS.map((domain) => html`<div><span>${domain.short}</span><strong>${domain.weight}%</strong></div>`)}</div></div><div class="footer-meta"><div class="footer-platform"><${PlatformMark}/><span class="footer-count">3 теста · 180 вопросов</span></div><a class="button secondary" href=${PROGRAM_URL} target="_blank" rel="noopener noreferrer"><${ExternalLinkLabel} text="Программа экзамена" size=${15}/></a></div></div></div></footer>
     ${modal && html`<${Modal} title=${modal.title} confirmText=${modal.confirmText} dangerous=${modal.dangerous} level=${modal.level} onConfirm=${modal.onConfirm} onClose=${() => setModal(null)}><p>${modal.body}</p></${Modal}>`}
-    ${toast && html`<div class="toast" role="status"><${Icon} name="info" size=${18}/>${toast}<button aria-label="Закрыть уведомление" onClick=${() => setToast('')}><${Icon} name="close" size=${16}/></button></div>`}
+    ${toast && html`<div class=${`toast toast-${toast.type}`} role=${toast.type === 'warning' || toast.type === 'error' ? 'alert' : 'status'} aria-atomic="true"><span class="toast-icon"><${Icon} name=${toast.type === 'success' ? 'check' : toast.type === 'error' ? 'close' : 'info'} size=${22}/></span><span class="toast-message">${toast.message}</span><button class="toast-close" type="button" aria-label="Закрыть уведомление" onClick=${() => setToast('')}><${Icon} name="close" size=${16}/></button></div>`}
   </div>`;
 }
