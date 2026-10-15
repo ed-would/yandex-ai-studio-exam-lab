@@ -15,6 +15,12 @@ Preact + htm + Vite; Russian AI exam trainer. Load only task-relevant references
 
 Code changes: `npm run check`. Browser verification: global `/pw` (Playwright MCP).
 
+## Browser verification scope
+
+- For interface checks, select specific questions that represent the required types and states. Do not traverse the question bank, all 180 questions, half the bank, or another bulk subset, including during a site-wide UI audit.
+- Use the existing result fixtures and `npm run dev:results` to inspect statistics, scores, and result states. Do not complete or skip questions to manufacture these states.
+- Keep browser checks tied to the requested changes and relevant responsive/theme variants. A broader page audit does not authorize a question-by-question run.
+
 ## Shared palette contract
 
 Read [DESIGN.md](DESIGN.md) before changing UI colors. `public/theme-controls.css` is the single runtime source for level primitives and general `--ui-*` tokens. General links, active navigation, progress and primary actions use solid expert purple (`--level-3-accent`, #6841AB) in light theme, and the composite three-level gradient with neutral text/focus fallbacks in dark theme; do not add private color copies or a fourth accent. The standalone HTML export in `src/core/report.js` must mirror these values.

@@ -47,9 +47,24 @@ export function Icon({ name = 'spark', size = 20, className = '' }) {
   return html`<svg class=${`icon ${className}`} data-icon=${name} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(PATHS[name] || PATHS.spark).map((d) => html`<path d=${d} />`)}</svg>`;
 }
 
+export function ExternalLinkLabel({ text = '', size = 15 }) {
+  const label = String(text ?? '').trimEnd();
+  const match = /^(.*\s)(\S+)$/u.exec(label);
+  const prefix = match?.[1] || '';
+  const lastWord = match?.[2] || label;
+  return html`<span class="external-link-label">${prefix}<span class="external-link-tail">${lastWord}<${Icon} name="external" size=${size}/></span></span>`;
+}
+
 export function TimerOption({ enabled = false, onChange }) {
   const id = useId();
-  return html`<label class="timer-option" for=${id}><span class="timer-option-icon"><${Icon} name="clock" size=${24}/></span><span class="timer-option-copy"><strong>Таймер для новых попыток</strong><small>Включи перед стартом. 1:12 на вопрос, затем 0 баллов и следующий вопрос. У «Продолжить» режим не меняется.</small></span><input id=${id} type="checkbox" role="switch" checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/><span class="timer-switch" aria-hidden="true"/></label>`;
+  const titleId = `${id}-title`;
+  const descriptionId = `${id}-description`;
+  return html`<label class="guidance-card timer-option" for=${id}>
+    <span class="guidance-heading"><span class="guidance-icon"><${Icon} name="clock" size=${22}/></span><strong id=${titleId}>Таймер новой попытки</strong></span>
+    <input id=${id} type="checkbox" role="switch" aria-labelledby=${titleId} aria-describedby=${descriptionId} checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/>
+    <span class="timer-switch" aria-hidden="true"/>
+    <small class="guidance-description" id=${descriptionId}>72 секунды на вопрос. По истечении времени — 0 баллов. Режим сохранится при продолжении.</small>
+  </label>`;
 }
 
 export function Wordmark() {
@@ -158,7 +173,7 @@ export const plural = (n, forms = ['вопрос', 'вопроса', 'вопро
 
 export function SourceLinks({ sources = [], compact = false }) {
   const unique = [...new Map(sources.filter((s) => /^https:\/\//.test(s.url)).map((s) => [s.url, s])).values()];
-  return html`<div class=${`source-links ${compact ? 'compact' : ''}`}>${unique.map((source) => html`<a href=${source.url} target="_blank" rel="noopener noreferrer">${source.title}<${Icon} name="external" size=${14}/><span class="sr-only"> (откроется в новой вкладке)</span></a>`)}</div>`;
+  return html`<div class=${`source-links ${compact ? 'compact' : ''}`}>${unique.map((source) => html`<a href=${source.url} target="_blank" rel="noopener noreferrer"><${ExternalLinkLabel} text=${source.title} size=${14}/><span class="sr-only"> (откроется в новой вкладке)</span></a>`)}</div>`;
 }
 
 export function Modal({ title, children, confirmText = 'Подтвердить', onConfirm, onClose, dangerous = false, level }) {

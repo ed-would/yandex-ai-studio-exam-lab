@@ -99,11 +99,11 @@ export function Results({
       <div class="outcome-score">
         <div class="score-orbit" style=${{ '--score': `${score.percent}%` }}><div><span class=${`score-number ${percent.length > 2 ? 'score-number-wide' : ''}`}>${percent}<small>%</small></span>${scoreTarget && html`<span class=${`score-target score-target-status${scoreTargetMissed ? ' score-target-remaining' : ''}`}>${scoreTarget}</span>`}</div></div>
       </div>
-      <div class="outcome-facts"><div><span>Верно</span><strong class=${score.correct > 0 ? 'correct' : ''}>${score.correct}<small> / ${score.total}</small></strong></div><div><span>Ошибки</span><strong class=${score.wrong > 0 ? 'incorrect' : ''}>${score.wrong}</strong></div><div><span>Пропущено</span><strong>${score.unanswered}</strong></div><div><span>Тем с результатом от ${TRAINING_TARGET}%</span><strong class=${strong.length > 0 ? 'correct' : ''}>${strong.length}<small> / ${domains.length}</small></strong></div></div>
+      <dl class="outcome-facts"><div><dt>Верно</dt><dd class=${score.correct > 0 ? 'correct' : ''}>${score.correct}<small> / ${score.total}</small></dd></div><div><dt>Ошибки</dt><dd class=${score.wrong > 0 ? 'incorrect' : ''}>${score.wrong}</dd></div><div><dt>Пропущено</dt><dd>${score.unanswered}</dd></div><div><dt>Тем с результатом от ${TRAINING_TARGET}%</dt><dd class=${strong.length > 0 ? 'correct' : ''}>${strong.length}<small> / ${domains.length}</small></dd></div></dl>
     </section>
 
     <section class="coaching-section" aria-labelledby="coaching-title">
-      <div class="section-heading"><div><h2 id="coaching-title">${priorities.length ? 'Что подтянуть в первую очередь' : !score.answered ? 'Сначала собери свой результат' : score.unanswered ? 'Допроверь пропущенные темы' : 'Что уже получилось'}</h2><p>${priorities.length ? `Рекомендации по ошибкам в этой попытке. Выбраны ${priorities.length > 3 ? 'три приоритетные темы' : 'темы, которым стоит уделить внимание'}.` : !score.answered ? 'Ответь на вопросы, и здесь появятся рекомендации.' : score.unanswered ? 'Пропуск не говорит о слабом знании. Сначала проверь себя на этих заданиях.' : isPractice ? 'В выбранной подборке ошибок нет. Теперь проверь весь уровень.' : 'В этой попытке ошибок нет. Можно переходить к более сложным задачам и закреплению.'}</p></div></div>
+      <div class="section-heading"><div><h2 id="coaching-title">${priorities.length ? 'Что подтянуть в первую очередь' : score.unanswered ? 'Что проверить дальше' : !score.answered ? 'Сначала собери свой результат' : 'Что уже получилось'}</h2><p>${priorities.length ? `Рекомендации по ошибкам в этой попытке. Выбраны ${priorities.length > 3 ? 'три приоритетные темы' : 'темы, которым стоит уделить внимание'}.` : score.unanswered ? 'Непроверенные ответы не показывают уровень знаний — сначала оцени себя по этим темам.' : !score.answered ? 'Ответь на вопросы, и здесь появятся рекомендации.' : isPractice ? 'В выбранной подборке ошибок нет. Теперь проверь весь уровень.' : 'В этой попытке ошибок нет. Можно переходить к более сложным задачам и закреплению.'}</p></div></div>
       ${
         priorities.length
           ? html`<div class="coaching-grid">${priorities.slice(0, 3).map(
@@ -118,9 +118,17 @@ export function Results({
         <div class="coaching-card-actions"><a class="button secondary" href=${`#/study/${row.id}`}><${Icon} name="book" size=${18}/>Повторить тему</a><button class="text-button" onClick=${() => openReview(row.id, 'incorrect')}><${Icon} name="search" size=${18}/>Разобрать ошибки</button></div>
       </article>`,
             )}</div>`
-          : html`<div class="coaching-clear"><span class="coaching-clear-icon"><${Icon} name=${!score.answered ? 'book' : score.unanswered ? 'clock' : 'shield'} size=${36}/></span><div><h3>${!score.answered ? 'Первая попытка даст точку отсчёта.' : score.unanswered ? `${plural(score.unanswered, ['задание осталось', 'задания остались', 'заданий осталось'])} без проверки.` : 'Все проверенные ответы верны.'}</h3><p>${!score.answered ? 'Начни с любого уровня и проверяй каждый ответ. Можно продолжать в своём темпе.' : score.unanswered ? 'Выполни их в точечной тренировке: так станет понятно, что уже усвоено, а что стоит повторить.' : 'Объясни себе логику решения своими словами и попробуй применить её к другой задаче.'}</p></div></div>`
+          : score.unanswered === 0 &&
+            html`<div class="coaching-clear"><span class="coaching-clear-icon"><${Icon} name=${!score.answered ? 'book' : 'shield'} size=${36}/></span><div><h3>${!score.answered ? 'Первая попытка даст точку отсчёта.' : 'Все проверенные ответы верны.'}</h3><p>${!score.answered ? 'Начни с любого уровня и проверяй каждый ответ. Можно продолжать в своём темпе.' : 'Объясни себе логику решения своими словами и попробуй применить её к другой задаче.'}</p></div></div>`
       }
-      ${score.unanswered > 0 && score.answered > 0 && html`<div class="skipped-note"><${Icon} name="clock" size=${22}/><div><strong>${plural(score.unanswered, ['пропущенное задание', 'пропущенных задания', 'пропущенных заданий'])}</strong><p>${skipped.map((row) => row.short).join(' · ')}. По этим заданиям знания ещё не проверены.</p></div><button class="text-button" onClick=${() => openReview('all', 'unanswered')}><${Icon} name="search" size=${18}/>Посмотреть пропуски</button></div>`}
+      ${
+        score.unanswered > 0 &&
+        html`<aside class="guidance-card unanswered-summary" aria-labelledby="unanswered-summary-title">
+        <div class="guidance-heading"><span class="guidance-icon"><${Icon} name="layers" size=${22}/></span><h3 id="unanswered-summary-title">${plural(score.unanswered, ['задание ждёт проверки', 'задания ждут проверки', 'заданий ждут проверки'])}</h3></div>
+        <div class="unanswered-summary-details"><p class="unanswered-summary-label">По темам</p><ul class="unanswered-summary-domains" aria-label="Непроверенные задания по темам">${skipped.map((row) => html`<li aria-label=${`${row.short}: ${plural(row.skipped, ['вопрос без проверки', 'вопроса без проверки', 'вопросов без проверки'])}`}><span>${row.short}</span><span class="unanswered-summary-count" aria-hidden="true">${row.skipped}</span></li>`)}</ul></div>
+        <button class="button secondary unanswered-summary-action" onClick=${() => openReview('all', 'unanswered')}><${Icon} name="search" size=${18}/>Посмотреть пропуски</button>
+      </aside>`
+      }
     </section>
 
     <section class="results-insights" aria-label="Карта знаний и план подготовки">
