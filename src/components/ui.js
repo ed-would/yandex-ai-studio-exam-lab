@@ -63,7 +63,7 @@ export function TimerOption({ enabled = false, onChange }) {
     <span class="guidance-heading"><span class="guidance-icon"><${Icon} name="clock" size=${22}/></span><strong id=${titleId}>Таймер новой попытки</strong></span>
     <input id=${id} type="checkbox" role="switch" aria-labelledby=${titleId} aria-describedby=${descriptionId} checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/>
     <span class="timer-switch" aria-hidden="true"/>
-    <small class="guidance-description" id=${descriptionId}>72 секунды на вопрос. По истечении времени — 0 баллов. Режим сохранится при продолжении.</small>
+    <small class="guidance-description" id=${descriptionId}>72 секунды на вопрос. Когда время выйдет, за вопрос будет 0 баллов. Режим сохранится при продолжении.</small>
   </label>`;
 }
 

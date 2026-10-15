@@ -151,7 +151,7 @@ export function Study({ questions, initialDomain = 1 }) {
     const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ? 'auto' : 'smooth';
     document.getElementById(`study-sources-${domain.id}`)?.scrollIntoView?.({ behavior, block: 'start' });
   };
-  return html`<div class="page study-page"><div class="page-heading has-art knowledge-heading"><${SectionBackdrop} name="study-phase-rosettes"/><div class="heading-copy"><span class="eyebrow">От ошибки к пониманию</span><h1>Карта подготовки.</h1><p>Короткие опоры по шести доменам и открытые источники, на которых построены задания.</p></div></div><div class="study-layout"><aside class="study-nav" aria-label="Домены программы">${DOMAINS.map(
+  return html`<div class="page study-page"><div class="page-heading has-art knowledge-heading"><${SectionBackdrop} name="study-phase-rosettes"/><div class="heading-copy"><span class="eyebrow">От ошибки к пониманию</span><h1>Карта подготовки.</h1><p>Краткие памятки по шести доменам и открытые источники, на которых построены задания.</p></div></div><div class="study-layout"><aside class="study-nav" aria-label="Домены программы">${DOMAINS.map(
     (d) =>
       html`<button class=${domain.id === d.id ? 'active' : ''} aria-pressed=${domain.id === d.id} onClick=${() => {
         setDomainId(d.id);
