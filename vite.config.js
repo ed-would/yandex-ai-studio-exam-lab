@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
+import { typograph } from './src/core/typography.js';
 
 const imageVariants = JSON.parse(readFileSync(new URL('./src/data/image-variants.json', import.meta.url), 'utf8'));
 
@@ -16,6 +17,10 @@ export default defineConfig({
     copyPublicDir: false,
   },
   plugins: [
+    {
+      name: 'typographic-html',
+      transformIndexHtml: typograph,
+    },
     {
       name: 'runtime-public-assets',
       apply: 'build',

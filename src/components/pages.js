@@ -25,7 +25,13 @@ export function Home({ state, questions, onStart, onRestart, timed, onTimedChang
   const practiced = new Set(state.history.flatMap((a) => Object.keys(a.answers)));
   for (const a of Object.values(state.sessions)) Object.keys(a.answers).forEach((id) => practiced.add(id));
   return html`<div class="page home-page">
-    <section class="hero"><div class="hero-copy"><div class="exam-brand"><span>Подготовка к экзамену на платформе</span><${PlatformMark}/></div><h1>Основы<br/>работы с ИИ</h1><p class="hero-description">От первого промпта до сложных решений.<br class="desktop-only"/> Три тренировочных теста, подробные разборы<br class="desktop-only"/> и понятная карта подготовки.</p><div class="hero-actions"><a class="button primary" href="#levels">Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="map" size=${18}/>Карта подготовки</a></div><div class="hero-caption"><strong>180 авторских вопросов</strong><span>без регистрации</span></div></div><div class="hero-visual"><${Art} hero=${true}/><span class="hero-art-caption">Понимать. Применять. Связывать.</span></div></section>
+    <section class="hero"><div class="hero-copy"><div class="exam-brand"><span>Подготовка к экзамену на платформе</span><${PlatformMark}/></div><h1>Основы<br/>работы с ИИ</h1><p class="hero-description">От первого промпта до сложных решений.<br class="desktop-only"/> Три тренировочных теста, подробные разборы<br class="desktop-only"/> и понятная карта подготовки.</p><div class="hero-actions"><a class="button primary" href="#levels" onClick=${(
+      event,
+    ) => {
+      event.preventDefault();
+      if (window.location.hash !== '#levels') window.location.hash = '#levels';
+      requestAnimationFrame(() => document.getElementById('levels')?.scrollIntoView?.({ block: 'start' }));
+    }}>Выбрать тест<${Icon} name="arrow" size=${19}/></a><a class="text-button" href="#/study"><${Icon} name="map" size=${18}/>Карта подготовки</a></div><div class="hero-caption"><strong>180 авторских вопросов</strong><span>без регистрации</span></div></div><div class="hero-visual"><${Art} hero=${true}/><span class="hero-art-caption">Понимать. Применять. Связывать.</span></div></section>
     <section class="overview-strip" aria-label="Тренажёр и твоя подготовка">
       <dl class="overview-facts">
         <div><dt>Уровни сложности</dt><dd class="overview-number">3</dd></div>

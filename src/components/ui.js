@@ -3,9 +3,21 @@ import { useEffect, useId, useRef } from 'preact/hooks';
 import htm from 'htm';
 import { APP_NAME, APP_TAGLINE } from '../data/meta.js';
 import { useTheme } from '../core/theme.js';
+import { typograph, typographChildren } from '../core/typography.js';
 import imageVariants from '../data/image-variants.json' with { type: 'json' };
 
-export const html = htm.bind(h);
+export const html = htm.bind((tag, props, ...children) => {
+  if (typeof tag === 'string' && !['script', 'style', 'pre', 'code', 'textarea'].includes(tag)) {
+    children = typographChildren(children);
+    if (props) {
+      props = { ...props };
+      for (const name of ['title', 'alt', 'placeholder']) {
+        if (typeof props[name] === 'string') props[name] = typograph(props[name]);
+      }
+    }
+  }
+  return h(tag, props, ...children);
+});
 const PATHS = {
   arrow: ['M4 12h15', 'm13 6 6 6-6 6'],
   back: ['M20 12H5', 'm11 6-6 6 6 6'],
@@ -61,8 +73,10 @@ export function TimerOption({ enabled = false, onChange }) {
   const descriptionId = `${id}-description`;
   return html`<label class="guidance-card timer-option" for=${id}>
     <span class="guidance-heading"><span class="guidance-icon"><${Icon} name="clock" size=${22}/></span><strong id=${titleId}>Таймер новой попытки</strong></span>
-    <input id=${id} type="checkbox" role="switch" aria-labelledby=${titleId} aria-describedby=${descriptionId} checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/>
-    <span class="timer-switch" aria-hidden="true"/>
+    <span class="timer-control">
+      <input id=${id} type="checkbox" role="switch" aria-labelledby=${titleId} aria-describedby=${descriptionId} checked=${enabled} onChange=${(event) => onChange(event.currentTarget.checked)}/>
+      <span class="timer-switch" aria-hidden="true"/>
+    </span>
     <small class="guidance-description" id=${descriptionId}>72 секунды на вопрос. Когда время выйдет, за вопрос будет 0 баллов. Режим сохранится при продолжении.</small>
   </label>`;
 }

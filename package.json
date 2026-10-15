@@ -48,7 +48,8 @@
   },
   "dependencies": {
     "htm": "3.1.1",
-    "preact": "11.0.1"
+    "preact": "11.0.1",
+    "typograf": "7.8.0"
   },
   "devDependencies": {
     "braces": "file:vendor/braces/braces-3.0.3-patch.2.tgz",
