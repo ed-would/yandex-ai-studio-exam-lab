@@ -938,7 +938,7 @@ test('HTML-отчёт содержит исходные ответы, поясн
   assert.match(html, /Ошибки: 1\. Пропущено: 59/u);
   assert.match(html, /твой выбор/u);
   assert.match(html, /Запомнить:/u);
-  assert.match(html, /не является официальной оценкой Яндекса/u);
+  assert.match(html, /не[\u00a0 ]является официальной оценкой Яндекса/u);
   assert.doesNotMatch(html, /<script\b/iu);
   assert.equal((html.match(/<article>/gu) || []).length, 60);
 });

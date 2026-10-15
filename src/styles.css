@@ -140,15 +140,17 @@ h3 {
   overflow-wrap: anywhere;
 }
 .external-link-tail {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
+  display: inline;
   overflow-wrap: normal;
   white-space: nowrap;
   vertical-align: middle;
 }
 .external-link-tail > .icon {
-  flex: 0 0 auto;
+  margin-inline-start: 0.35em;
+}
+.icon[data-icon='external'] {
+  position: relative;
+  top: -1px;
 }
 .icon[data-icon='trash'] {
   color: var(--error-text);
@@ -400,10 +402,6 @@ h3 {
 .section-heading.compact h2 {
   font-size: 22px;
 }
-.levels-section {
-  scroll-margin-top: 110px;
-}
-
 .level-metrics strong {
   font-weight: 600;
   color: var(--accent);
@@ -5263,6 +5261,7 @@ h1,
   padding: 32px;
   border-radius: 32px;
   background: #e4e9e6;
+  scroll-margin-top: -8px;
 }
 .levels-section > .section-backdrop {
   border-radius: inherit;
@@ -8093,6 +8092,15 @@ input[type='search']::-webkit-search-cancel-button:active {
   grid-column: 1;
   grid-row: 1;
 }
+.timer-control {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  width: 48px;
+  height: 28px;
+}
 .timer-option .guidance-description {
   grid-row: 2;
 }
@@ -8103,23 +8111,18 @@ input[type='search']::-webkit-search-cancel-button:active {
   margin: 20px 0 0;
 }
 .timer-option input {
-  position: relative;
-  grid-column: 2;
-  grid-row: 1;
+  position: absolute;
+  inset-block-start: -8px;
+  inset-inline: 0;
   width: 48px;
   height: 44px;
-  justify-self: end;
-  align-self: center;
+  margin: 0;
   z-index: 1;
   opacity: 0;
   cursor: pointer;
 }
 .timer-switch {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-  align-self: center;
-  flex: 0 0 48px;
+  display: block;
   width: 48px;
   height: 28px;
   border: 1px solid var(--line);

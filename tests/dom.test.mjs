@@ -50,7 +50,9 @@ const get = (selector) => {
   assert.ok(node, `Элемент не найден: ${selector}`);
   return node;
 };
-const text = () => container.textContent;
+// Semantic checks ignore typographic spaces; typography.test.mjs checks them exactly.
+const readText = (node) => node.textContent.replace(/[\u00a0\u202f]/g, ' ');
+const text = () => readText(container);
 const click = async (selectorOrNode) => {
   const node = typeof selectorOrNode === 'string' ? get(selectorOrNode) : selectorOrNode;
   await act(async () => {
@@ -61,7 +63,7 @@ const click = async (selectorOrNode) => {
 const press = async (node, key) => {
   await act(() => node.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })));
 };
-const findButton = (value) => [...container.querySelectorAll('button')].find((b) => b.textContent.trim() === value);
+const findButton = (value) => [...container.querySelectorAll('button')].find((b) => readText(b).trim() === value);
 const go = async (hash) => {
   await act(() => {
     window.location.hash = hash;
@@ -177,10 +179,10 @@ test('макеты переключают уровни и результаты, 
   const previewMount = () => act(() => render(html`<${ResultsPreview} questions=${questions}/>`, container));
   await previewMount();
   assert.equal(window.location.hash, '#/results/preview-1-target80');
-  assert.equal(get('.score-number').textContent, '80%');
+  assert.equal(readText(get('.score-number')), '80%');
   await click(findButton('Следующий'));
   assert.equal(window.location.hash, '#/results/preview-1-below95');
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(readText(get('.score-number')), '93,3%');
   const select = get('select[aria-label="Тест для просмотра"]');
   await act(() => {
     select.value = '3';
@@ -188,17 +190,17 @@ test('макеты переключают уровни и результаты, 
   });
   assert.equal(window.location.hash, '#/results/preview-3-below95');
   assert.ok(get('.results-page.theme-3'));
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(readText(get('.score-number')), '93,3%');
   await unmount();
   await previewMount();
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(readText(get('.score-number')), '93,3%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.history-table'), null);
   await click(findButton('Открыть результат'));
-  assert.equal(get('.score-number').textContent, '93,3%');
+  assert.equal(readText(get('.score-number')), '93,3%');
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 36);
   assert.equal(window.localStorage.getItem(realKey), raw);
@@ -270,8 +272,8 @@ test('рекомендация открывает разбор именно ош
   assert.ok(get('.outcome-excellent'));
   assert.equal(container.querySelector('.completion-confetti'), null);
   const card = get('[data-coaching-domain="2"]');
-  for (const q of failed) assert.ok(card.textContent.includes(q.topic));
-  assert.ok(card.textContent.includes(failed[0].takeaway));
+  for (const q of failed) assert.ok(readText(card).includes(q.topic));
+  assert.ok(readText(card).includes(failed[0].takeaway));
   await click(card.querySelector('button'));
   assert.equal(document.activeElement.id, 'results-review-title');
   assert.equal(get('select[aria-label="Фильтр по домену"]').value, '2');
@@ -279,7 +281,7 @@ test('рекомендация открывает разбор именно ош
   assert.equal(container.querySelectorAll('.review-item').length, 2);
   assert.ok(
     [...container.querySelectorAll('.review-question > strong')].every((node) =>
-      failed.some((q) => q.prompt === node.textContent),
+      failed.some((q) => q.prompt === readText(node)),
     ),
   );
   await click(card.querySelector('a'));
@@ -299,10 +301,10 @@ test('досрочная попытка выше 80% показывает про
   storage.setItem(key, JSON.stringify(initial));
   await mount();
   await go(`#/results/${attempt.id}`);
-  assert.match(get('.achievement-label').textContent, /досрочно/);
+  assert.match(readText(get('.achievement-label')), /досрочно/);
   assert.equal(container.querySelectorAll('.coaching-card').length, 0);
   assert.equal(findButton('К уровню 2'), undefined);
-  assert.match(get('.competency-untested').textContent, /Не проверено/);
+  assert.match(readText(get('.competency-untested')), /Не проверено/);
   await click(get('.unanswered-summary-action'));
   assert.equal(container.querySelectorAll('.review-item.status-unanswered').length, 10);
   assert.equal(findButton('Пропущено 10').getAttribute('aria-pressed'), 'true');
@@ -341,9 +343,7 @@ test('карточки прогресса сохраняют места резу
   assert.equal(container.querySelectorAll('.stats-value-empty').length, 3);
   assert.equal(container.querySelectorAll('.mini-chart-empty').length, 3);
   assert.equal(container.querySelectorAll('.chart-column').length, 0);
-  assert.ok(
-    [...container.querySelectorAll('.stats-value')].every((node) => node.textContent === '–пока нет результата'),
-  );
+  assert.ok([...container.querySelectorAll('.stats-value')].every((node) => readText(node) === '–пока нет результата'));
   await unmount();
 
   const empty = finishAttempt(makeAttempt(1, questions));
@@ -361,10 +361,10 @@ test('карточки прогресса сохраняют места резу
 
   assert.equal(container.querySelectorAll('.stats-value').length, 3);
   assert.equal(container.querySelectorAll('.mini-chart').length, 3);
-  assert.equal(get('.stats-card.theme-1 .stats-value').textContent, '0%лучший результат');
+  assert.equal(readText(get('.stats-card.theme-1 .stats-value')), '0%лучший результат');
   for (const level of [2, 3]) {
     const card = get(`.stats-card.theme-${level}`);
-    assert.equal(card.querySelector('.stats-value').textContent, '–пока нет результата');
+    assert.equal(readText(card.querySelector('.stats-value')), '–пока нет результата');
     assert.equal(card.querySelector('.mini-chart').getAttribute('aria-label'), 'Нет данных о результатах попыток');
     assert.equal(card.querySelector('.chart-column'), null);
     assert.equal(Boolean(card.querySelector('.stats-card-footer button')), level === 2);
@@ -589,7 +589,7 @@ test('Черновик, ответ, текущая позиция и закла�
   const id = currentState().sessions['exam:2'].id;
   await unmount();
   await mount();
-  assert.equal(get('.question-prompt').textContent, qs[1].prompt);
+  assert.equal(readText(get('.question-prompt')), qs[1].prompt);
   assert.equal(get('.bookmark-button').getAttribute('aria-pressed'), 'true');
   assert.equal(container.querySelectorAll('input:checked').length, 1);
   assert.equal(currentState().sessions['exam:2'].id, id);
@@ -606,7 +606,7 @@ test('Досрочное завершение считает непровере�
   const q = questions.find((q) => q.level === 1);
   await click(`input[value="${q.correct[0]}"]`);
   await click(findButton('Завершить'));
-  assert.match(get('[role="dialog"]').textContent, /60 непроверенных/);
+  assert.match(readText(get('[role="dialog"]')), /60 непроверенных/);
   await click(findButton('Завершить и посмотреть балл'));
   assert.ok(get('.results-page'));
   assert.equal(currentState().history.length, 1);
@@ -629,7 +629,7 @@ test('Все 180 заданий проходимы через DOM: три пол
     await click(`[data-start="${level}"]`);
     const qs = questions.filter((q) => q.level === level);
     for (const [index, q] of qs.entries()) {
-      assert.equal(get('.question-prompt').textContent, q.prompt, q.id);
+      assert.equal(readText(get('.question-prompt')), q.prompt, q.id);
       if (q.type === 'match') {
         for (const left of q.left) {
           await click(`[data-left="${left.id}"]`);
@@ -654,7 +654,7 @@ test('Все 180 заданий проходимы через DOM: три пол
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 3);
   assert.equal(container.querySelectorAll('.stats-value').length, 3);
-  assert.ok([...container.querySelectorAll('.stats-value')].every((node) => node.textContent.includes('100%')));
+  assert.ok([...container.querySelectorAll('.stats-value')].every((node) => readText(node).includes('100%')));
   assert.equal(container.querySelectorAll('.mini-chart[role="group"]').length, 3);
   assert.ok(
     [...container.querySelectorAll('.chart-column')].every((node) =>
@@ -682,7 +682,7 @@ test('пустой прогресс скрывает очистку, черно�
   assert.equal(container.querySelector('.history-filters'), null);
   assert.ok(get('[aria-label="Очистить результаты уровня 1"]'));
   assert.equal(container.querySelectorAll('[aria-label^="Очистить результаты уровня"]').length, 1);
-  assert.match(get('.stats-card-footer').textContent, /0 полных попыток/);
+  assert.match(readText(get('.stats-card-footer')), /0 полных попыток/);
   assert.ok(findButton('Очистить все результаты'));
   await click('[aria-label="Очистить результаты уровня 1"]');
   await click(findButton('Очистить результаты'));
@@ -708,7 +708,7 @@ test('очистка учитывает завершённые и незавер
   assert.ok(get('[aria-label="Очистить результаты уровня 2"]'));
   assert.equal(container.querySelector('[aria-label="Очистить результаты уровня 3"]'), null);
   assert.ok(
-    [...container.querySelectorAll('.stats-card-footer')].every((node) => /0 полных попыток/.test(node.textContent)),
+    [...container.querySelectorAll('.stats-card-footer')].every((node) => /0 полных попыток/.test(readText(node))),
   );
   await click('[aria-label="Очистить результаты уровня 1"]');
   await click(findButton('Очистить результаты'));
@@ -746,7 +746,7 @@ test('Очистка отдельного уровня сохраняет дру
 test('Темы фильтруют материалы каждого домена, список можно сбросить и искать', async () => {
   await mount();
   await go('#/study/6');
-  assert.match(get('.study-domain-heading h2').textContent, /Алиса AI Про/);
+  assert.match(readText(get('.study-domain-heading h2')), /Алиса AI Про/);
   assert.equal(container.querySelectorAll('.study-nav button').length, 6);
   assert.equal(container.querySelectorAll('.official-grid a').length, 7);
   assert.ok(container.querySelectorAll('.study-sources a').length > 0);
@@ -759,8 +759,8 @@ test('Темы фильтруют материалы каждого домена
     assert.equal(get('.topic-coverage').open, true);
     assert.ok(container.querySelectorAll('.topic-tags button').length > 0);
     const topicButton = get('.topic-tags button');
-    const topic = topicButton.textContent.trim();
-    const activeDomain = Number(button.querySelector('small').textContent.match(/Домен (\d+)/)[1]);
+    const topic = readText(topicButton).trim();
+    const activeDomain = Number(readText(button.querySelector('small')).match(/Домен (\d+)/)[1]);
     const expectedUrls = questions
       .filter((question) => question.domain === activeDomain && question.topic === topic)
       .flatMap((question) => question.sources.map((source) => source.url));
@@ -859,8 +859,8 @@ test('устаревшее сохранение можно скрыть, очи�
   storage.setItem(key, originalRaw);
   await mount();
 
-  assert.match(get('.storage-warning').textContent, /предыдущей версией вопросов/);
-  assert.match(get('.storage-warning').textContent, /До очистки новые попытки не сохраняются на устройстве/);
+  assert.match(readText(get('.storage-warning')), /предыдущей версией вопросов/);
+  assert.match(readText(get('.storage-warning')), /До очистки новые попытки не сохраняются на устройстве/);
   await click('[data-start="1"]');
   assert.ok(get('.question-prompt'));
   assert.ok(get('.storage-warning'));
@@ -868,7 +868,7 @@ test('устаревшее сохранение можно скрыть, очи�
 
   await click('[aria-label="Скрыть сообщение"]');
   assert.equal(container.querySelector('.storage-warning'), null);
-  assert.match(get('.local-status').textContent, /Проверь сохранение/);
+  assert.match(readText(get('.local-status')), /Проверь сохранение/);
   assert.equal(storage.getItem(key), originalRaw);
 
   await unmount();
@@ -934,7 +934,7 @@ test('ошибка записи при очистке несовместимых
   await click(findButton('Очистить результаты'));
   assert.equal(storage.getItem(key), originalRaw);
   assert.ok(findButton('Очистить результаты'));
-  assert.match(get('.storage-warning').textContent, /Не удалось сохранить прогресс на устройстве/);
+  assert.match(readText(get('.storage-warning')), /Не удалось сохранить прогресс на устройстве/);
   assert.doesNotMatch(text(), /Все результаты удалены/);
 });
 
@@ -953,7 +953,7 @@ test('ошибка записи при очистке совместимых д�
   await click(findButton('Очистить результаты'));
   assert.equal(storage.getItem(key), originalRaw);
   assert.ok(findButton('Очистить результаты'));
-  assert.match(get('.storage-warning').textContent, /Не удалось сохранить прогресс на устройстве/);
+  assert.match(readText(get('.storage-warning')), /Не удалось сохранить прогресс на устройстве/);
   assert.doesNotMatch(text(), /Все результаты удалены/);
 });
 
@@ -1020,30 +1020,30 @@ test('Фильтры истории: клавиатура, отмена выбо
   await press(level, 'ArrowDown');
   assert.equal(level.getAttribute('aria-expanded'), 'true');
   assert.equal(document.activeElement, level);
-  assert.equal(document.getElementById(level.getAttribute('aria-activedescendant')).textContent, 'Все уровни');
+  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Все уровни');
   await press(level, 'End');
-  assert.equal(document.getElementById(level.getAttribute('aria-activedescendant')).textContent, 'Уровень 3');
+  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Уровень 3');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 2);
   await press(level, 'Escape');
   assert.equal(level.getAttribute('aria-expanded'), 'false');
   assert.equal(level.hasAttribute('aria-activedescendant'), false);
-  assert.match(level.textContent, /Все уровни/);
+  assert.match(readText(level), /Все уровни/);
 
   // Повторение буквы циклически находит следующие подходящие варианты.
   await press(level, 'у');
   await press(level, 'у');
-  assert.equal(document.getElementById(level.getAttribute('aria-activedescendant')).textContent, 'Уровень 2');
+  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Уровень 2');
   await press(level, 'Enter');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
-  assert.match(get('.history-title small').textContent, /Работа над ошибками/);
+  assert.match(readText(get('.history-title small')), /Работа над ошибками/);
   assert.equal(get('select[aria-label="Уровень в истории"]').value, '2');
 
   await click(level);
   await press(level, 'Home');
   await press(level, 'ArrowDown');
   await press(level, 'Tab');
-  assert.match(level.textContent, /Уровень 1/);
-  assert.match(get('.history-title small').textContent, /Полный экзамен/);
+  assert.match(readText(level), /Уровень 1/);
+  assert.match(readText(get('.history-title small')), /Полный экзамен/);
   await click(mode);
   await click('[role="option"]:last-child');
   assert.match(text(), /Нет попыток с такими условиями/);
@@ -1055,7 +1055,7 @@ test('Фильтры истории: клавиатура, отмена выбо
     native.value = 'all';
     native.dispatchEvent(new window.Event('change', { bubbles: true }));
   });
-  assert.match(level.textContent, /Все уровни/);
+  assert.match(readText(level), /Все уровни/);
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
 
   await click(level);
@@ -1097,7 +1097,7 @@ for (const mode of ['exam', 'mistakes']) {
     ];
     const assertCounts = (counts) =>
       assert.deepEqual(
-        [...get('.filter-pills').querySelectorAll('button')].map((button) => button.textContent.trim()),
+        [...get('.filter-pills').querySelectorAll('button')].map((button) => readText(button).trim()),
         labels.map((label, index) => `${label} ${counts[index]}`),
       );
     assertCounts(all);
@@ -1107,7 +1107,7 @@ for (const mode of ['exam', 'mistakes']) {
       await click(domain);
       await click(`[role="option"]:nth-child(${value === 'all' ? 1 : Number(value) + 1})`);
       assertCounts(counts);
-      assert.equal(get('.filter-pills .active').textContent.trim(), `Закладки ${counts[4]}`);
+      assert.equal(readText(get('.filter-pills .active')).trim(), `Закладки ${counts[4]}`);
       assert.equal(container.querySelectorAll('.review-item').length, counts[4]);
       for (const [index, label] of labels.entries()) {
         await click(findButton(`${label} ${counts[index]}`));
@@ -1139,9 +1139,7 @@ test('Кастомный фильтр домена сохраняет разбо
   await click('[role="option"]:nth-child(3)');
   const expected = new Set(questions.filter((q) => q.level === 1 && q.domain === 2).map((q) => q.prompt));
   assert.equal(container.querySelectorAll('.review-item').length, 10);
-  assert.ok(
-    [...container.querySelectorAll('.review-question > strong')].every((node) => expected.has(node.textContent)),
-  );
+  assert.ok([...container.querySelectorAll('.review-question > strong')].every((node) => expected.has(readText(node))));
   assert.equal(get('select[aria-label="Фильтр по домену"]').value, '2');
 
   // Стрелки исследуют список; потеря фокуса подтверждает активный вариант один раз.
@@ -1162,7 +1160,7 @@ test('Кастомный фильтр домена сохраняет разбо
   await click(outside);
   assert.match(text(), /В этой подборке нет вопросов/);
   await click(findButton('Показать все ответы'));
-  assert.match(domain.textContent, /Все домены/);
+  assert.match(readText(domain), /Все домены/);
   assert.equal(get('select[aria-label="Фильтр по домену"]').value, 'all');
   assert.equal(container.querySelectorAll('.review-item').length, 60);
 
@@ -1609,7 +1607,7 @@ test('неудачная очистка или импорт не заменяю�
   await unmount();
   await renderApp();
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
-  assert.match(get('.history-title').textContent, /Базовый/);
+  assert.match(readText(get('.history-title')), /Базовый/);
 });
 
 test('завершение снова показывает предупреждение, если оба сохранения недоступны', async (t) => {
@@ -1634,9 +1632,9 @@ test('завершение снова показывает предупрежд�
   await click(findButton('Завершить'));
   await click(findButton('Завершить и посмотреть балл'));
   assert.ok(get('.results-page'));
-  assert.match(get('.storage-warning').textContent, /Не удалось сохранить прогресс/);
-  assert.match(get('.storage-warning').textContent, /только в памяти вкладки/);
-  assert.doesNotMatch(get('.storage-warning').textContent, /переживёт обновление/);
+  assert.match(readText(get('.storage-warning')), /Не удалось сохранить прогресс/);
+  assert.match(readText(get('.storage-warning')), /только в памяти вкладки/);
+  assert.doesNotMatch(readText(get('.storage-warning')), /переживёт обновление/);
 });
 
 test('очистка уровня при отказе обоих хранилищ сохраняет историю и подтверждение', async (t) => {
@@ -1709,7 +1707,7 @@ test('очистка уровня сохраняется во вкладочно
   await renderApp();
   assert.equal(storage.getItem(key), raw);
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
-  assert.match(get('.history-title').textContent, /Продвинутый/);
+  assert.match(readText(get('.history-title')), /Продвинутый/);
 });
 test('таймер включается перед стартом, а продолжение и повторный монтаж не сбрасывают срок', async () => {
   await mount();
@@ -1720,7 +1718,7 @@ test('таймер включается перед стартом, а продо
   const deadline = timed.timing.deadlines[timed.questionIds[0]];
   assert.equal(timed.timing.secondsPerQuestion, 72);
   assert.ok(get('[role="timer"]'));
-  assert.match(get('[role="timer"]').textContent, /01:1[012]/);
+  assert.match(readText(get('[role="timer"]')), /01:1[012]/);
   await go('#/');
   await click('[role="switch"]');
   assert.equal(get('[role="switch"]').checked, false);
@@ -1757,9 +1755,9 @@ test('таймер показывает warning в последние 10 сек�
   await click('[data-question-index="0"]');
   assert.ok(get('[role="timer"].expired'));
   assert.ok(get('input[type="radio"]').disabled);
-  assert.match(get('.feedback-heading').textContent, /Время вышло/);
+  assert.match(readText(get('.feedback-heading')), /Время вышло/);
   assert.equal(container.querySelector('.check-answer'), null);
-  assert.match(get('[role="timer"]').textContent, /00:00/);
+  assert.match(readText(get('[role="timer"]')), /00:00/);
   await unmount();
   await mount();
   assert.equal(currentState().sessions['exam:1'].cursor, 0);
@@ -1788,7 +1786,7 @@ test('таймер последнего вопроса завершает тес
   assert.equal(scoreAttempt(result, questions).unanswered, 0);
   const review = [...container.querySelectorAll('.review-item')].at(-1);
   await click(review.querySelector('summary'));
-  assert.match(review.textContent, /Время вышло/);
+  assert.match(readText(review), /Время вышло/);
   assert.ok(review.querySelector('.main-explanation'));
   await unmount();
   await mount();
