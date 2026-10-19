@@ -231,6 +231,36 @@ test('смена страницы переносит фокус в содерж�
   assert.equal(document.activeElement, get('h1'));
 });
 
+test('индикатор меню следует за текстом активного пункта при навигации и изменении размера', async (t) => {
+  let scale = 1;
+  const original = window.HTMLElement.prototype.getBoundingClientRect;
+  t.mock.method(window.HTMLElement.prototype, 'getBoundingClientRect', function (this: HTMLElement) {
+    if (this.matches('.primary-nav')) return new window.DOMRect(10, 0, 300 * scale, 48);
+    if (this.matches('.primary-nav .nav-label')) {
+      const index = [...this.closest('nav')!.querySelectorAll('.nav-label')].indexOf(this);
+      const width = (40 + index * 20) * scale;
+      return new window.DOMRect(10 + (index * 100 + (100 - (40 + index * 20)) / 2) * scale, 0, width, 20);
+    }
+    return original.call(this);
+  });
+  await mount();
+  const navigation = get('.primary-nav');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-left'), '30px');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-width'), '40px');
+  await go('#/history');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-left'), '120px');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-width'), '60px');
+  scale = 1.5;
+  await act(() => {
+    window.dispatchEvent(new window.Event('resize'));
+  });
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-left'), '180px');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-width'), '90px');
+  await go('#/study');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-left'), '315px');
+  assert.equal(navigation.style.getPropertyValue('--nav-indicator-width'), '120px');
+});
+
 test('страница без заголовка h1 получает фокус на main при смене маршрута', async () => {
   await mount();
   await go('#/results/missing-result');
@@ -1016,17 +1046,40 @@ test('устаревшее сохранение можно скрыть, очи�
 
   await click('[aria-label="Скрыть сообщение"]');
   assert.equal(container.querySelector('.storage-warning'), null);
-  assert.match(readText(get('.local-status')), /Проверь сохранение/);
+  const status = get<HTMLButtonElement>('button.local-status');
+  assert.match(readText(status), /Проблема с сохранением/);
+  assert.equal(status.getAttribute('aria-expanded'), 'false');
+  assert.equal(document.activeElement, status);
+  await click(status);
+  await act(() => new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve())));
+  const warning = get('.storage-warning');
+  assert.equal(status.getAttribute('aria-expanded'), 'true');
+  assert.equal(status.getAttribute('aria-controls'), warning.id);
+  assert.equal(document.activeElement, warning);
+  assert.match(readText(warning), /предыдущей версией вопросов/);
+  assert.ok(findButton('Скачать исходную копию'));
+  assert.ok(warning.querySelector('a[href="#/history"]'));
+  await click(status);
+  assert.ok(get('.storage-warning'));
+  await click('[aria-label="Скрыть сообщение"]');
+  assert.equal(container.querySelector('.storage-warning'), null);
+  assert.equal(status.getAttribute('aria-expanded'), 'false');
   assert.equal(storage.getItem(key), originalRaw);
 
   await unmount();
   await mount();
   assert.ok(get('.storage-warning'));
-  await go('#/history');
-  await click(findButton('Очистить все результаты'));
+  await click('.storage-warning .danger-text');
+  assert.match(readText(get('[role="dialog"]')), /Будут удалены история всех уровней/);
+  await click(findButton('Отмена'));
+  assert.equal(storage.getItem(key), originalRaw);
+  assert.ok(get('.storage-warning'));
+  await click('.storage-warning .danger-text');
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.storage-warning'), null);
   assert.equal(JSON.parse(storage.getItem(key) ?? '').bankVersion, BANK_VERSION);
+  assert.deepEqual(currentState().sessions, {});
+  assert.deepEqual(currentState().history, []);
   assert.equal(findButton('Очистить все результаты'), undefined);
 
   await go('#/');
@@ -1038,7 +1091,7 @@ test('устаревшее сохранение можно скрыть, очи�
   assert.ok(get('.question-prompt'));
 });
 
-test('без Web Locks полная очистка снимает блокировку старого банка, но оставляет предупреждение о памяти', async (t) => {
+test('без Web Locks полная очистка снимает блокировку старого банка и предупреждает о памяти только после новой попытки', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
@@ -1051,20 +1104,135 @@ test('без Web Locks полная очистка снимает блокиро
   window.localStorage.setItem(key, JSON.stringify(oldState));
   await act(() => render(<App questions={questions} storageName={key} tabStorage={null} />, container));
   assert.match(text(), /До очистки новые попытки не сохраняются на устройстве/);
-  assert.match(text(), /только в памяти вкладки/);
+  assert.doesNotMatch(text(), /только в памяти вкладки/);
 
   await go('#/history');
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(JSON.parse(window.localStorage.getItem(key) ?? '').bankVersion, BANK_VERSION);
   assert.doesNotMatch(text(), /предыдущей версией вопросов/);
-  assert.match(text(), /только в памяти вкладки/);
+  assert.doesNotMatch(text(), /только в памяти вкладки/);
+
+  await unmount();
+  await act(() => render(<App questions={questions} storageName={key} tabStorage={null} />, container));
+  assert.equal(container.querySelector('.storage-warning'), null);
 
   await go('#/');
   await click('[data-start="1"]');
   assert.ok(get('.question-prompt'));
   assert.equal(JSON.parse(window.localStorage.getItem(key) ?? '').sessions['exam:1'], undefined);
   assert.match(text(), /только в памяти вкладки/);
+});
+
+test('без Web Locks полная очистка совместимого кэша проверяет источник, отменяется и позволяет начать заново', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const tab = new MemoryStorage();
+  const durable = { ...freshState(), history: [finishAttempt(makeAttempt(1, questions))] };
+  const durableRaw = JSON.stringify(durable);
+  local.map.set(key, durableRaw);
+  writeTabProgress(tab, key, durableRaw, { ...durable, sessions: { 'exam:2': makeAttempt(2, questions) } });
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else clearLocks();
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+    originalSession.removeItem(`${key}:tab-progress`);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
+
+  // Пустой кэш над непустым сохранением — ещё не сохранённая очистка.
+  writeTabProgress(tab, key, durableRaw, freshState());
+  await act(() => render(<App questions={questions} storageName={key} />, container));
+  assert.match(readText(get('.storage-warning')), /переживёт обновление только в этой вкладке/);
+  await unmount();
+  writeTabProgress(tab, key, durableRaw, { ...durable, sessions: { 'exam:2': makeAttempt(2, questions) } });
+  await act(() => render(<App questions={questions} storageName={key} />, container));
+  assert.match(text(), /переживёт обновление только в этой вкладке/);
+  await go('#/history');
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Отмена'));
+  assert.equal(local.getItem(key), durableRaw);
+  assert.ok(tab.getItem(`${key}:tab-progress`));
+  assert.match(text(), /переживёт обновление только в этой вкладке/);
+
+  await click(findButton('Очистить все результаты'));
+  await click(findButton('Очистить результаты'));
+  assert.deepEqual(JSON.parse(local.getItem(key) ?? '').sessions, {});
+  assert.deepEqual(JSON.parse(local.getItem(key) ?? '').history, []);
+  assert.equal(tab.getItem(`${key}:tab-progress`), null);
+  assert.equal(container.querySelector('.storage-warning'), null);
+  assert.equal(container.querySelector('.local-status'), null);
+
+  // Предыдущая версия после очистки оставляла пустой вкладочный кэш.
+  writeTabProgress(tab, key, local.getItem(key), freshState());
+  await unmount();
+  await act(() => render(<App questions={questions} storageName={key} />, container));
+  assert.equal(container.querySelector('.storage-warning'), null);
+  assert.equal(container.querySelector('.local-status'), null);
+  await go('#/');
+  await click('[data-start="1"]');
+  assert.match(text(), /переживёт обновление только в этой вкладке/);
+  assert.deepEqual(JSON.parse(local.getItem(key) ?? '').sessions, {});
+  assert.ok(tab.getItem(`${key}:tab-progress`));
+});
+
+test('без Web Locks полная очистка сохраняет данные при изменении источника или ошибке чтения', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
+  const originalLocal = window.localStorage;
+  const originalSession = window.sessionStorage;
+  const local = new MemoryStorage();
+  const tab = new MemoryStorage();
+  const durable = freshState();
+  const durableRaw = JSON.stringify(durable);
+  const external = { ...freshState(), revision: 1, history: [finishAttempt(makeAttempt(2, questions))] };
+  const externalRaw = JSON.stringify(external);
+  t.after(() => {
+    if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
+    else clearLocks();
+    Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
+    Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
+    originalLocal.removeItem(key);
+    originalSession.removeItem(`${key}:tab-progress`);
+  });
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
+  Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
+
+  for (const failure of ['changed', 'read', 'interleaved']) {
+    local.getItem = MemoryStorage.prototype.getItem;
+    local.map.set(key, durableRaw);
+    writeTabProgress(tab, key, durableRaw, { ...durable, sessions: { 'exam:1': makeAttempt(1, questions) } });
+    await act(() => render(<App questions={questions} storageName={key} />, container));
+    if (failure === 'changed') local.setItem(key, externalRaw);
+    if (failure === 'read')
+      local.getItem = () => {
+        throw new Error('Storage read blocked');
+      };
+    if (failure === 'interleaved')
+      local.getItem = (name) => {
+        const value = local.map.get(name) ?? null;
+        local.map.set(key, externalRaw);
+        local.getItem = MemoryStorage.prototype.getItem;
+        return value;
+      };
+    await go('#/history');
+    await click(findButton('Очистить все результаты'));
+    await click(findButton('Очистить результаты'));
+    assert.equal(local.map.get(key), failure === 'read' ? durableRaw : externalRaw);
+    assert.ok(findButton('Очистить результаты'));
+    assert.match(
+      text(),
+      failure === 'read' ? /Не удалось прочитать сохранения. Очистка отменена/ : /Прогресс изменился в другой вкладке/,
+    );
+    assert.ok(tab.getItem(`${key}:tab-progress`));
+    await unmount();
+  }
 });
 
 test('ошибка записи при очистке несовместимых данных не показывает успех и сохраняет копию', async () => {
@@ -1474,8 +1642,9 @@ test('браузер без Web Locks не пишет в localStorage и про�
   const raw = JSON.stringify(freshState());
   window.localStorage.setItem(key, raw);
   await act(() => render(<App questions={questions} storageName={key} tabStorage={null} />, container));
-  assert.match(text(), /только в памяти вкладки/);
+  assert.equal(container.querySelector('.storage-warning'), null);
   await click('[data-start="1"]');
+  assert.match(text(), /только в памяти вкладки/);
   await click(`input[value="${firstChoice().correct[0]}"]`);
   await click(findButton('Проверить'));
   assert.ok(get('.feedback.correct'));
