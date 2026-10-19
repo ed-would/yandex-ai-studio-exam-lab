@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { createResultFixtures, previewAttemptId, RESULT_SCENARIOS } from '../src/dev/results-fixtures.js';
-import { evaluate, isValidResponse, scoreAttempt } from '../src/core/exam.js';
-import { freshState, validateState } from '../src/core/storage.js';
-import { resultOutcome } from '../src/core/coaching.js';
+import { createResultFixtures, previewAttemptId, RESULT_SCENARIOS } from '../src/dev/results-fixtures.ts';
+import { evaluate, isValidResponse, scoreAttempt } from '../src/core/exam.ts';
+import { freshState, validateState } from '../src/core/storage.ts';
+import { resultOutcome } from '../src/core/coaching.ts';
+import type { Attempt, LevelId, Question } from '../src/types.ts';
 
 const files = await Promise.all(
   Array.from({ length: 6 }, (_, index) =>
@@ -12,11 +13,11 @@ const files = await Promise.all(
   ),
 );
 const questions = files
-  .flatMap((text) => JSON.parse(text))
+  .flatMap((text): Question[] => JSON.parse(text) as Question[])
   .sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
-const questionById = new Map(questions.map((question) => [question.id, question]));
-const byScenario = (attempts, id, level = 1) =>
-  attempts.find((attempt) => attempt.level === level && attempt.id === previewAttemptId(level, id));
+const questionById = new Map<string, Question>(questions.map((question) => [question.id, question]));
+const byScenario = (attempts: Attempt[], id: string, level: LevelId = 1): Attempt =>
+  attempts.find((attempt) => attempt.level === level && attempt.id === previewAttemptId(level, id))!;
 
 test('создаёт по 12 завершённых валидных попыток на каждый уровень', () => {
   const attempts = createResultFixtures(questions);
@@ -44,7 +45,7 @@ test('создаёт по 12 завершённых валидных попыт�
 
 test('покрывает границы результатов и досрочное завершение', () => {
   const attempts = createResultFixtures(questions);
-  const expected = [
+  const expected: ReadonlyArray<readonly [string, number, number, number, string]> = [
     ['empty', 0, 0, 60, 'starting'],
     ['all-wrong', 0, 60, 0, 'starting'],
     ['below60', 35, 60, 0, 'starting'],
@@ -67,14 +68,14 @@ test('покрывает границы результатов и досрочн
 
 test('создаёт реальные подборки практики с правильным объёмом и типами', () => {
   const attempts = createResultFixtures(questions);
-  for (const level of [1, 2, 3]) {
+  for (const level of [1, 2, 3] as LevelId[]) {
     const practice = byScenario(attempts, 'practice', level);
     const perfect = byScenario(attempts, 'practice-perfect', level);
     for (const attempt of [practice, perfect]) {
       assert.equal(attempt.mode, 'mistakes');
       assert.equal(attempt.questionIds.length, 12);
       assert.deepEqual(
-        new Set(attempt.questionIds.map((id) => questionById.get(id).type)),
+        new Set(attempt.questionIds.map((id) => questionById.get(id)!.type)),
         new Set(['single', 'multi', 'match']),
       );
     }
@@ -87,7 +88,7 @@ test('результаты и время воспроизводимы, а зак
   const second = createResultFixtures(questions);
   assert.deepEqual(second, first);
   for (const attempt of first) {
-    const bookmarkDomains = new Set(attempt.bookmarks.map((id) => questionById.get(id).domain));
+    const bookmarkDomains = new Set(attempt.bookmarks.map((id) => questionById.get(id)!.domain));
     assert.deepEqual(bookmarkDomains, new Set([1, 3, 5]), attempt.id);
     assert.ok(
       attempt.bookmarks.every((id) => attempt.questionIds.includes(id)),

@@ -1,23 +1,35 @@
-import { BANK_VERSION, DOMAINS } from '../data/meta.js';
+import { BANK_VERSION, DOMAINS } from '../data/meta.ts';
+import type {
+  AppState,
+  Attempt,
+  AttemptMode,
+  ChoiceResponse,
+  Question,
+  Response,
+  Score,
+  MatchResponse,
+  LevelId,
+} from '../types.ts';
 
-const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
-export const copy = (value) => JSON.parse(JSON.stringify(value));
-export const emptyResponse = (question) => (question.type === 'match' ? {} : []);
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+export const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+export const emptyResponse = (question: Question): Response => (question.type === 'match' ? {} : []);
 export const QUESTION_SECONDS = (60 * 60) / 50;
 
-export function questionSecondsLeft(attempt, id, now = Date.now()) {
+export function questionSecondsLeft(attempt: Attempt, id: string, now = Date.now()): number | null {
   const deadline = attempt.timing?.deadlines[id];
   return deadline ? Math.max(0, Math.ceil((Date.parse(deadline) - now) / 1000)) : null;
 }
 
-export function isValidResponse(question, response, complete = false) {
+export function isValidResponse(question: Question | undefined, response: unknown, complete = false): boolean {
   if (!question) return false;
   if (question.type === 'match') {
     if (!isRecord(response)) return false;
     const left = question.left.map((item) => item.id);
     const right = question.right.map((item) => item.id);
     const entries = Object.entries(response);
-    if (entries.some(([a, b]) => !left.includes(a) || !right.includes(b))) return false;
+    if (entries.some(([a, b]) => !left.includes(a) || !right.includes(b as string))) return false;
     if (new Set(Object.values(response)).size !== entries.length) return false;
     return !complete || entries.length === left.length;
   }
@@ -27,15 +39,23 @@ export function isValidResponse(question, response, complete = false) {
   return !complete || response.length > 0;
 }
 
-export function evaluate(question, response) {
-  if (!isValidResponse(question, response, true)) return false;
+export function evaluate(question: Question | undefined, response: unknown): boolean {
+  if (!question || !isValidResponse(question, response, true)) return false;
   if (question.type === 'match') {
-    return question.left.every(({ id }) => response[id] === question.pairs[id]);
+    return question.left.every(({ id }) => (response as MatchResponse)[id] === question.pairs[id]);
   }
-  return response.length === question.correct.length && question.correct.every((id) => response.includes(id));
+  return (
+    (response as ChoiceResponse).length === question.correct.length &&
+    question.correct.every((id) => (response as ChoiceResponse).includes(id))
+  );
 }
 
-export function connectPair(question, response, leftId, rightId) {
+export function connectPair(
+  question: Question,
+  response: MatchResponse,
+  leftId: string,
+  rightId: string,
+): MatchResponse {
   if (question.type !== 'match' || !isValidResponse(question, response)) return response;
   if (!question.left.some((x) => x.id === leftId) || !question.right.some((x) => x.id === rightId)) return response;
   const next = { ...response };
@@ -48,16 +68,16 @@ export function connectPair(question, response, leftId, rightId) {
   return next;
 }
 
-export const sessionKey = (level, mode = 'exam') => `${mode}:${level}`;
+export const sessionKey = (level: number, mode: AttemptMode | string = 'exam'): string => `${mode}:${level}`;
 
 export function makeAttempt(
-  level,
-  questions,
-  mode = 'exam',
-  ids = null,
+  level: number,
+  questions: Question[],
+  mode: AttemptMode | string = 'exam',
+  ids: string[] | null = null,
   now = new Date().toISOString(),
   timed = false,
-) {
+): Attempt {
   if (![1, 2, 3].includes(Number(level)) || !['exam', 'mistakes'].includes(mode))
     throw new Error('Неизвестный режим теста.');
   const all = questions.filter((q) => q.level === Number(level));
@@ -66,8 +86,8 @@ export function makeAttempt(
   return {
     id: globalThis.crypto?.randomUUID?.() || `attempt-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     bankVersion: BANK_VERSION,
-    level: Number(level),
-    mode,
+    level: Number(level) as LevelId,
+    mode: mode as AttemptMode,
     questionIds,
     startedAt: now,
     updatedAt: now,
@@ -85,7 +105,12 @@ export function makeAttempt(
   };
 }
 
-export function setDraft(attempt, question, response, now = new Date().toISOString()) {
+export function setDraft(
+  attempt: Attempt,
+  question: Question,
+  response: Response,
+  now = new Date().toISOString(),
+): Attempt {
   if (attempt.completedAt || attempt.answers[question.id] || !attempt.questionIds.includes(question.id)) return attempt;
   if (questionSecondsLeft(attempt, question.id, Date.parse(now)) === 0)
     return expireTimedQuestions(attempt, [question], now);
@@ -97,7 +122,12 @@ export function setDraft(attempt, question, response, now = new Date().toISOStri
   };
 }
 
-export function submitAnswer(attempt, question, response, now = new Date().toISOString()) {
+export function submitAnswer(
+  attempt: Attempt,
+  question: Question,
+  response: Response,
+  now = new Date().toISOString(),
+): Attempt {
   if (attempt.completedAt || attempt.answers[question.id]) return attempt;
   if (questionSecondsLeft(attempt, question.id, Date.parse(now)) === 0)
     return expireTimedQuestions(attempt, [question], now);
@@ -115,29 +145,31 @@ export function submitAnswer(attempt, question, response, now = new Date().toISO
   };
 }
 
-export function moveCursor(attempt, cursor, now = new Date().toISOString()) {
+export function moveCursor(attempt: Attempt, cursor: number, now = new Date().toISOString()): Attempt {
   if (attempt.completedAt || !Number.isInteger(cursor)) return attempt;
   const nextCursor = Math.max(0, Math.min(attempt.questionIds.length - 1, cursor));
   const id = attempt.questionIds[nextCursor];
-  const startTimer = attempt.timing && !attempt.answers[id] && !attempt.timing.deadlines[id];
+  if (!id) return attempt;
+  const startTimer = Boolean(attempt.timing && !attempt.answers[id] && !attempt.timing.deadlines[id]);
   if (attempt.timing && nextCursor === attempt.cursor && !startTimer) return attempt;
   return {
     ...attempt,
     cursor: nextCursor,
     updatedAt: now,
-    ...(startTimer && {
-      timing: {
-        ...attempt.timing,
-        deadlines: {
-          ...attempt.timing.deadlines,
-          [id]: new Date(Date.parse(now) + QUESTION_SECONDS * 1000).toISOString(),
+    ...(startTimer &&
+      attempt.timing && {
+        timing: {
+          ...attempt.timing,
+          deadlines: {
+            ...attempt.timing.deadlines,
+            [id]: new Date(Date.parse(now) + QUESTION_SECONDS * 1000).toISOString(),
+          },
         },
-      },
-    }),
+      }),
   };
 }
 
-export function expireTimedQuestions(attempt, questions, now = new Date().toISOString()) {
+export function expireTimedQuestions(attempt: Attempt, questions: Question[], now = new Date().toISOString()): Attempt {
   if (!attempt.timing || attempt.completedAt) return attempt;
   const bank = new Map(questions.map((q) => [q.id, q]));
   let next = attempt;
@@ -165,7 +197,7 @@ export function expireTimedQuestions(attempt, questions, now = new Date().toISOS
   return next;
 }
 
-export function toggleBookmark(attempt, questionId) {
+export function toggleBookmark(attempt: Attempt, questionId: string): Attempt {
   if (attempt.completedAt || !attempt.questionIds.includes(questionId)) return attempt;
   const selected = attempt.bookmarks.includes(questionId);
   return {
@@ -174,12 +206,12 @@ export function toggleBookmark(attempt, questionId) {
   };
 }
 
-export function finishAttempt(attempt, now = new Date().toISOString()) {
+export function finishAttempt(attempt: Attempt, now = new Date().toISOString()): Attempt {
   if (attempt.completedAt) return attempt;
   return { ...attempt, completedAt: now, updatedAt: now, drafts: {} };
 }
 
-export function scoreAttempt(attempt, questions) {
+export function scoreAttempt(attempt: Attempt, questions: Question[]): Score {
   const bank = new Map(questions.map((q) => [q.id, q]));
   const byDomain = DOMAINS.map((domain) => ({
     domain: domain.id,
@@ -224,17 +256,18 @@ export function scoreAttempt(attempt, questions) {
   };
 }
 
-export function errorIds(attempt, questions) {
+export function errorIds(attempt: Attempt, questions: Question[]): string[] {
   const bank = new Map(questions.map((q) => [q.id, q]));
   return attempt.questionIds.filter((id) => !evaluate(bank.get(id), attempt.answers[id]?.response));
 }
 
-export function levelStats(state, level, questions) {
+export function levelStats(state: AppState, level: number, questions: Question[]) {
   const exams = state.history
     .filter((a) => a.level === level && a.mode === 'exam')
-    .sort((a, b) => a.completedAt.localeCompare(b.completedAt));
+    .sort((a, b) => (a.completedAt ?? '').localeCompare(b.completedAt ?? ''));
   const latest = exams.at(-1) || null;
   const best = exams.length ? Math.max(...exams.map((a) => scoreAttempt(a, questions).percent)) : null;
-  const previous = exams.length > 1 ? scoreAttempt(exams.at(-2), questions).percent : null;
+  const previousAttempt = exams.at(-2);
+  const previous = previousAttempt ? scoreAttempt(previousAttempt, questions).percent : null;
   return { exams, latest, best, previous, latestScore: latest ? scoreAttempt(latest, questions) : null };
 }

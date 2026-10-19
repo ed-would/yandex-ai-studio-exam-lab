@@ -1,4 +1,5 @@
 import Typograf from 'typograf';
+import type { ComponentChildren } from 'preact';
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] });
 // Only spacing rules: question wording, formulas and units keep their original meaning.
@@ -16,7 +17,9 @@ typograf.enableRule([
 
 const cache = new Map();
 
-export function typograph(value) {
+export function typograph(value: string): string;
+export function typograph<T>(value: T): T;
+export function typograph(value: unknown): unknown {
   if (typeof value !== 'string' || !value) return value;
   if (cache.has(value)) return cache.get(value);
   const result = typograf.execute(value);
@@ -28,14 +31,14 @@ export function typograph(value) {
   return result;
 }
 
-export function typographChildren(children) {
-  const result = [];
+export function typographChildren(children: ComponentChildren): ComponentChildren[] {
+  const result: ComponentChildren[] = [];
   let text = '';
   const flush = () => {
     if (text) result.push(typograph(text));
     text = '';
   };
-  for (const child of children) {
+  for (const child of Array.isArray(children) ? children : [children]) {
     if (typeof child === 'string' || typeof child === 'number') text += child;
     else {
       flush();

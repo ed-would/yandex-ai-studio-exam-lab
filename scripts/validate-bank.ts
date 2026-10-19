@@ -3,15 +3,29 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const TYPES = ['single', 'multi', 'match'];
+const TYPES = ['single', 'multi', 'match'] as const;
+type QuestionType = (typeof TYPES)[number];
+interface BankCell {
+  level: unknown;
+  domain: unknown;
+  total: number;
+  single: number;
+  multi: number;
+  match: number;
+}
 const RUSSIAN = /[А-Яа-яЁё]/u;
 const LETTER = /\p{L}/u;
 // oxlint-disable-next-line no-control-regex -- Управляющие символы намеренно запрещены контрактом банка.
 const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u;
 // oxlint-disable-next-line no-control-regex -- Прямая ссылка не должна содержать управляющие символы.
 const UNSAFE_URL = /[\s<>"'\u0000-\u001F]/u;
-const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
-const normalizedPrompt = (value) =>
+const record = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+const questionType = (value: unknown): value is QuestionType => TYPES.some((type) => type === value);
+const lengthOf = (value: unknown): unknown =>
+  typeof value === 'string' || Array.isArray(value) ? value.length : record(value) ? value.length : undefined;
+const messageOf = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+const normalizedPrompt = (value: string) =>
   String(value).normalize('NFKC').toLocaleLowerCase('ru').replace(/ё/gu, 'е').replace(/\s+/gu, ' ').trim();
 
 /** Read the authored JSON directly; no Vite JSON-import behaviour is required. */
@@ -20,23 +34,29 @@ export async function readQuestionBank(root = ROOT) {
     Array.from({ length: 6 }, async (_, index) => {
       const domain = index + 1;
       const name = `src/data/domain-${domain}.json`;
-      let value;
+      let value: unknown;
       try {
         value = JSON.parse(await readFile(path.join(root, name), 'utf8'));
       } catch (error) {
-        throw new Error(`${name}: не удалось прочитать JSON (${error.message}).`);
+        throw new Error(`${name}: не удалось прочитать JSON (${messageOf(error)}).`);
       }
       if (!Array.isArray(value)) throw new Error(`${name}: ожидается массив вопросов.`);
       if (value.length !== 30) throw new Error(`${name}: ожидается 30 вопросов, получено ${value.length}.`);
-      if (value.some((question) => !record(question) || question.domain !== domain)) {
+      const entries: unknown[] = value;
+      if (!entries.every(record) || entries.some((question) => question.domain !== domain)) {
         throw new Error(`${name}: файл содержит вопрос другого домена или повреждённую запись.`);
       }
-      return value;
+      return entries;
     }),
   );
   return domains
     .flat()
-    .sort((a, b) => a.level - b.level || a.domain - b.domain || String(a.id).localeCompare(String(b.id)));
+    .sort(
+      (a, b) =>
+        Number(a.level) - Number(b.level) ||
+        Number(a.domain) - Number(b.domain) ||
+        String(a.id).localeCompare(String(b.id)),
+    );
 }
 
 /**
@@ -44,17 +64,17 @@ export async function readQuestionBank(root = ROOT) {
  * It verifies Russian prose mechanically, but does not claim to verify factual
  * correctness, semantic uniqueness, or current availability of source pages.
  */
-export function validateBank(questions) {
-  const errors = [];
-  const warnings = [];
-  const cells = new Map();
-  const ids = new Set();
-  const prompts = new Map();
-  const sources = new Set();
-  const multiSizes = new Map(Array.from({ length: 6 }, (_, i) => [i + 1, new Set()]));
-  const singlePositions = new Map(Array.from({ length: 6 }, (_, i) => [i + 1, {}]));
-  const error = (where, message) => errors.push(`${where}: ${message}`);
-  const text = (value, where, { russian = false, label = false } = {}) => {
+export function validateBank(questions: unknown) {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const cells = new Map<string, BankCell>();
+  const ids = new Set<unknown>();
+  const prompts = new Map<string, string>();
+  const sources = new Set<unknown>();
+  const multiSizes = new Map(Array.from({ length: 6 }, (_, i) => [i + 1, new Set<number>()]));
+  const singlePositions = new Map<number, Record<string, number>>(Array.from({ length: 6 }, (_, i) => [i + 1, {}]));
+  const error = (where: string, message: string) => errors.push(`${where}: ${message}`);
+  const text = (value: unknown, where: string, { russian = false, label = false } = {}) => {
     if (typeof value !== 'string' || !value.trim()) {
       error(where, 'ожидается непустой текст');
       return false;
@@ -68,42 +88,46 @@ export function validateBank(questions) {
       error(where, 'текстовый вариант должен содержать русскую формулировку');
     return true;
   };
-  const itemList = (value, where, prefix, withExplanation = false) => {
+  const itemList = (value: unknown, where: string, prefix: string, withExplanation = false): unknown[] => {
     if (!Array.isArray(value) || value.length < 4 || value.length > 5) {
       error(where, 'ожидается 4–5 элементов');
       return [];
     }
-    const seen = new Set();
-    for (const [index, item] of value.entries()) {
+    const seen = new Set<unknown>();
+    const items: unknown[] = value;
+    for (const [index, item] of items.entries()) {
       const at = `${where}[${index}]`;
       if (!record(item)) {
         error(at, 'ожидается объект');
         continue;
       }
       const validId =
-        prefix === 'option' ? /^[a-e]$/u.test(item.id) : new RegExp(`^${prefix}[1-5]$`, 'u').test(item.id);
+        prefix === 'option'
+          ? /^[a-e]$/u.test(String(item.id))
+          : new RegExp(`^${prefix}[1-5]$`, 'u').test(String(item.id));
       if (typeof item.id !== 'string' || !validId) error(at, 'некорректный идентификатор элемента');
       if (seen.has(item.id)) error(at, 'идентификатор повторяется');
       seen.add(item.id);
       text(item.text, `${at}.text`, { label: true });
       if (withExplanation) text(item.explanation, `${at}.explanation`, { russian: true });
     }
-    return value.filter(record).map((item) => item.id);
+    return items.filter(record).map((item) => item.id);
   };
 
   if (!Array.isArray(questions))
-    return { errors: ['Банк: ожидается массив.'], warnings, stats: { total: 0, sources: 0, cells: [] } };
+    return { errors: ['Банк: ожидается массив.'], warnings, stats: { total: 0, sources: 0, cells: [] as BankCell[] } };
   if (questions.length !== 180) error('Банк', `ожидается 180 вопросов, получено ${questions.length}`);
 
-  for (const [index, q] of questions.entries()) {
+  const entries: unknown[] = questions;
+  for (const [index, q] of entries.entries()) {
     const at = record(q) && typeof q.id === 'string' ? q.id : `Вопрос ${index + 1}`;
     if (!record(q)) {
       error(at, 'ожидается объект');
       continue;
     }
-    if (![1, 2, 3].includes(q.level)) error(at, 'уровень должен быть 1, 2 или 3');
-    if (![1, 2, 3, 4, 5, 6].includes(q.domain)) error(at, 'домен должен быть от 1 до 6');
-    if (!TYPES.includes(q.type)) error(at, 'неизвестный тип вопроса');
+    if (![1, 2, 3].some((level) => level === q.level)) error(at, 'уровень должен быть 1, 2 или 3');
+    if (![1, 2, 3, 4, 5, 6].some((domain) => domain === q.domain)) error(at, 'домен должен быть от 1 до 6');
+    if (!questionType(q.type)) error(at, 'неизвестный тип вопроса');
     const idParts = typeof q.id === 'string' ? /^L([1-3])-D([1-6])-Q(?:0[1-9]|10)$/u.exec(q.id) : null;
     if (!idParts || Number(idParts[1]) !== q.level || Number(idParts[2]) !== q.domain)
       error(at, 'ID должен соответствовать уровню, домену и номеру 01–10');
@@ -121,14 +145,15 @@ export function validateBank(questions) {
     const cellKey = `${q.level}:${q.domain}`;
     const cell = cells.get(cellKey) || { level: q.level, domain: q.domain, total: 0, single: 0, multi: 0, match: 0 };
     cell.total += 1;
-    if (TYPES.includes(q.type)) cell[q.type] += 1;
+    if (questionType(q.type)) cell[q.type] += 1;
     cells.set(cellKey, cell);
 
     if (!Array.isArray(q.sources) || q.sources.length < 1 || q.sources.length > 3) {
       error(at, 'нужны 1–3 прямых источника');
     } else {
-      const seenSources = new Set();
-      for (const [i, source] of q.sources.entries()) {
+      const seenSources = new Set<unknown>();
+      const sourceList: unknown[] = q.sources;
+      for (const [i, source] of sourceList.entries()) {
         const where = `${at}.sources[${i}]`;
         if (!record(source)) {
           error(where, 'ожидается объект источника');
@@ -137,7 +162,7 @@ export function validateBank(questions) {
         text(source.title, `${where}.title`);
         let parsed;
         try {
-          parsed = new URL(source.url);
+          parsed = new URL(String(source.url));
         } catch {
           error(where, 'некорректный URL');
           continue;
@@ -163,18 +188,20 @@ export function validateBank(questions) {
 
     if (q.type === 'single' || q.type === 'multi') {
       const optionIds = itemList(q.options, `${at}.options`, 'option', true);
-      if (q.type === 'multi' && q.options?.length !== 5)
+      if (q.type === 'multi' && lengthOf(q.options) !== 5)
         error(at, 'множественный выбор должен содержать ровно 5 вариантов');
       if (!Array.isArray(q.correct) || q.correct.length < 1 || q.correct.length > 5) {
         error(at, 'correct должен содержать 1–5 идентификаторов');
       } else {
         if (new Set(q.correct).size !== q.correct.length) error(at, 'правильный вариант повторён');
-        if (q.correct.some((id) => !optionIds.includes(id))) error(at, 'correct ссылается на отсутствующий вариант');
+        if (q.correct.some((id: unknown) => !optionIds.includes(id)))
+          error(at, 'correct ссылается на отсутствующий вариант');
         if (q.type === 'single' && q.correct.length !== 1) error(at, 'для single нужен ровно один правильный вариант');
-        if (q.type === 'multi') multiSizes.get(q.domain)?.add(q.correct.length);
-        if (q.type === 'single' && singlePositions.has(q.domain)) {
+        if (q.type === 'multi' && typeof q.domain === 'number') multiSizes.get(q.domain)?.add(q.correct.length);
+        if (q.type === 'single' && typeof q.domain === 'number' && singlePositions.has(q.domain)) {
           const distribution = singlePositions.get(q.domain);
-          distribution[q.correct[0]] = (distribution[q.correct[0]] || 0) + 1;
+          const id = String(q.correct[0]);
+          if (distribution) distribution[id] = (distribution[id] || 0) + 1;
         }
       }
       for (const field of ['left', 'right', 'pairs', 'pairExplanations']) {
@@ -186,14 +213,15 @@ export function validateBank(questions) {
       const left = itemList(q.left, `${at}.left`, 'l');
       const right = itemList(q.right, `${at}.right`, 'r');
       if (left.length !== right.length) error(at, 'колонки сопоставления должны быть одной длины');
-      if (!record(q.pairs)) error(at, 'pairs должен быть объектом');
+      const pairs = q.pairs;
+      if (!record(pairs)) error(at, 'pairs должен быть объектом');
       else {
-        const keys = Object.keys(q.pairs);
-        const values = Object.values(q.pairs);
+        const keys = Object.keys(pairs);
+        const values = Object.values(pairs);
         if (
           keys.length !== left.length ||
           keys.some((id) => !left.includes(id)) ||
-          left.some((id) => !Object.hasOwn(q.pairs, id))
+          left.some((id) => !Object.hasOwn(pairs, String(id)))
         )
           error(at, 'pairs должен покрывать всю левую колонку без лишних ключей');
         if (
@@ -208,14 +236,15 @@ export function validateBank(questions) {
         const keys = Object.keys(q.pairExplanations);
         if (keys.length !== left.length || keys.some((id) => !left.includes(id)))
           error(at, 'объяснения должны соответствовать всем левым элементам без лишних ключей');
-        for (const id of left) text(q.pairExplanations[id], `${at}.pairExplanations.${id}`, { russian: true });
+        for (const id of left)
+          text(q.pairExplanations[String(id)], `${at}.pairExplanations.${String(id)}`, { russian: true });
       }
       for (const field of ['options', 'correct'])
         if (field in q) error(at, `поле ${field} не используется для сопоставления`);
     }
   }
 
-  const matrix = [];
+  const matrix: BankCell[] = [];
   for (const level of [1, 2, 3]) {
     for (const domain of [1, 2, 3, 4, 5, 6]) {
       const cell = cells.get(`${level}:${domain}`) || { level, domain, total: 0, single: 0, multi: 0, match: 0 };
@@ -269,9 +298,10 @@ export async function main() {
     for (const warning of result.warnings) console.warn(`Примечание: ${warning}`);
     return result;
   } catch (error) {
-    console.error(`Ошибка чтения банка: ${error.message}`);
+    const message = messageOf(error);
+    console.error(`Ошибка чтения банка: ${message}`);
     process.exitCode = 1;
-    return { errors: [error.message] };
+    return { errors: [message] };
   }
 }
 

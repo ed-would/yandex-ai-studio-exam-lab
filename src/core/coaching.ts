@@ -1,5 +1,6 @@
-import { DOMAINS, TRAINING_TARGET } from '../data/meta.js';
-import { evaluate, scoreAttempt } from './exam.js';
+import { DOMAINS, TRAINING_TARGET } from '../data/meta.ts';
+import { evaluate, scoreAttempt } from './exam.ts';
+import type { Attempt, Question } from '../types.ts';
 
 const OUTCOMES = {
   excellent: {
@@ -42,7 +43,7 @@ const RESULT_BACKGROUNDS = {
   3: 'result-level-3-mono-light',
 };
 
-export function resultOutcome(percent) {
+export function resultOutcome(percent: number) {
   if (percent >= 95) return OUTCOMES.excellent;
   if (percent >= TRAINING_TARGET) return OUTCOMES.confident;
   return percent >= 60 ? OUTCOMES.close : OUTCOMES.starting;
@@ -60,16 +61,17 @@ const FORMATS = {
   },
 };
 
-export function resultCoaching(attempt, questions) {
+export function resultCoaching(attempt: Attempt, questions: Question[]) {
   const score = scoreAttempt(attempt, questions);
   const bank = new Map(questions.map((q) => [q.id, q]));
-  const failures = [];
+  const failures: Question[] = [];
   const formats = Object.entries(FORMATS).map(([type, copy]) => ({ type, ...copy, answered: 0, wrong: 0 }));
   for (const id of attempt.questionIds) {
     const question = bank.get(id);
     const answer = attempt.answers[id];
     if (!question || !answer) continue;
     const format = formats.find((item) => item.type === question.type);
+    if (!format) continue;
     format.answered++;
     if (!evaluate(question, answer.response)) {
       failures.push(question);

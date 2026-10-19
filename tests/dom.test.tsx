@@ -2,76 +2,177 @@ import test, { beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
-import { Window } from 'happy-dom';
+import { Window as HappyWindow } from 'happy-dom';
+import type {
+  AppState,
+  Attempt,
+  ChoiceQuestion,
+  MatchQuestion,
+  Question,
+  QuestionOption,
+  StorageLike,
+  Timing,
+} from '../src/types.ts';
 
 // Проверка DOM и пользовательских событий без запуска браузера или preview-сервера.
-const window = new Window({ url: 'https://example.test/repository/' });
-globalThis.window = window;
-globalThis.document = window.document;
-globalThis.HTMLElement = window.HTMLElement;
-globalThis.ResizeObserver = window.ResizeObserver;
-window.scrollTo = () => {};
+const window = new HappyWindow({ url: 'https://example.test/repository/' }) as unknown as Window & typeof globalThis;
+Object.assign(globalThis, {
+  window,
+  document: window.document,
+  HTMLElement: window.HTMLElement,
+  ResizeObserver: window.ResizeObserver,
+});
+(window as unknown as { scrollTo: () => void }).scrollTo = () => {};
 window.HTMLElement.prototype.scrollIntoView = () => {};
 const { render } = await import('preact');
 const { act } = await import('preact/test-utils');
-const { formatPercent, html } = await import('../src/components/ui.js');
-const { App } = await import('../src/app.js');
-const { freshState, makeBackup, writeTabProgress } = await import('../src/core/storage.js');
+const { formatPercent, h, Fragment } = await import('../src/components/ui.tsx');
+// JSX factory bindings are emitted by the classic JSX transform.
+void h;
+void Fragment;
+const { App } = await import('../src/app.tsx');
+const { freshState, makeBackup, writeTabProgress } = await import('../src/core/storage.ts');
 const { makeAttempt, finishAttempt, moveCursor, scoreAttempt, setDraft, submitAnswer } =
-  await import('../src/core/exam.js');
-const { CompletionConfetti } = await import('../src/components/completion-confetti.js');
-const { BANK_VERSION } = await import('../src/data/meta.js');
-const imageVariants = JSON.parse(readFileSync(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'));
-const { ResultsPreview, preparePreviewRoute } = await import('../src/dev/results-preview.js');
-const questions = Array.from({ length: 6 }, (_, index) =>
-  JSON.parse(readFileSync(new URL(`../src/data/domain-${index + 1}.json`, import.meta.url), 'utf8')),
+  await import('../src/core/exam.ts');
+const { CompletionConfetti } = await import('../src/components/completion-confetti.tsx');
+const { BANK_VERSION } = await import('../src/data/meta.ts');
+type ImageVariant = { width?: number; height?: number; variants: [number, string][] };
+const imageVariants = JSON.parse(
+  readFileSync(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'),
+) as Record<string, ImageVariant>;
+const { ResultsPreview, preparePreviewRoute } = await import('../src/dev/results-preview.tsx');
+const questions: Question[] = Array.from(
+  { length: 6 },
+  (_, index) =>
+    JSON.parse(readFileSync(new URL(`../src/data/domain-${index + 1}.json`, import.meta.url), 'utf8')) as Question[],
 )
   .flat()
-  .sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
+  .sort((a: Question, b: Question) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
 const key = 'test-ai-basics-trainer';
-let container;
-let storage;
+let container: HTMLElement;
+let storage: MemoryStorage;
 
-class MemoryStorage {
-  map = new Map();
-  getItem(name) {
+type Download = { name: string; blob: Blob };
+type MediaListener = (event: MediaQueryListEvent) => void;
+type LockSave = () => void | Promise<void>;
+
+const isChoiceQuestion = (question: Question): question is ChoiceQuestion => question.type !== 'match';
+const isMatchQuestion = (question: Question): question is MatchQuestion => question.type === 'match';
+const choice = (question: Question | undefined): ChoiceQuestion => {
+  assert.ok(question && isChoiceQuestion(question), 'Ожидался вопрос с вариантами ответа');
+  return question;
+};
+const match = (question: Question | undefined): MatchQuestion => {
+  assert.ok(question && isMatchQuestion(question), 'Ожидался вопрос на сопоставление');
+  return question;
+};
+const questionAt = (index: number): Question => {
+  const question = questions[index];
+  assert.ok(question, `Вопрос не найден: ${index}`);
+  return question;
+};
+const firstChoice = (): ChoiceQuestion => choice(questionAt(0));
+const questionById = (id: string): Question => {
+  const question = questions.find((item) => item.id === id);
+  assert.ok(question, `Вопрос не найден: ${id}`);
+  return question;
+};
+const historyAt = (index: number): Attempt => {
+  const history = currentState().history;
+  const attempt = history[index < 0 ? history.length + index : index];
+  assert.ok(attempt, `Попытка не найдена: ${index}`);
+  return attempt;
+};
+const timingOf = (attempt: Attempt): Timing => {
+  assert.ok(attempt.timing);
+  return attempt.timing;
+};
+const matchDraft = (attemptId: string, questionId: string): Record<string, string> => {
+  const response = currentState().sessions[attemptId]?.drafts[questionId];
+  assert.ok(response && !Array.isArray(response));
+  return response;
+};
+const choiceDraft = (attemptId: string, questionId: string): string[] => {
+  const response = currentState().sessions[attemptId]?.drafts[questionId];
+  assert.ok(Array.isArray(response));
+  return response;
+};
+const responseFor = (question: Question): string[] | Record<string, string> =>
+  isMatchQuestion(question) ? { ...question.pairs } : [...question.correct];
+const clearLocks = (): void => {
+  Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
+};
+const takeRequest = (requests: LockSave[]): LockSave => {
+  const request = requests.shift();
+  assert.ok(request);
+  return request;
+};
+
+class MemoryStorage implements StorageLike {
+  map = new Map<string, string>();
+  getItem(name: string): string | null {
     return this.map.get(name) ?? null;
   }
-  setItem(name, value) {
+  setItem(name: string, value: string): void {
     this.map.set(name, String(value));
   }
-  removeItem(name) {
+  removeItem(name: string): void {
     this.map.delete(name);
   }
 }
-const currentState = () => JSON.parse(storage.getItem(key));
-const get = (selector) => {
-  const node = container.querySelector(selector);
+const currentState = (): AppState => JSON.parse(storage.getItem(key) as string) as AppState;
+const get = <T extends HTMLElement = HTMLElement>(selector: string): T => {
+  const node = container.querySelector<T>(selector);
   assert.ok(node, `Элемент не найден: ${selector}`);
   return node;
 };
-// Semantic checks ignore typographic spaces; typography.test.mjs checks them exactly.
-const readText = (node) => node.textContent.replace(/[\u00a0\u202f]/g, ' ');
+const query = <T extends HTMLElement = HTMLElement>(root: ParentNode, selector: string): T => {
+  const node = root.querySelector<T>(selector);
+  assert.ok(node, `Элемент не найден: ${selector}`);
+  return node;
+};
+const focused = (): Element => {
+  const node = document.activeElement;
+  assert.ok(node);
+  return node;
+};
+// Semantic checks ignore typographic spaces; typography.test.tsx checks them exactly.
+const readText = (node: Element): string => (node.textContent ?? '').replace(/[\u00a0\u202f]/g, ' ');
 const text = () => readText(container);
-const click = async (selectorOrNode) => {
+const attr = (node: Element, name: string): string => {
+  const value = node.getAttribute(name);
+  assert.ok(value !== null, `Атрибут не найден: ${name}`);
+  return value;
+};
+const click = async (selectorOrNode: string | Element | null | undefined) => {
   const node = typeof selectorOrNode === 'string' ? get(selectorOrNode) : selectorOrNode;
+  assert.ok(node, 'Элемент для клика не найден');
+  assert.ok(node instanceof HTMLElement, 'Элемент не поддерживает click()');
   await act(async () => {
     node.click();
     await Promise.resolve();
   });
 };
-const press = async (node, key) => {
-  await act(() => node.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })));
+const press = async (node: Element, key: string) => {
+  await act(() => {
+    node.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+  });
 };
-const findButton = (value) => [...container.querySelectorAll('button')].find((b) => readText(b).trim() === value);
-const go = async (hash) => {
+const findButton = (value: string): HTMLButtonElement | undefined =>
+  [...container.querySelectorAll<HTMLButtonElement>('button')].find((b) => readText(b).trim() === value);
+const button = (value: string): HTMLButtonElement => {
+  const node = findButton(value);
+  assert.ok(node, `Кнопка не найдена: ${value}`);
+  return node;
+};
+const go = async (hash: string) => {
   await act(() => {
     window.location.hash = hash;
     window.dispatchEvent(new window.HashChangeEvent('hashchange'));
   });
 };
 const mount = async () => {
-  await act(() => render(html`<${App} questions=${questions} storage=${storage} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storage={storage} storageName={key} />, container));
 };
 const unmount = async () => {
   await act(() => render(null, container));
@@ -81,7 +182,9 @@ beforeEach(async () => {
   storage = new MemoryStorage();
   window.location.hash = '#/';
   document.body.innerHTML = '<div id="test-app"></div>';
-  container = document.getElementById('test-app');
+  const root = document.getElementById('test-app');
+  assert.ok(root);
+  container = root;
 });
 afterEach(async () => {
   await unmount();
@@ -96,11 +199,11 @@ test('смена страницы переносит фокус в содерж�
   await mount();
   const navigation = get('.primary-nav a[href="#/history"]');
   navigation.focus();
-  await go(navigation.getAttribute('href'));
+  await go(attr(navigation, 'href'));
   assert.equal(document.activeElement, get('h1'));
   await go('#/study');
   assert.equal(document.activeElement, get('h1'));
-  const search = get('.source-search input');
+  const search = get<HTMLInputElement>('.source-search input');
   search.focus();
   await act(() => {
     search.value = 'модель';
@@ -115,7 +218,7 @@ test('смена страницы переносит фокус в содерж�
   assert.equal(document.activeElement, theme);
   await go('#/exam/1');
   assert.equal(document.activeElement, get('.question-prompt'));
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${choice(questionAt(0)).correct[0]}"]`);
   const bookmark = get('.bookmark-button');
   bookmark.focus();
   await click(bookmark);
@@ -138,13 +241,13 @@ test('страница без заголовка h1 получает фокус 
 });
 
 test('пустое повреждённое сохранение скачивается без подмены текущим прогрессом', async (t) => {
-  const downloads = [];
-  let blob;
-  t.mock.method(URL, 'createObjectURL', (value) => {
-    blob = value;
+  const downloads: Download[] = [];
+  let blob: Blob = new Blob();
+  t.mock.method(URL, 'createObjectURL', (value: Blob | MediaSource) => {
+    blob = value instanceof Blob ? value : new Blob();
     return 'blob:audit-original';
   });
-  t.mock.method(window.HTMLAnchorElement.prototype, 'click', function () {
+  t.mock.method(window.HTMLAnchorElement.prototype, 'click', function (this: HTMLAnchorElement) {
     downloads.push({ name: this.download, blob });
   });
   storage.setItem(key, '');
@@ -176,14 +279,14 @@ test('макеты переключают уровни и результаты, 
   const raw = JSON.stringify(realState);
   window.localStorage.setItem(realKey, raw);
   preparePreviewRoute();
-  const previewMount = () => act(() => render(html`<${ResultsPreview} questions=${questions}/>`, container));
+  const previewMount = () => act(() => render(<ResultsPreview questions={questions} />, container));
   await previewMount();
   assert.equal(window.location.hash, '#/results/preview-1-target80');
   assert.equal(readText(get('.score-number')), '80%');
   await click(findButton('Следующий'));
   assert.equal(window.location.hash, '#/results/preview-1-below95');
   assert.equal(readText(get('.score-number')), '93,3%');
-  const select = get('select[aria-label="Тест для просмотра"]');
+  const select = get<HTMLSelectElement>('select[aria-label="Тест для просмотра"]');
   await act(() => {
     select.value = '3';
     select.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -206,12 +309,24 @@ test('макеты переключают уровни и результаты, 
   assert.equal(window.localStorage.getItem(realKey), raw);
 });
 
-test('переключатель обновляет тему и иллюстрации, сохраняя текущий тест и черновик', async () => {
+test('переключатель обновляет тему и иллюстрации, сохраняя текущий тест и черновик', async (t) => {
+  const downloads: Download[] = [];
+  let blob: Blob = new Blob();
+  t.mock.method(URL, 'createObjectURL', (value: Blob | MediaSource) => {
+    assert.ok(value instanceof Blob);
+    blob = value;
+    return 'blob:theme-report';
+  });
+  t.mock.method(window.HTMLAnchorElement.prototype, 'click', function (this: HTMLAnchorElement) {
+    downloads.push({ name: this.download, blob });
+  });
   const initial = freshState();
   const attempt = makeAttempt(1, questions);
-  const q = questions.find((item) => item.id === attempt.questionIds[0]);
+  const q = choice(questionById(attempt.questionIds[0]));
   attempt.drafts[q.id] = [q.options[0].id];
   initial.sessions['exam:1'] = attempt;
+  const completed = finishAttempt(makeAttempt(1, questions));
+  initial.history.push(completed);
   storage.setItem(key, JSON.stringify(initial));
   window.localStorage.removeItem('ai-basics-exam-trainer:theme');
   runInNewContext(readFileSync(new URL('../public/theme.js', import.meta.url), 'utf8'), { window, document });
@@ -224,18 +339,22 @@ test('переключатель обновляет тему и иллюстра
   assert.notEqual(root.dataset.theme, before);
   assert.equal(get('.theme-toggle').getAttribute('aria-pressed'), String(root.dataset.theme === 'dark'));
   await go('#/');
-  const heroSource = container.querySelector('.hero-visual .generative-art source');
+  await click('.restart-link');
+  assert.match(get('.modal-copy').textContent, /уровня 1\u00a0будет/);
+  assert.match(get('.modal-copy').textContent, /проверено 0\u00a0из\u00a060\u00a0вопросов/);
+  await click(button('Отмена'));
+  const heroSource = container.querySelector<HTMLSourceElement>('.hero-visual .generative-art source');
   assert.equal(heroSource?.media, root.dataset.theme === 'dark' ? 'all' : undefined);
-  assert.match(get('.hero-visual img').getAttribute('src'), /images\/artwork\/hero-ribbon-expanded\.webp$/);
+  assert.match(attr(get('.hero-visual img'), 'src'), /images\/artwork\/hero-ribbon-expanded\.webp$/);
   for (const image of container.querySelectorAll('.generative-art img, .section-backdrop img, .brand-symbol img')) {
-    const source = image.getAttribute('src').replace(/^\.\/images\//, '');
+    const source = attr(image, 'src').replace(/^\.\/images\//, '');
     assert.ok(
-      Object.values(imageVariants).some(({ variants }) => variants.at(-1)[1] === source),
+      Object.values(imageVariants).some(({ variants }) => variants.at(-1)?.[1] === source),
       source,
     );
   }
   for (const image of container.querySelectorAll('img[srcset], source[srcset]')) {
-    for (const candidate of image.getAttribute('srcset').split(', ')) {
+    for (const candidate of attr(image, 'srcset').split(', ')) {
       const source = candidate.split(' ')[0].replace(/^\.\/images\//, '');
       assert.ok(
         Object.values(imageVariants).some(({ variants }) => variants.some(([, file]) => file === source)),
@@ -244,9 +363,16 @@ test('переключатель обновляет тему и иллюстра
     }
   }
   await go('#/exam/1');
-  assert.equal(get('.choice input').checked, true);
+  assert.equal(get<HTMLInputElement>('.choice input').checked, true);
   assert.equal(storage.getItem(key), saved);
   assert.equal(window.location.hash, '#/exam/1');
+  await go(`#/results/${completed.id}`);
+  const reportTheme = root.dataset.theme;
+  await click('.theme-toggle');
+  assert.notEqual(root.dataset.theme, reportTheme);
+  await click('.export-report');
+  assert.equal(downloads.length, 1);
+  assert.match(await downloads[0].blob.text(), new RegExp(`data-theme="${root.dataset.theme}"`));
   if (root.dataset.theme === 'dark') await click('.theme-toggle');
   window.localStorage.removeItem('ai-basics-exam-trainer:theme');
 });
@@ -255,12 +381,10 @@ test('рекомендация открывает разбор именно ош
   let attempt = makeAttempt(1, questions);
   const failed = questions.filter((q) => q.level === 1 && q.domain === 2).slice(0, 2);
   for (const id of attempt.questionIds) {
-    const q = questions.find((item) => item.id === id);
+    const q = questionById(id);
     const response = failed.some((item) => item.id === id)
-      ? [q.options.find((o) => !q.correct.includes(o.id)).id]
-      : q.type === 'match'
-        ? { ...q.pairs }
-        : [...q.correct];
+      ? [choice(q).options.find((o: QuestionOption) => !choice(q).correct.includes(o.id))!.id]
+      : responseFor(q);
     attempt = submitAnswer(attempt, q, response);
   }
   attempt = finishAttempt(attempt);
@@ -275,16 +399,16 @@ test('рекомендация открывает разбор именно ош
   for (const q of failed) assert.ok(readText(card).includes(q.topic));
   assert.ok(readText(card).includes(failed[0].takeaway));
   await click(card.querySelector('button'));
-  assert.equal(document.activeElement.id, 'results-review-title');
-  assert.equal(get('select[aria-label="Фильтр по домену"]').value, '2');
-  assert.equal(findButton('Ошибки 2').getAttribute('aria-pressed'), 'true');
+  assert.equal(focused().id, 'results-review-title');
+  assert.equal(get<HTMLSelectElement>('select[aria-label="Фильтр по домену"]').value, '2');
+  assert.equal(button('Ошибки 2').getAttribute('aria-pressed'), 'true');
   assert.equal(container.querySelectorAll('.review-item').length, 2);
   assert.ok(
     [...container.querySelectorAll('.review-question > strong')].every((node) =>
       failed.some((q) => q.prompt === readText(node)),
     ),
   );
-  await click(card.querySelector('a'));
+  await click(query<HTMLAnchorElement>(card, 'a'));
   await go('#/study/2');
   assert.ok(get('.study-page'));
 });
@@ -292,8 +416,8 @@ test('рекомендация открывает разбор именно ош
 test('досрочная попытка выше 80% показывает пропуски и не предлагает следующий уровень', async () => {
   let attempt = makeAttempt(1, questions);
   for (const id of attempt.questionIds.slice(0, 50)) {
-    const q = questions.find((item) => item.id === id);
-    attempt = submitAnswer(attempt, q, q.type === 'match' ? { ...q.pairs } : [...q.correct]);
+    const q = questionById(id);
+    attempt = submitAnswer(attempt, q, responseFor(q));
   }
   attempt = finishAttempt(attempt);
   const initial = freshState();
@@ -307,14 +431,14 @@ test('досрочная попытка выше 80% показывает про
   assert.match(readText(get('.competency-untested')), /Не проверено/);
   await click(get('.unanswered-summary-action'));
   assert.equal(container.querySelectorAll('.review-item.status-unanswered').length, 10);
-  assert.equal(findButton('Пропущено 10').getAttribute('aria-pressed'), 'true');
+  assert.equal(button('Пропущено 10').getAttribute('aria-pressed'), 'true');
 });
 
 test('хлопушка появляется после завершения и не повторяется при фильтрации, возврате или перезапуске', async () => {
   let attempt = makeAttempt(1, questions);
   for (const id of attempt.questionIds) {
-    const q = questions.find((item) => item.id === id);
-    attempt = submitAnswer(attempt, q, q.type === 'match' ? { ...q.pairs } : [...q.correct]);
+    const q = questionById(id);
+    attempt = submitAnswer(attempt, q, responseFor(q));
   }
   const initial = freshState();
   initial.sessions['exam:1'] = attempt;
@@ -347,10 +471,10 @@ test('карточки прогресса сохраняют места резу
   await unmount();
 
   const empty = finishAttempt(makeAttempt(1, questions));
-  const answeredQuestion = questions.find((question) => question.level === 1 && question.type === 'single');
+  const answeredQuestion = choice(questions.find((question) => question.level === 1 && question.type === 'single'));
   const answered = finishAttempt(
     submitAnswer(makeAttempt(1, questions), answeredQuestion, [
-      answeredQuestion.options.find((option) => !answeredQuestion.correct.includes(option.id)).id,
+      answeredQuestion.options.find((option) => !answeredQuestion.correct.includes(option.id))!.id,
     ]),
   );
   const initial = freshState();
@@ -364,8 +488,8 @@ test('карточки прогресса сохраняют места резу
   assert.equal(readText(get('.stats-card.theme-1 .stats-value')), '0%лучший результат');
   for (const level of [2, 3]) {
     const card = get(`.stats-card.theme-${level}`);
-    assert.equal(readText(card.querySelector('.stats-value')), '–пока нет результата');
-    assert.equal(card.querySelector('.mini-chart').getAttribute('aria-label'), 'Нет данных о результатах попыток');
+    assert.equal(readText(query(card, '.stats-value')), '–пока нет результата');
+    assert.equal(query(card, '.mini-chart').getAttribute('aria-label'), 'Нет данных о результатах попыток');
     assert.equal(card.querySelector('.chart-column'), null);
     assert.equal(Boolean(card.querySelector('.stats-card-footer button')), level === 2);
   }
@@ -375,52 +499,59 @@ test('хлопушка учитывает reduced motion, останавлива
   const matchMedia = window.matchMedia;
   const setTimeout = window.setTimeout;
   const clearTimeout = window.clearTimeout;
-  let listener;
-  let stopped;
-  let cleared;
-  let removed;
+  let listener: MediaListener | undefined;
+  let stopped: (() => void) | undefined;
+  let cleared = false;
+  let removed: MediaListener | undefined;
   let consumed = 0;
   const motion = {
     matches: true,
-    addEventListener: (_, handler) => {
+    addEventListener: (_: string, handler: MediaListener) => {
       listener = handler;
     },
-    removeEventListener: (_, handler) => {
+    removeEventListener: (_: string, handler: MediaListener) => {
       removed = handler;
     },
-  };
+  } as unknown as MediaQueryList;
   const onConsumed = () => {
     consumed++;
   };
   try {
     window.matchMedia = () => motion;
-    window.setTimeout = (callback, delay, ...args) => {
+    window.setTimeout = ((callback: TimerHandler, delay?: number, ...args: unknown[]) => {
       if (delay === 3800) {
-        stopped = callback;
+        stopped =
+          typeof callback === 'function' ? () => (callback as (...values: unknown[]) => void)(...args) : undefined;
         return 12345;
       }
-      return setTimeout.call(window, callback, delay, ...args);
-    };
+      return Reflect.apply(setTimeout, window, [callback, delay, ...args]) as ReturnType<typeof setTimeout>;
+    }) as typeof window.setTimeout;
     window.clearTimeout = (id) => {
       if (id === 12345) cleared = true;
       else clearTimeout.call(window, id);
     };
-    await act(() => render(html`<${CompletionConfetti} enabled=${true} onConsumed=${onConsumed}/>`, container));
+    await act(() => render(<CompletionConfetti enabled={true} onConsumed={onConsumed} />, container));
     assert.equal(consumed, 1);
     assert.equal(container.querySelector('.completion-confetti'), null);
     assert.equal(stopped, undefined);
     await unmount();
-    motion.matches = false;
-    await act(() => render(html`<${CompletionConfetti} enabled=${true} onConsumed=${onConsumed}/>`, container));
+    (motion as unknown as { matches: boolean }).matches = false;
+    await act(() => render(<CompletionConfetti enabled={true} onConsumed={onConsumed} />, container));
     assert.equal(container.querySelectorAll('.completion-confetti i').length, 64);
-    await act(() => listener({ matches: true }));
+    assert.ok(listener);
+    const onChange = listener;
+    await act(() => onChange({ matches: true } as MediaQueryListEvent));
     assert.equal(container.querySelector('.completion-confetti'), null);
     await unmount();
     assert.equal(cleared, true);
     assert.equal(removed, listener);
-    await act(() => render(html`<${CompletionConfetti} enabled=${true} onConsumed=${onConsumed}/>`, container));
+    await act(() => render(<CompletionConfetti enabled={true} onConsumed={onConsumed} />, container));
     assert.equal(container.querySelectorAll('.completion-confetti i').length, 64);
-    await act(() => stopped());
+    assert.ok(stopped);
+    const stop = stopped as () => void;
+    await act(() => {
+      stop();
+    });
     assert.equal(container.querySelector('.completion-confetti'), null);
     await unmount();
   } finally {
@@ -443,16 +574,17 @@ test('Главная содержит три уровня, русскую нав
 test('Одиночный ответ фиксируется; ошибку нельзя исправить после показа объяснения', async () => {
   await mount();
   await click('[data-start="1"]');
-  const q = questions.find((q) => q.level === 1);
-  assert.equal(get('[data-action="check-answer"]').disabled, true);
+  const q = choice(questions.find((q) => q.level === 1));
+  assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, true);
   const wrong = q.options.find((o) => !q.correct.includes(o.id));
+  assert.ok(wrong);
   await click(`input[value="${wrong.id}"]`);
-  assert.equal(get('[data-action="check-answer"]').disabled, false);
+  assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, false);
   await click('[data-action="check-answer"]');
   assert.ok(get('.feedback.incorrect'));
   assert.match(text(), new RegExp(q.takeaway.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.ok([...container.querySelectorAll('.choice input')].every((i) => i.disabled));
-  assert.equal(get('.feedback .reasoning-details').open, true);
+  assert.ok([...container.querySelectorAll<HTMLInputElement>('.choice input')].every((i) => i.disabled));
+  assert.equal(get<HTMLDetailsElement>('.feedback .reasoning-details').open, true);
   const original = JSON.stringify(currentState().sessions['exam:1'].answers[q.id]);
   await click(`input[value="${q.correct[0]}"]`);
   assert.equal(JSON.stringify(currentState().sessions['exam:1'].answers[q.id]), original);
@@ -463,8 +595,9 @@ test('Одиночный ответ фиксируется; ошибку нел�
 test('Мультивыбор принимает пять ответов и не раскрывает решение до проверки', async () => {
   await mount();
   await click('[data-start="1"]');
-  const q = questions.find((q) => q.level === 1 && q.type === 'multi' && q.correct.length === 5);
-  assert.ok(q);
+  const q = choice(
+    questions.find((q) => q.level === 1 && q.type === 'multi' && isChoiceQuestion(q) && q.correct.length === 5),
+  );
   const levelQuestions = questions.filter((q) => q.level === 1);
   await click(`[data-question-index="${levelQuestions.indexOf(q)}"]`);
   assert.equal(container.querySelectorAll('.choice.is-correct').length, 0);
@@ -479,37 +612,37 @@ test('Сопоставление создаёт, заменяет и удаля�
   await mount();
   await click('[data-start="1"]');
   const qs = questions.filter((q) => q.level === 1);
-  const q = qs.find((q) => q.type === 'match');
+  const q = match(qs.find((q) => q.type === 'match'));
   await click(`[data-question-index="${qs.indexOf(q)}"]`);
   const [l1, l2] = q.left,
     [r1, r2] = q.right;
-  assert.equal(get('[data-action="check-answer"]').disabled, true);
+  assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, true);
   // Можно начать с правой колонки.
   await click(`[data-right="${r1.id}"]`);
   await click(`[data-left="${l1.id}"]`);
-  assert.equal(currentState().sessions['exam:1'].drafts[q.id][l1.id], r1.id);
+  assert.equal(matchDraft('exam:1', q.id)[l1.id], r1.id);
   await click(`[data-left="${l2.id}"]`);
   await click(`[data-right="${r1.id}"]`);
-  let pairs = currentState().sessions['exam:1'].drafts[q.id];
+  let pairs = matchDraft('exam:1', q.id);
   assert.equal(pairs[l1.id], undefined);
   assert.equal(pairs[l2.id], r1.id);
   await click('.disconnect');
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  assert.deepEqual(matchDraft('exam:1', q.id), {});
   // Повторное указание уже созданной пары разрывает связь.
   await click(`[data-left="${l1.id}"]`);
   await click(`[data-right="${r2.id}"]`);
   await click(`[data-right="${r2.id}"]`);
   await click(`[data-left="${l1.id}"]`);
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  assert.deepEqual(matchDraft('exam:1', q.id), {});
   for (const left of q.left) {
     await click(`[data-left="${left.id}"]`);
     await click(`[data-right="${q.pairs[left.id]}"]`);
   }
-  assert.equal(get('[data-action="check-answer"]').disabled, false);
+  assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, false);
   assert.equal(container.querySelectorAll('.match-lines path').length, q.left.length);
   await click('[data-action="check-answer"]');
   assert.ok(get('.feedback.correct'));
-  assert.ok([...container.querySelectorAll('.match-node')].every((b) => b.disabled));
+  assert.ok([...container.querySelectorAll<HTMLButtonElement>('.match-node')].every((b) => b.disabled));
   assert.equal(container.querySelectorAll('.pair-explanation').length, q.left.length);
 });
 
@@ -517,32 +650,37 @@ test('Сопоставление сохраняет единое состоян�
   await mount();
   await click('[data-start="1"]');
   const qs = questions.filter((q) => q.level === 1);
-  const q = qs.find((q) => q.type === 'match');
+  const q = match(qs.find((q) => q.type === 'match'));
   await click(`[data-question-index="${qs.indexOf(q)}"]`);
 
-  const selects = () => [...container.querySelectorAll('.match-mobile-select')];
+  const selects = () => [...container.querySelectorAll<HTMLSelectElement>('.match-mobile-select')];
   assert.equal(selects().length, q.left.length);
   assert.equal(container.querySelectorAll('.match-mobile-row p').length, 0);
   assert.ok(selects().every((select) => !select.classList.contains('paired')));
-  const pairProgress = () => container.querySelector('.match-status [role="progressbar"]');
+  const pairProgress = () => query(container, '.match-status [role="progressbar"]');
   assert.equal(pairProgress().getAttribute('aria-valuenow'), '0');
   assert.equal(pairProgress().getAttribute('aria-valuemax'), String(q.left.length));
   assert.ok(selects().every((select) => select.options.length === q.right.length + 1));
   assert.ok(
-    selects().every((select, index) => select.getAttribute('aria-label') === `Соответствие для: ${q.left[index].text}`),
+    selects().every((select, index) => {
+      const left = q.left[index];
+      assert.ok(left);
+      return attr(select, 'aria-label') === `Соответствие для: ${left.text}`;
+    }),
   );
   assert.equal(container.querySelectorAll('.match-board-desktop .match-node').length, q.left.length + q.right.length);
 
-  const change = async (index, value) => {
+  const change = async (index: number, value: string) => {
     await act(() => {
       const select = selects()[index];
+      assert.ok(select);
       select.value = value;
       select.dispatchEvent(new window.Event('change', { bubbles: true }));
     });
   };
   await change(0, q.right[0].id);
   await change(1, q.right[1].id);
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {
+  assert.deepEqual(matchDraft('exam:1', q.id), {
     [q.left[0].id]: q.right[0].id,
     [q.left[1].id]: q.right[1].id,
   });
@@ -552,35 +690,41 @@ test('Сопоставление сохраняет единое состоян�
 
   // Выбор занятого определения заменяет предыдущую связь.
   await change(1, q.right[0].id);
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[1].id]: q.right[0].id });
+  assert.deepEqual(matchDraft('exam:1', q.id), { [q.left[1].id]: q.right[0].id });
   assert.ok(!selects()[0].classList.contains('paired'));
   assert.equal(pairProgress().getAttribute('aria-valuenow'), '1');
   assert.ok(selects()[1].classList.contains('paired'));
   // Пустой option удаляет связь и подсветку, а resize не меняет черновик.
   await change(1, '');
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  assert.deepEqual(matchDraft('exam:1', q.id), {});
   assert.ok(selects().every((select) => !select.classList.contains('paired')));
   await change(0, q.right[1].id);
-  await act(() => window.dispatchEvent(new window.Event('resize')));
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], { [q.left[0].id]: q.right[1].id });
+  await act(() => {
+    window.dispatchEvent(new window.Event('resize'));
+  });
+  assert.deepEqual(matchDraft('exam:1', q.id), { [q.left[0].id]: q.right[1].id });
   await click('.clear-pairs');
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], {});
+  assert.deepEqual(matchDraft('exam:1', q.id), {});
 
   // Полный корректный ответ блокирует обе презентации и сохраняет выбранные значения.
   for (const [index, left] of q.left.entries()) await change(index, q.pairs[left.id]);
-  assert.equal(get('[data-action="check-answer"]').disabled, false);
+  assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, false);
   await click('[data-action="check-answer"]');
   assert.ok(get('.feedback.correct'));
   assert.ok(selects().every((select) => select.disabled));
   assert.equal(container.querySelectorAll('.match-mobile-row p').length, 0);
   assert.ok(selects().every((select) => select.classList.contains('paired')));
-  assert.ok([...container.querySelectorAll('.match-board-desktop .match-node')].every((node) => node.disabled));
+  assert.ok(
+    [...container.querySelectorAll<HTMLButtonElement>('.match-board-desktop .match-node')].every(
+      (node) => node.disabled,
+    ),
+  );
 });
 
 test('Черновик, ответ, текущая позиция и закладка переживают перезапуск приложения', async () => {
   await mount();
   await click('[data-start="2"]');
-  const qs = questions.filter((q) => q.level === 2);
+  const qs = questions.filter((q): q is ChoiceQuestion => q.level === 2 && isChoiceQuestion(q));
   await click(`input[value="${qs[0].correct[0]}"]`);
   await click('[data-action="check-answer"]');
   await click('[data-action="next-question"]');
@@ -603,7 +747,7 @@ test('Черновик, ответ, текущая позиция и закла�
 test('Досрочное завершение считает непроверенный черновик пропуском и открывает весь разбор', async () => {
   await mount();
   await click('[data-start="1"]');
-  const q = questions.find((q) => q.level === 1);
+  const q = choice(questions.find((q) => q.level === 1));
   await click(`input[value="${q.correct[0]}"]`);
   await click(findButton('Завершить'));
   assert.match(readText(get('[role="dialog"]')), /60 непроверенных/);
@@ -638,7 +782,7 @@ test('Все 180 заданий проходимы через DOM: три пол
       } else {
         for (const id of q.correct) await click(`input[value="${id}"]`);
       }
-      assert.equal(get('[data-action="check-answer"]').disabled, false, q.id);
+      assert.equal(get<HTMLButtonElement>('[data-action="check-answer"]').disabled, false, q.id);
       await click('[data-action="check-answer"]');
       assert.ok(container.querySelector('.feedback.correct'), q.id);
       assert.equal(Object.keys(currentState().sessions[`exam:${level}`].answers).length, index + 1);
@@ -646,7 +790,7 @@ test('Все 180 заданий проходимы через DOM: три пол
     }
     assert.ok(get('.results-page'));
     assert.equal(container.querySelectorAll('.review-item.status-correct').length, 60);
-    const result = currentState().history.at(-1);
+    const result = historyAt(-1);
     assert.equal(result.level, level);
     assert.equal(scoreAttempt(result, questions).percent, 100);
   }
@@ -658,7 +802,7 @@ test('Все 180 заданий проходимы через DOM: три пол
   assert.equal(container.querySelectorAll('.mini-chart[role="group"]').length, 3);
   assert.ok(
     [...container.querySelectorAll('.chart-column')].every((node) =>
-      node.getAttribute('aria-label').includes('Открыть разбор результата'),
+      attr(node, 'aria-label').includes('Открыть разбор результата'),
     ),
   );
 });
@@ -677,7 +821,7 @@ test('пустой прогресс скрывает очистку, черно�
   await mount();
   await go('#/');
   await click('[data-start="1"]');
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   await go('#/history');
   assert.equal(container.querySelector('.history-filters'), null);
   assert.ok(get('[aria-label="Очистить результаты уровня 1"]'));
@@ -694,11 +838,13 @@ test('пустой прогресс скрывает очистку, черно�
 test('очистка учитывает завершённые и незавершённые разборы ошибок независимо от фильтра', async () => {
   const initial = freshState();
   initial.history.push(finishAttempt(makeAttempt(1, questions, 'mistakes', [questions[0].id])));
-  initial.sessions['mistakes:2'] = makeAttempt(2, questions, 'mistakes', [questions.find((q) => q.level === 2).id]);
+  initial.sessions['mistakes:2'] = makeAttempt(2, questions, 'mistakes', [
+    questionById(questions.find((q) => q.level === 2)!.id).id,
+  ]);
   storage.setItem(key, JSON.stringify(initial));
   await mount();
   await go('#/history');
-  const mode = get('select[aria-label="Режим в истории"]');
+  const mode = get<HTMLSelectElement>('select[aria-label="Режим в истории"]');
   await act(() => {
     mode.value = 'exam';
     mode.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -750,17 +896,19 @@ test('Темы фильтруют материалы каждого домена
   assert.equal(container.querySelectorAll('.study-nav button').length, 6);
   assert.equal(container.querySelectorAll('.official-grid a').length, 7);
   assert.ok(container.querySelectorAll('.study-sources a').length > 0);
-  assert.equal(get('.topic-coverage').open, false);
+  assert.equal(get<HTMLDetailsElement>('.topic-coverage').open, false);
   for (const button of [...container.querySelectorAll('.study-nav button')]) {
     await click(button);
     assert.equal(container.querySelectorAll('.study-guide article').length, 4);
     assert.ok(container.querySelectorAll('.study-sources a').length > 0);
     await click('.topic-coverage > summary');
-    assert.equal(get('.topic-coverage').open, true);
+    assert.equal(get<HTMLDetailsElement>('.topic-coverage').open, true);
     assert.ok(container.querySelectorAll('.topic-tags button').length > 0);
     const topicButton = get('.topic-tags button');
     const topic = readText(topicButton).trim();
-    const activeDomain = Number(readText(button.querySelector('small')).match(/Домен (\d+)/)[1]);
+    const domainMatch = readText(query(button, 'small')).match(/Домен (\d+)/);
+    assert.ok(domainMatch);
+    const activeDomain = Number(domainMatch[1]);
     const expectedUrls = questions
       .filter((question) => question.domain === activeDomain && question.topic === topic)
       .flatMap((question) => question.sources.map((source) => source.url));
@@ -770,16 +918,16 @@ test('Темы фильтруют материалы каждого домена
     await click(topicButton);
     assert.equal(get('.topic-tags button').getAttribute('aria-pressed'), 'true');
     assert.deepEqual(
-      [...container.querySelectorAll('.study-sources a')].map((link) => link.href).sort(),
+      [...container.querySelectorAll<HTMLAnchorElement>('.study-sources a')].map((link) => link.href).sort(),
       [...new Set(expectedUrls)].sort(),
     );
     await click(findButton('Показать все'));
     assert.deepEqual(
-      [...container.querySelectorAll('.study-sources a')].map((link) => link.href).sort(),
+      [...container.querySelectorAll<HTMLAnchorElement>('.study-sources a')].map((link) => link.href).sort(),
       [...new Set(allExpectedUrls)].sort(),
     );
   }
-  const input = get('input[type="search"]');
+  const input = get<HTMLInputElement>('input[type="search"]');
   await act(() => {
     input.value = 'несуществующий материал';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));
@@ -805,7 +953,7 @@ test('все экранные аккордеоны используют общи
 
   await go('#/');
   await go('#/study/1');
-  const topics = get('.topic-coverage');
+  const topics = get<HTMLDetailsElement>('.topic-coverage');
   assert.ok(topics.matches('.accordion.accordion--surface'));
   await click(topics.querySelector(':scope > summary'));
   assert.equal(topics.open, true);
@@ -821,13 +969,13 @@ test('все экранные аккордеоны используют общи
   await mount();
   await go(`#/results/${attempt.id}`);
 
-  const scoring = get('.scoring-info');
+  const scoring = get<HTMLDetailsElement>('.scoring-info');
   assert.ok(scoring.matches('.accordion.accordion--surface.accordion--score'));
   await click(scoring.querySelector(':scope > summary'));
   assert.equal(scoring.open, true);
   assert.ok(scoring.querySelector(':scope > .details-content > .details-content-inner'));
 
-  const review = get('.review-item');
+  const review = get<HTMLDetailsElement>('.review-item');
   assert.ok(review.matches('.accordion.accordion--surface.accordion--review'));
   await click(review.querySelector(':scope > summary'));
   assert.equal(review.open, true);
@@ -846,7 +994,7 @@ test('Повреждённое сохранение не стирается ав
   assert.ok(findButton('Очистить все результаты'));
   await go('#/');
   await click('[data-start="1"]');
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   assert.equal(storage.getItem(key), '{broken');
   assert.ok(get('.question-prompt'));
 });
@@ -878,12 +1026,12 @@ test('устаревшее сохранение можно скрыть, очи�
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(container.querySelector('.storage-warning'), null);
-  assert.equal(JSON.parse(storage.getItem(key)).bankVersion, BANK_VERSION);
+  assert.equal(JSON.parse(storage.getItem(key) ?? '').bankVersion, BANK_VERSION);
   assert.equal(findButton('Очистить все результаты'), undefined);
 
   await go('#/');
   await click('[data-start="1"]');
-  assert.ok(JSON.parse(storage.getItem(key)).sessions['exam:1']);
+  assert.ok(JSON.parse(storage.getItem(key) ?? '').sessions['exam:1']);
   await unmount();
   await mount();
   assert.equal(container.querySelector('.storage-warning'), null);
@@ -894,28 +1042,28 @@ test('без Web Locks полная очистка снимает блокиро
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     window.localStorage.removeItem(key);
   });
   Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
   const oldState = freshState();
   oldState.bankVersion = 'older-question-bank';
   window.localStorage.setItem(key, JSON.stringify(oldState));
-  await act(() => render(html`<${App} questions=${questions} storageName=${key} tabStorage=${null}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} tabStorage={null} />, container));
   assert.match(text(), /До очистки новые попытки не сохраняются на устройстве/);
   assert.match(text(), /только в памяти вкладки/);
 
   await go('#/history');
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
-  assert.equal(JSON.parse(window.localStorage.getItem(key)).bankVersion, BANK_VERSION);
+  assert.equal(JSON.parse(window.localStorage.getItem(key) ?? '').bankVersion, BANK_VERSION);
   assert.doesNotMatch(text(), /предыдущей версией вопросов/);
   assert.match(text(), /только в памяти вкладки/);
 
   await go('#/');
   await click('[data-start="1"]');
   assert.ok(get('.question-prompt'));
-  assert.equal(JSON.parse(window.localStorage.getItem(key)).sessions['exam:1'], undefined);
+  assert.equal(JSON.parse(window.localStorage.getItem(key) ?? '').sessions['exam:1'], undefined);
   assert.match(text(), /только в памяти вкладки/);
 });
 
@@ -964,13 +1112,13 @@ test('Конфликт вкладок не перезаписывает чужо
   external.revision += 1;
   external.sessions['exam:2'] = makeAttempt(2, questions);
   storage.setItem(key, JSON.stringify(external));
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   assert.ok(get('.storage-warning'));
   assert.match(text(), /Прогресс изменился в другой вкладке/);
   assert.ok(currentState().sessions['exam:2']);
   assert.deepEqual(currentState().sessions['exam:1'].drafts, {});
   await click(findButton('Обновить данные'));
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   assert.ok(currentState().sessions['exam:1'].drafts[questions[0].id]);
   assert.ok(currentState().sessions['exam:2']);
 });
@@ -1008,7 +1156,9 @@ test('Ссылка перехода к содержимому не покида�
 test('Фильтры истории: клавиатура, отмена выбора и совместная фильтрация уровня и режима', async () => {
   const initial = freshState();
   initial.history.push(finishAttempt(makeAttempt(1, questions)));
-  initial.history.push(finishAttempt(makeAttempt(2, questions, 'mistakes', [questions.find((q) => q.level === 2).id])));
+  initial.history.push(
+    finishAttempt(makeAttempt(2, questions, 'mistakes', [questionById(questions.find((q) => q.level === 2)!.id).id])),
+  );
   storage.setItem(key, JSON.stringify(initial));
   await mount();
   await go('#/history');
@@ -1020,9 +1170,9 @@ test('Фильтры истории: клавиатура, отмена выбо
   await press(level, 'ArrowDown');
   assert.equal(level.getAttribute('aria-expanded'), 'true');
   assert.equal(document.activeElement, level);
-  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Все уровни');
+  assert.equal(readText(document.getElementById(attr(level, 'aria-activedescendant'))!), 'Все уровни');
   await press(level, 'End');
-  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Уровень 3');
+  assert.equal(readText(document.getElementById(attr(level, 'aria-activedescendant'))!), 'Уровень 3');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 2);
   await press(level, 'Escape');
   assert.equal(level.getAttribute('aria-expanded'), 'false');
@@ -1032,11 +1182,11 @@ test('Фильтры истории: клавиатура, отмена выбо
   // Повторение буквы циклически находит следующие подходящие варианты.
   await press(level, 'у');
   await press(level, 'у');
-  assert.equal(readText(document.getElementById(level.getAttribute('aria-activedescendant'))), 'Уровень 2');
+  assert.equal(readText(document.getElementById(attr(level, 'aria-activedescendant'))!), 'Уровень 2');
   await press(level, 'Enter');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
   assert.match(readText(get('.history-title small')), /Работа над ошибками/);
-  assert.equal(get('select[aria-label="Уровень в истории"]').value, '2');
+  assert.equal(get<HTMLSelectElement>('select[aria-label="Уровень в истории"]').value, '2');
 
   await click(level);
   await press(level, 'Home');
@@ -1050,7 +1200,7 @@ test('Фильтры истории: клавиатура, отмена выбо
   assert.equal(document.activeElement, mode);
 
   // Системный мобильный выбор обновляет то же состояние и подпись десктопного поля.
-  const native = get('select[aria-label="Уровень в истории"]');
+  const native = get<HTMLSelectElement>('select[aria-label="Уровень в истории"]');
   await act(() => {
     native.value = 'all';
     native.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -1066,10 +1216,14 @@ test('Фильтры истории: клавиатура, отмена выбо
   assert.equal(container.querySelectorAll('[role="listbox"]').length, 1);
 });
 
-for (const mode of ['exam', 'mistakes']) {
+for (const mode of ['exam', 'mistakes'] as const) {
   test(`счётчики фильтров разбора учитывают выбранный домен и всю подборку: ${mode}`, async () => {
-    const first = questions.filter((q) => q.level === 1 && q.domain === 1 && q.type === 'single').slice(0, 3);
-    const second = questions.filter((q) => q.level === 1 && q.domain === 2 && q.type === 'single').slice(0, 2);
+    const first = questions
+      .filter((q): q is ChoiceQuestion => q.level === 1 && q.domain === 1 && q.type === 'single')
+      .slice(0, 3);
+    const second = questions
+      .filter((q): q is ChoiceQuestion => q.level === 1 && q.domain === 2 && q.type === 'single')
+      .slice(0, 2);
     let attempt = makeAttempt(
       1,
       questions,
@@ -1077,7 +1231,9 @@ for (const mode of ['exam', 'mistakes']) {
       [...first, ...second].map((q) => q.id),
     );
     attempt = submitAnswer(attempt, first[0], [...first[0].correct]);
-    attempt = submitAnswer(attempt, first[1], [first[1].options.find((o) => !first[1].correct.includes(o.id)).id]);
+    const wrong = first[1]!.options.find((o) => !first[1]!.correct.includes(o.id));
+    assert.ok(wrong);
+    attempt = submitAnswer(attempt, first[1]!, [wrong.id]);
     attempt = submitAnswer(attempt, second[0], [...second[0].correct]);
     attempt.bookmarks = [first[0].id, first[1].id, second[1].id];
     attempt = finishAttempt(attempt);
@@ -1089,18 +1245,27 @@ for (const mode of ['exam', 'mistakes']) {
 
     const labels = ['Все', 'Ошибки', 'Пропущено', 'Верно', 'Закладки'];
     const all = mode === 'exam' ? [60, 1, 57, 2, 3] : [5, 1, 2, 2, 3];
-    const cases = [
+    const cases: Array<[string, number[]]> = [
       ['1', mode === 'exam' ? [10, 1, 8, 1, 2] : [3, 1, 1, 1, 2]],
       ['2', mode === 'exam' ? [10, 0, 9, 1, 1] : [2, 0, 1, 1, 1]],
       ['3', mode === 'exam' ? [10, 0, 10, 0, 0] : [0, 0, 0, 0, 0]],
       ['all', all],
     ];
-    const assertCounts = (counts) =>
+    const assertCounts = (counts: number[]) =>
       assert.deepEqual(
         [...get('.filter-pills').querySelectorAll('button')].map((button) => readText(button).trim()),
         labels.map((label, index) => `${label} ${counts[index]}`),
       );
     assertCounts(all);
+    const wrongReview = get<HTMLDetailsElement>('.review-item.status-incorrect');
+    await click(query(wrongReview, ':scope > summary'));
+    assert.equal(wrongReview.open, true);
+    await click(button('Ошибки 1'));
+    assert.equal(get('.review-item.status-incorrect'), wrongReview);
+    assert.equal(wrongReview.open, true);
+    await click(button(`Все ${all[0]}`));
+    assert.equal(get('.review-item.status-incorrect'), wrongReview);
+    assert.equal(wrongReview.open, true);
     await click(findButton('Закладки 3'));
     const domain = get('[role="combobox"][aria-label="Фильтр по домену"]');
     for (const [value, counts] of cases) {
@@ -1116,7 +1281,7 @@ for (const mode of ['exam', 'mistakes']) {
       }
     }
 
-    const native = get('select[aria-label="Фильтр по домену"]');
+    const native = get<HTMLSelectElement>('select[aria-label="Фильтр по домену"]');
     await act(() => {
       native.value = '2';
       native.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -1140,12 +1305,12 @@ test('Кастомный фильтр домена сохраняет разбо
   const expected = new Set(questions.filter((q) => q.level === 1 && q.domain === 2).map((q) => q.prompt));
   assert.equal(container.querySelectorAll('.review-item').length, 10);
   assert.ok([...container.querySelectorAll('.review-question > strong')].every((node) => expected.has(readText(node))));
-  assert.equal(get('select[aria-label="Фильтр по домену"]').value, '2');
+  assert.equal(get<HTMLSelectElement>('select[aria-label="Фильтр по домену"]').value, '2');
 
   // Стрелки исследуют список; потеря фокуса подтверждает активный вариант один раз.
   await click(domain);
   await press(domain, 'Home');
-  const outside = findButton('Верно 0');
+  const outside = button('Верно 0');
   await act(() => {
     outside.dispatchEvent(new window.Event('pointerdown', { bubbles: true }));
     outside.focus();
@@ -1161,7 +1326,7 @@ test('Кастомный фильтр домена сохраняет разбо
   assert.match(text(), /В этой подборке нет вопросов/);
   await click(findButton('Показать все ответы'));
   assert.match(readText(domain), /Все домены/);
-  assert.equal(get('select[aria-label="Фильтр по домену"]').value, 'all');
+  assert.equal(get<HTMLSelectElement>('select[aria-label="Фильтр по домену"]').value, 'all');
   assert.equal(container.querySelectorAll('.review-item').length, 60);
 
   // На мобильном CSS скрывает кнопку и вызывает blur раньше resize: кандидат не должен подтвердиться.
@@ -1169,13 +1334,13 @@ test('Кастомный фильтр домена сохраняет разбо
   await press(domain, 'End');
   const originalMatchMedia = window.matchMedia;
   try {
-    window.matchMedia = () => ({ matches: true });
+    window.matchMedia = () => ({ matches: true }) as unknown as MediaQueryList;
     await act(() => domain.blur());
   } finally {
     window.matchMedia = originalMatchMedia;
   }
   assert.equal(domain.getAttribute('aria-expanded'), 'false');
-  assert.equal(get('select[aria-label="Фильтр по домену"]').value, 'all');
+  assert.equal(get<HTMLSelectElement>('select[aria-label="Фильтр по домену"]').value, 'all');
   assert.equal(container.querySelectorAll('.review-item').length, 60);
   assert.equal(document.activeElement, get('select[aria-label="Фильтр по домену"]'));
 });
@@ -1214,14 +1379,12 @@ test('подтверждение импорта не перезаписывае�
 
 test('Web Locks сохраняет быстрые изменения из свежего черновика и проверяет revision внутри lock', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
-  const requests = [];
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
+  const requests: LockSave[] = [];
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
     value: {
-      request(name, save) {
+      request(name: string, save: LockSave) {
         assert.equal(name, `trainer-save:${key}`);
         return new Promise((resolve, reject) =>
           requests.push(async () => {
@@ -1235,7 +1398,7 @@ test('Web Locks сохраняет быстрые изменения из све
       },
     },
   });
-  const q = questions.find((question) => question.level === 1 && question.type === 'multi');
+  const q = choice(questions.find((question) => question.level === 1 && question.type === 'multi'));
   const session = makeAttempt(1, questions);
   session.cursor = session.questionIds.indexOf(q.id);
   storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': session } }));
@@ -1248,10 +1411,10 @@ test('Web Locks сохраняет быстрые изменения из све
   assert.equal(requests.length, 2);
   assert.deepEqual(currentState().sessions['exam:1'].drafts, {});
   await act(async () => {
-    await requests.shift()();
-    await requests.shift()();
+    await takeRequest(requests)();
+    await takeRequest(requests)();
   });
-  assert.deepEqual(currentState().sessions['exam:1'].drafts[q.id], [q.options[0].id, q.options[1].id]);
+  assert.deepEqual(choiceDraft('exam:1', q.id), [q.options[0].id, q.options[1].id]);
   await click('.bookmark-button');
   const external = currentState();
   external.revision++;
@@ -1259,7 +1422,7 @@ test('Web Locks сохраняет быстрые изменения из све
   const raw = JSON.stringify(external);
   storage.setItem(key, raw);
   await act(async () => {
-    await requests.shift()();
+    await takeRequest(requests)();
   });
   assert.equal(storage.getItem(key), raw);
   assert.match(text(), /Прогресс изменился в другой вкладке/);
@@ -1268,19 +1431,17 @@ test('Web Locks сохраняет быстрые изменения из све
 test('очистка sessionStorage не блокирует локальный прогресс', async () => {
   await mount();
   await click('[data-start="1"]');
-  await act(() =>
-    window.dispatchEvent(new window.StorageEvent('storage', { key: null, storageArea: window.sessionStorage })),
-  );
+  await act(() => {
+    window.dispatchEvent(new window.StorageEvent('storage', { key: null, storageArea: window.sessionStorage }));
+  });
   assert.equal(container.querySelector('.storage-warning'), null);
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   assert.ok(currentState().sessions['exam:1'].drafts[questions[0].id]);
 });
 
 test('запрет Web Locks сохраняет практику в памяти и не перезаписывает данные устройства', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
     value: {
@@ -1294,8 +1455,8 @@ test('запрет Web Locks сохраняет практику в памяти
   await mount();
   await click('[data-start="1"]');
   assert.ok(get('.question-prompt'));
-  await click(`input[value="${questions[0].correct[0]}"]`);
-  assert.equal(get(`input[value="${questions[0].correct[0]}"]`).checked, true);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
+  assert.equal(get<HTMLInputElement>(`input[value="${firstChoice().correct[0]}"]`).checked, true);
   await click(findButton('Проверить'));
   assert.ok(get('.feedback.correct'));
   assert.equal(storage.getItem(key), raw);
@@ -1306,19 +1467,21 @@ test('браузер без Web Locks не пишет в localStorage и про�
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     window.localStorage.removeItem(key);
   });
   Object.defineProperty(window.navigator, 'locks', { configurable: true, value: undefined });
   const raw = JSON.stringify(freshState());
   window.localStorage.setItem(key, raw);
-  await act(() => render(html`<${App} questions=${questions} storageName=${key} tabStorage=${null}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} tabStorage={null} />, container));
   assert.match(text(), /только в памяти вкладки/);
   await click('[data-start="1"]');
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   await click(findButton('Проверить'));
   assert.ok(get('.feedback.correct'));
-  await act(() => window.dispatchEvent(new window.StorageEvent('storage', { key, storageArea: window.localStorage })));
+  await act(() => {
+    window.dispatchEvent(new window.StorageEvent('storage', { key, storageArea: window.localStorage }));
+  });
   assert.doesNotMatch(text(), /Прогресс изменился в другой вкладке/);
   assert.equal(window.localStorage.getItem(key), raw);
 });
@@ -1338,9 +1501,9 @@ test('вкладочный кэш сохраняет завершённый ре
     Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
     window.location.hash = '#/';
-    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await act(() => render(<App questions={questions} storageName={key} />, container));
     await click('[data-start="1"]');
-    await click(`input[value="${questions[0].correct[0]}"]`);
+    await click(`input[value="${firstChoice().correct[0]}"]`);
     await click(findButton('Проверить'));
     await click(findButton('Завершить'));
     await click(findButton('Завершить и посмотреть балл'));
@@ -1348,7 +1511,7 @@ test('вкладочный кэш сохраняет завершённый ре
     assert.ok(resultId);
     assert.match(text(), /только в этой вкладке/);
     await unmount();
-    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await act(() => render(<App questions={questions} storageName={key} />, container));
     assert.equal(window.location.hash, `#/results/${resultId}`);
     assert.ok(get('.results-page'));
     await go('#/history');
@@ -1364,7 +1527,7 @@ test('вкладочный кэш переживает отсутствие ил
   const originalSession = window.sessionStorage;
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
     originalLocal.removeItem(key);
@@ -1380,15 +1543,15 @@ test('вкладочный кэш переживает отсутствие ил
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
     Object.defineProperty(window.navigator, 'locks', { configurable: true, value: locks });
     window.location.hash = '#/';
-    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await act(() => render(<App questions={questions} storageName={key} />, container));
     await click('[data-start="1"]');
-    await click(`input[value="${questions[0].correct[0]}"]`);
+    await click(`input[value="${firstChoice().correct[0]}"]`);
     await click(findButton('Проверить'));
     await click(findButton('Завершить'));
     await click(findButton('Завершить и посмотреть балл'));
     const resultId = window.location.hash.replace('#/results/', '');
     await unmount();
-    await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+    await act(() => render(<App questions={questions} storageName={key} />, container));
     assert.equal(window.location.hash, `#/results/${resultId}`);
     assert.match(text(), /только в этой вкладке/);
     assert.equal(local.getItem(key), JSON.stringify(freshState()), `locks=${locks ? 'denied' : 'absent'}`);
@@ -1413,13 +1576,13 @@ test('вкладочный кэш сохраняет прогресс при о�
   });
   Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
   Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   await click('[data-start="1"]');
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   assert.match(text(), /переживёт обновление/);
   assert.match(text(), /Скачай копию до закрытия вкладки/);
   await unmount();
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   assert.ok(get('.question-prompt'));
   assert.equal(local.getItem(key), original);
   assert.ok(tab.getItem(`${key}:tab-progress`));
@@ -1443,7 +1606,7 @@ test('вкладочный кэш отбрасывается после внеш
   Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
   Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
   local.setItem(key, JSON.stringify(foreign));
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   await go('#/history');
   assert.equal(container.querySelectorAll('.history-table tbody tr').length, 1);
   assert.equal(tab.getItem(`${key}:tab-progress`), null);
@@ -1462,7 +1625,7 @@ test('вкладочный кэш удаляется после успешной
   writeTabProgress(tab, key, original, cached);
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
     originalLocal.removeItem(key);
@@ -1471,9 +1634,9 @@ test('вкладочный кэш удаляется после успешной
   Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
-    value: { request: (_name, save) => Promise.resolve(save()) },
+    value: { request: (_name: string, save: LockSave) => Promise.resolve(save()) },
   });
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   await go('#/history');
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
@@ -1494,7 +1657,7 @@ test('вкладочный кэш удаляется после успешног
   imported.history.push(finishAttempt(makeAttempt(3, questions)));
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
     originalLocal.removeItem(key);
@@ -1503,9 +1666,9 @@ test('вкладочный кэш удаляется после успешног
   Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
-    value: { request: (_name, save) => Promise.resolve(save()) },
+    value: { request: (_name: string, save: LockSave) => Promise.resolve(save()) },
   });
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   await go('#/history');
   const input = get('input[type="file"]');
   const file = new window.File([JSON.stringify(makeBackup(imported))], 'backup.json', { type: 'application/json' });
@@ -1516,7 +1679,7 @@ test('вкладочный кэш удаляется после успешног
   });
   await click(findButton('Восстановить'));
   assert.equal(tab.getItem(`${key}:tab-progress`), null);
-  assert.equal(JSON.parse(local.getItem(key)).history.length, 1);
+  assert.equal(JSON.parse(local.getItem(key) ?? '').history.length, 1);
 });
 
 test('вкладочный кэш удаляется после восстановления защищённого локального сохранения', async (t) => {
@@ -1531,7 +1694,7 @@ test('вкладочный кэш удаляется после восстано
   writeTabProgress(tab, key, oldRaw, { ...freshState(), sessions: { 'exam:1': makeAttempt(1, questions) } });
   t.after(() => {
     if (descriptor) Object.defineProperty(window.navigator, 'locks', descriptor);
-    else delete window.navigator.locks;
+    else clearLocks();
     Object.defineProperty(window, 'localStorage', { configurable: true, value: originalLocal });
     Object.defineProperty(window, 'sessionStorage', { configurable: true, value: originalSession });
     originalLocal.removeItem(key);
@@ -1540,20 +1703,20 @@ test('вкладочный кэш удаляется после восстано
   Object.defineProperty(window, 'sessionStorage', { configurable: true, value: tab });
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
-    value: { request: (_name, save) => Promise.resolve(save()) },
+    value: { request: (_name: string, save: LockSave) => Promise.resolve(save()) },
   });
-  await act(() => render(html`<${App} questions=${questions} storageName=${key}/>`, container));
+  await act(() => render(<App questions={questions} storageName={key} />, container));
   await go('#/history');
   await click(findButton('Очистить все результаты'));
   await click(findButton('Очистить результаты'));
   assert.equal(tab.getItem(`${key}:tab-progress`), null);
-  assert.equal(JSON.parse(local.getItem(key)).bankVersion, BANK_VERSION);
+  assert.equal(JSON.parse(local.getItem(key) ?? '').bankVersion, BANK_VERSION);
 });
 
 test('обычное локальное сохранение переживает завершение и повторный монтаж', async () => {
   await mount();
   await click('[data-start="1"]');
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   await click(findButton('Проверить'));
   await click(findButton('Завершить'));
   await click(findButton('Завершить и посмотреть балл'));
@@ -1579,9 +1742,7 @@ test('неудачная очистка или импорт не заменяю�
     throw new Error('Storage full');
   };
   const renderApp = () =>
-    act(() =>
-      render(html`<${App} questions=${questions} storage=${storage} storageName=${key} tabStorage=${tab}/>`, container),
-    );
+    act(() => render(<App questions={questions} storage={storage} storageName={key} tabStorage={tab} />, container));
   await renderApp();
   await go('#/history');
   await click(findButton('Очистить все результаты'));
@@ -1612,19 +1773,17 @@ test('неудачная очистка или импорт не заменяю�
 
 test('завершение снова показывает предупреждение, если оба сохранения недоступны', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   Object.defineProperty(window.navigator, 'locks', {
     configurable: true,
-    value: { request: (_name, save) => Promise.resolve(save()) },
+    value: { request: (_name: string, save: LockSave) => Promise.resolve(save()) },
   });
   await mount();
   await click('[data-start="1"]');
   storage.setItem = () => {
     throw new Error('Storage full');
   };
-  await click(`input[value="${questions[0].correct[0]}"]`);
+  await click(`input[value="${firstChoice().correct[0]}"]`);
   await click(findButton('Проверить'));
   assert.ok(get('.storage-warning'));
   await click('[aria-label="Скрыть сообщение"]');
@@ -1639,15 +1798,13 @@ test('завершение снова показывает предупрежд�
 
 test('очистка уровня при отказе обоих хранилищ сохраняет историю и подтверждение', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   const state = { ...freshState(), history: [finishAttempt(makeAttempt(1, questions))] };
   for (const rejectedLocks of [false, true]) {
     Object.defineProperty(window.navigator, 'locks', {
       configurable: true,
       value: {
-        request: (_name, save) =>
+        request: (_name: string, save: LockSave) =>
           rejectedLocks ? Promise.reject(new window.DOMException('Blocked', 'SecurityError')) : Promise.resolve(save()),
       },
     });
@@ -1662,12 +1819,7 @@ test('очистка уровня при отказе обоих хранили�
         throw new Error('Storage full');
       };
       const renderApp = () =>
-        act(() =>
-          render(
-            html`<${App} questions=${questions} storage=${local} storageName=${key} tabStorage=${tab}/>`,
-            container,
-          ),
-        );
+        act(() => render(<App questions={questions} storage={local} storageName={key} tabStorage={tab} />, container));
       await renderApp();
       await go('#/history');
       await click('[aria-label="Очистить результаты уровня 1"]');
@@ -1695,9 +1847,7 @@ test('очистка уровня сохраняется во вкладочно
   };
   writeTabProgress(tab, key, raw, state);
   const renderApp = () =>
-    act(() =>
-      render(html`<${App} questions=${questions} storage=${storage} storageName=${key} tabStorage=${tab}/>`, container),
-    );
+    act(() => render(<App questions={questions} storage={storage} storageName={key} tabStorage={tab} />, container));
   await renderApp();
   await go('#/history');
   await click('[aria-label="Очистить результаты уровня 1"]');
@@ -1711,23 +1861,24 @@ test('очистка уровня сохраняется во вкладочно
 });
 test('таймер включается перед стартом, а продолжение и повторный монтаж не сбрасывают срок', async () => {
   await mount();
-  assert.equal(get('[role="switch"]').checked, false);
+  assert.equal(get<HTMLInputElement>('[role="switch"]').checked, false);
   await click('[role="switch"]');
   await click('[data-start="1"]');
   const timed = currentState().sessions['exam:1'];
-  const deadline = timed.timing.deadlines[timed.questionIds[0]];
-  assert.equal(timed.timing.secondsPerQuestion, 72);
+  const timedTiming = timingOf(timed);
+  const deadline = timedTiming.deadlines[timed.questionIds[0]];
+  assert.equal(timedTiming.secondsPerQuestion, 72);
   assert.ok(get('[role="timer"]'));
   assert.match(readText(get('[role="timer"]')), /01:1[012]/);
   await go('#/');
   await click('[role="switch"]');
-  assert.equal(get('[role="switch"]').checked, false);
+  assert.equal(get<HTMLInputElement>('[role="switch"]').checked, false);
   await click('[data-start="1"]');
-  assert.equal(currentState().sessions['exam:1'].timing.deadlines[timed.questionIds[0]], deadline);
+  assert.equal(timingOf(currentState().sessions['exam:1']).deadlines[timed.questionIds[0]], deadline);
   await unmount();
   await mount();
   assert.ok(get('[role="timer"]'));
-  assert.equal(currentState().sessions['exam:1'].timing.deadlines[timed.questionIds[0]], deadline);
+  assert.equal(timingOf(currentState().sessions['exam:1']).deadlines[timed.questionIds[0]], deadline);
 });
 
 test('таймер показывает warning в последние 10 секунд и ошибку после истечения времени', async () => {
@@ -1742,7 +1893,7 @@ test('таймер показывает warning в последние 10 сек�
   await unmount();
   const past = new Date(Date.now() - 74000).toISOString();
   const expired = makeAttempt(1, questions, 'exam', null, past, true);
-  const q = questions.find((q) => q.id === expired.questionIds[0]);
+  const q = choice(questionById(expired.questionIds[0]));
   const draft = setDraft(expired, q, q.correct, past);
   storage.setItem(key, JSON.stringify({ ...freshState(), sessions: { 'exam:1': draft } }));
   await mount();
@@ -1754,7 +1905,7 @@ test('таймер показывает warning в последние 10 сек�
   assert.equal(get('.toast-icon .icon').getAttribute('width'), '22');
   await click('[data-question-index="0"]');
   assert.ok(get('[role="timer"].expired'));
-  assert.ok(get('input[type="radio"]').disabled);
+  assert.ok(get<HTMLInputElement>('input[type="radio"]').disabled);
   assert.match(readText(get('.feedback-heading')), /Время вышло/);
   assert.equal(container.querySelector('.check-answer'), null);
   assert.match(readText(get('[role="timer"]')), /00:00/);
@@ -1771,7 +1922,7 @@ test('таймер последнего вопроса завершает тес
   for (let index = 0; index < ids.length - 1; index++) {
     const now = new Date(Date.parse(started) + index).toISOString();
     timed = moveCursor(timed, index, now);
-    const q = questions.find((q) => q.id === ids[index]);
+    const q = questionById(ids[index]);
     timed = submitAnswer(timed, q, q.type === 'match' ? q.pairs : q.correct, now);
   }
   timed = moveCursor(timed, ids.length - 1, new Date(Date.parse(started) + 100).toISOString());
@@ -1780,12 +1931,15 @@ test('таймер последнего вопроса завершает тес
   await mount();
   assert.ok(get('.results-page'));
   assert.equal(currentState().sessions['exam:1'], undefined);
-  const result = currentState().history[0];
-  assert.ok(result.answers[ids.at(-1)].timedOut);
+  const result = historyAt(0);
+  const lastId = ids.at(-1);
+  assert.ok(lastId);
+  assert.ok(result.answers[lastId].timedOut);
   assert.equal(scoreAttempt(result, questions).wrong, 1);
   assert.equal(scoreAttempt(result, questions).unanswered, 0);
-  const review = [...container.querySelectorAll('.review-item')].at(-1);
-  await click(review.querySelector('summary'));
+  const review = [...container.querySelectorAll<HTMLElement>('.review-item')].at(-1);
+  assert.ok(review);
+  await click(query(review, 'summary'));
   assert.match(readText(review), /Время вышло/);
   assert.ok(review.querySelector('.main-explanation'));
   await unmount();
@@ -1800,9 +1954,11 @@ test('без таймера тест по умолчанию сохраняет 
 });
 
 test('таймер можно выбрать и для повторной подготовки по ошибкам', async () => {
-  const q = questions[0];
+  const q = firstChoice();
   const original = makeAttempt(1, questions, 'mistakes', [q.id]);
-  const wrong = [q.options.find((option) => !q.correct.includes(option.id)).id];
+  const wrongOption = q.options.find((option) => !q.correct.includes(option.id));
+  assert.ok(wrongOption);
+  const wrong = [wrongOption.id];
   const complete = finishAttempt(submitAnswer(original, q, wrong));
   storage.setItem(key, JSON.stringify({ ...freshState(), history: [complete] }));
   await go(`#/results/${complete.id}`);
@@ -1810,18 +1966,18 @@ test('таймер можно выбрать и для повторной под
   await click('[role="switch"]');
   await click(findButton('Повторить ошибки (1)'));
   assert.ok(get('[role="timer"]'));
-  assert.equal(currentState().sessions['mistakes:1'].timing.secondsPerQuestion, 72);
+  assert.equal(timingOf(currentState().sessions['mistakes:1']).secondsPerQuestion, 72);
 });
 test('таймер с отложенным Web Lock не возвращает пользователя с материалов и не сжигает невидимый следующий вопрос', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   for (const mode of ['exam', 'mistakes']) {
-    const requests = [];
+    const requests: LockSave[] = [];
     Object.defineProperty(window.navigator, 'locks', {
       configurable: true,
-      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+      value: {
+        request: (_name: string, save: LockSave) => new Promise((resolve) => requests.push(() => resolve(save()))),
+      },
     });
     const started = new Date(Date.now() - 74000).toISOString();
     const timed = makeAttempt(1, questions, mode, mode === 'mistakes' ? [questions[0].id] : null, started, true);
@@ -1832,16 +1988,16 @@ test('таймер с отложенным Web Lock не возвращает п
     assert.equal(requests.length, 1);
     await go('#/study');
     await act(async () => {
-      await requests.shift()();
+      await takeRequest(requests)();
     });
     assert.equal(window.location.hash, '#/study');
     assert.equal(currentState().history.length, 0);
     assert.deepEqual(currentState().sessions[session].answers, {});
     assert.equal(currentState().sessions[session].cursor, 0);
-    assert.equal(Object.keys(currentState().sessions[session].timing.deadlines).length, 1);
+    assert.equal(Object.keys(timingOf(currentState().sessions[session]).deadlines).length, 1);
     await go(`#/${mode}/1`);
     await act(async () => {
-      await requests.shift()();
+      await takeRequest(requests)();
     });
     if (mode === 'mistakes') {
       assert.ok(get('.results-page'));
@@ -1850,7 +2006,7 @@ test('таймер с отложенным Web Lock не возвращает п
       const next = currentState().sessions[session];
       assert.equal(next.cursor, 1);
       assert.ok(next.answers[questions[0].id].timedOut);
-      assert.ok(Date.parse(next.timing.deadlines[next.questionIds[1]]) > Date.now() + 70000);
+      assert.ok(Date.parse(timingOf(next).deadlines[next.questionIds[1]]) > Date.now() + 70000);
     }
     await unmount();
   }
@@ -1858,20 +2014,22 @@ test('таймер с отложенным Web Lock не возвращает п
 
 test('таймер отложенного старта отменяется при уходе с экрана, а новая попытка получает полный срок', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   for (const mode of ['exam', 'mistakes']) {
-    const requests = [];
+    const requests: LockSave[] = [];
     Object.defineProperty(window.navigator, 'locks', {
       configurable: true,
-      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+      value: {
+        request: (_name: string, save: LockSave) => new Promise((resolve) => requests.push(() => resolve(save()))),
+      },
     });
     const initial = freshState();
     let origin = '#/';
     if (mode === 'mistakes') {
-      const q = questions[0];
-      const wrong = [q.options.find((option) => !q.correct.includes(option.id)).id];
+      const q = firstChoice();
+      const wrongOption = q.options.find((option) => !q.correct.includes(option.id));
+      assert.ok(wrongOption);
+      const wrong = [wrongOption.id];
       const result = finishAttempt(submitAnswer(makeAttempt(1, questions, mode, [q.id]), q, wrong));
       initial.history.push(result);
       origin = `#/results/${result.id}`;
@@ -1885,7 +2043,7 @@ test('таймер отложенного старта отменяется пр
     assert.equal(requests.length, 1);
     await go('#/study');
     await act(async () => {
-      await requests.shift()();
+      await takeRequest(requests)();
     });
     assert.equal(window.location.hash, '#/study');
     assert.deepEqual(currentState().sessions, {});
@@ -1894,11 +2052,11 @@ test('таймер отложенного старта отменяется пр
     await start();
     const beforeSave = Date.now();
     await act(async () => {
-      await requests.shift()();
+      await takeRequest(requests)();
     });
     assert.equal(window.location.hash, `#/${mode}/1`);
     const started = currentState().sessions[`${mode}:1`];
-    assert.ok(Date.parse(started.timing.deadlines[started.questionIds[0]]) >= beforeSave + 72000);
+    assert.ok(Date.parse(timingOf(started).deadlines[started.questionIds[0]]) >= beforeSave + 72000);
     assert.equal(container.querySelector('[role="dialog"]'), null);
     await unmount();
   }
@@ -1906,14 +2064,14 @@ test('таймер отложенного старта отменяется пр
 
 test('таймер отложенного завершения сохраняет результат без возврата на экран теста или результатов', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window.navigator, 'locks');
-  t.after(() =>
-    descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : delete window.navigator.locks,
-  );
+  t.after(() => (descriptor ? Object.defineProperty(window.navigator, 'locks', descriptor) : clearLocks()));
   for (const mode of ['exam', 'mistakes']) {
-    const requests = [];
+    const requests: LockSave[] = [];
     Object.defineProperty(window.navigator, 'locks', {
       configurable: true,
-      value: { request: (_name, save) => new Promise((resolve) => requests.push(() => resolve(save()))) },
+      value: {
+        request: (_name: string, save: LockSave) => new Promise((resolve) => requests.push(() => resolve(save()))),
+      },
     });
     const timed = makeAttempt(1, questions, mode, mode === 'mistakes' ? [questions[0].id] : null, undefined, true);
     const session = `${mode}:1`;
@@ -1926,7 +2084,7 @@ test('таймер отложенного завершения сохраняе�
     const destination = mode === 'exam' ? '#/study' : '#/';
     await go(destination);
     await act(async () => {
-      await requests.shift()();
+      await takeRequest(requests)();
     });
     assert.equal(window.location.hash, destination);
     assert.equal(currentState().sessions[session], undefined);

@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
-import { typograph } from './src/core/typography.js';
+import { typograph } from './src/core/typography.ts';
 
-const imageVariants = JSON.parse(readFileSync(new URL('./src/data/image-variants.json', import.meta.url), 'utf8'));
+const imageVariants = JSON.parse(
+  readFileSync(new URL('./src/data/image-variants.json', import.meta.url), 'utf8'),
+) as Record<string, { variants: [number, string][] }>;
 
 export default defineConfig({
   // Относительные пути работают и в корне, и в /имя-репозитория/ на GitHub Pages.
@@ -19,7 +21,7 @@ export default defineConfig({
   plugins: [
     {
       name: 'typographic-html',
-      transformIndexHtml: typograph,
+      transformIndexHtml: (html: string) => typograph(html),
     },
     {
       name: 'runtime-public-assets',

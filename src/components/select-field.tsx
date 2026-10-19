@@ -1,14 +1,17 @@
 import { useId, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { html, Icon } from './ui.js';
+import { h, Icon } from './ui.tsx';
 
 const MOBILE_QUERY = '(max-width: 820px), (hover: none) and (pointer: coarse)';
 
-export function SelectField({ label, value, options, onChange }) {
+type SelectOption = { value: string; label: string };
+type SelectFieldProps = { label: string; value: string; options: SelectOption[]; onChange: (value: string) => void };
+
+export function SelectField({ label, value, options, onChange }: SelectFieldProps) {
   const id = useId();
-  const root = useRef(null);
-  const trigger = useRef(null);
-  const native = useRef(null);
-  const list = useRef(null);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const native = useRef<HTMLSelectElement>(null);
+  const list = useRef<HTMLDivElement>(null);
   const isOpen = useRef(false);
   const selected = Math.max(
     0,
@@ -20,7 +23,7 @@ export function SelectField({ label, value, options, onChange }) {
   const [activeIndex, setActiveIndex] = useState(selected);
   const [placement, setPlacement] = useState({ above: false, height: 320 });
 
-  const activate = (index) => {
+  const activate = (index: number) => {
     active.current = index;
     setActiveIndex(index);
   };
@@ -32,7 +35,8 @@ export function SelectField({ label, value, options, onChange }) {
     if (commit && options[active.current].value !== value) onChange(options[active.current].value);
   };
   const show = (index = selected) => {
-    const rect = trigger.current.getBoundingClientRect();
+    const rect = trigger.current?.getBoundingClientRect();
+    if (!rect) return;
     const below = window.innerHeight - rect.bottom - 16;
     const above = rect.top - 16;
     const desired = Math.min(320, options.length * 44 + 12);
@@ -45,14 +49,13 @@ export function SelectField({ label, value, options, onChange }) {
 
   useLayoutEffect(() => {
     if (!open) return;
-    const outside = (event) => {
-      if (!root.current.contains(event.target)) close(true);
+    const outside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) close(true);
     };
     const resize = () => {
       close();
-      if (document.activeElement === trigger.current && window.matchMedia(MOBILE_QUERY).matches) {
-        native.current.focus({ preventScroll: true });
-      }
+      if (document.activeElement === trigger.current && window.matchMedia(MOBILE_QUERY).matches)
+        native.current?.focus({ preventScroll: true });
     };
     const media = window.matchMedia(MOBILE_QUERY);
     document.addEventListener('pointerdown', outside);
@@ -66,16 +69,16 @@ export function SelectField({ label, value, options, onChange }) {
   }, [open, value, options, onChange]);
 
   useLayoutEffect(() => {
-    if (!open) return;
+    if (!open || !list.current) return;
     const menu = list.current;
-    const option = menu.children[activeIndex];
+    const option = menu.children[activeIndex] as HTMLElement | undefined;
+    if (!option) return;
     if (option.offsetTop < menu.scrollTop) menu.scrollTop = option.offsetTop;
-    else if (option.offsetTop + option.offsetHeight > menu.scrollTop + menu.clientHeight) {
+    else if (option.offsetTop + option.offsetHeight > menu.scrollTop + menu.clientHeight)
       menu.scrollTop = option.offsetTop + option.offsetHeight - menu.clientHeight;
-    }
   }, [open, activeIndex]);
 
-  const onKeyDown = (event) => {
+  const onKeyDown = (event: KeyboardEvent) => {
     const key = event.key;
     if (event.ctrlKey || event.metaKey) return;
     if (key === 'Tab') {
@@ -123,42 +126,85 @@ export function SelectField({ label, value, options, onChange }) {
     }
   };
 
-  return html`<div class="select-field adaptive-select" ref=${root}>
-    <select class="select-native" aria-label=${label} value=${value} ref=${native} onChange=${(event) => onChange(event.currentTarget.value)}>
-      ${options.map((option) => html`<option key=${option.value} value=${option.value}>${option.label}</option>`)}
-    </select>
-    <div class="select-desktop">
-      <button type="button" class="select-trigger" role="combobox" aria-label=${label} aria-haspopup="listbox" aria-expanded=${open} aria-controls=${open ? `${id}-list` : undefined} aria-activedescendant=${open ? `${id}-option-${activeIndex}` : undefined} ref=${trigger} onKeyDown=${onKeyDown} onBlur=${(
-        event,
-      ) => {
-        if (!root.current.contains(event.relatedTarget)) {
-          // CSS может скрыть кнопку раньше события resize. Это смена интерфейса, а не подтверждение выбора.
-          if (window.matchMedia(MOBILE_QUERY).matches) {
-            close();
-            native.current.focus({ preventScroll: true });
-          } else close(true);
-        }
-      }} onClick=${() => {
-        trigger.current.focus({ preventScroll: true });
-        if (isOpen.current) close();
-        else {
-          search.current.text = '';
-          show();
-        }
-      }}><span>${options[selected].label}</span><${Icon} name="chevron" size=${17}/></button>
-      ${
-        open &&
-        html`<div class=${`select-menu ${placement.above ? 'opens-above' : ''}`} id=${`${id}-list`} role="listbox" aria-label=${label} style=${{ maxHeight: `${placement.height}px` }} ref=${list}>
-        ${options.map(
-          (option, index) =>
-            html`<div key=${option.value} id=${`${id}-option-${index}`} class="select-option" role="option" aria-selected=${index === activeIndex} data-active=${index === activeIndex} onPointerMove=${() => activate(index)} onPointerDown=${(event) => event.preventDefault()} onClick=${() => {
-              activate(index);
-              close(true);
-              trigger.current.focus({ preventScroll: true });
-            }}><span>${option.label}</span>${option.value === value && html`<${Icon} name="check" size=${17}/>`}</div>`,
+  return (
+    <div class="select-field adaptive-select" ref={root}>
+      <select
+        class="select-native"
+        aria-label={label}
+        value={value}
+        ref={native}
+        onChange={(event) => onChange(event.currentTarget.value)}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div class="select-desktop">
+        <button
+          type="button"
+          class="select-trigger"
+          role="combobox"
+          aria-label={label}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          aria-controls={open ? `${id}-list` : undefined}
+          aria-activedescendant={open ? `${id}-option-${activeIndex}` : undefined}
+          ref={trigger}
+          onKeyDown={onKeyDown}
+          onBlur={(event) => {
+            if (!root.current?.contains(event.relatedTarget as Node)) {
+              if (window.matchMedia(MOBILE_QUERY).matches) {
+                close();
+                native.current?.focus({ preventScroll: true });
+              } else close(true);
+            }
+          }}
+          onClick={() => {
+            trigger.current?.focus({ preventScroll: true });
+            if (isOpen.current) close();
+            else {
+              search.current.text = '';
+              show();
+            }
+          }}
+        >
+          <span>{options[selected]?.label}</span>
+          <Icon name="chevron" size={17} />
+        </button>
+        {open && (
+          <div
+            class={`select-menu ${placement.above ? 'opens-above' : ''}`}
+            id={`${id}-list`}
+            role="listbox"
+            aria-label={label}
+            style={{ maxHeight: `${placement.height}px` }}
+            ref={list}
+          >
+            {options.map((option, index) => (
+              <div
+                key={option.value}
+                id={`${id}-option-${index}`}
+                class="select-option"
+                role="option"
+                aria-selected={index === activeIndex}
+                data-active={index === activeIndex}
+                onPointerMove={() => activate(index)}
+                onPointerDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  activate(index);
+                  close(true);
+                  trigger.current?.focus({ preventScroll: true });
+                }}
+              >
+                <span>{option.label}</span>
+                {option.value === value && <Icon name="check" size={17} />}
+              </div>
+            ))}
+          </div>
         )}
-      </div>`
-      }
+      </div>
     </div>
-  </div>`;
+  );
 }

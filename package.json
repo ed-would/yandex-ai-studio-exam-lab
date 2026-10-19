@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "vite",
     "dev:results": "vite --port 4178 --strictPort --mode results-preview",
-    "build": "npm run validate && vite build",
+    "build": "npm run typecheck && npm run validate && vite build",
     "preview": "vite preview",
     "lint": "npm run lint:js && npm run lint:css && npm run format:check",
     "lint:js": "oxlint --deny-warnings .",
@@ -40,18 +40,19 @@
     "format:check": "oxfmt --check .",
     "hooks:install": "node scripts/install-hooks.mjs",
     "postinstall": "npm run hooks:install",
-    "validate": "node scripts/validate-bank.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "check": "npm run lint && npm run validate && npm test && vite build",
+    "typecheck": "tsc --noEmit",
+    "validate": "node --import tsx scripts/validate-bank.ts",
+    "test": "node --import tsx --test tests/*.test.ts tests/*.test.tsx",
+    "check": "npm run lint && npm test && npm run build",
     "ci:dispatch": "gh workflow run ci.yml --ref main",
     "pages:dispatch": "gh workflow run pages.yml --ref main"
   },
   "dependencies": {
-    "htm": "3.1.1",
     "preact": "11.0.1",
     "typograf": "7.8.0"
   },
   "devDependencies": {
+    "@types/node": "26.6.5",
     "braces": "file:vendor/braces/braces-3.0.3-patch.2.tgz",
     "happy-dom": "20.14.6",
     "lefthook": "2.1.10",
@@ -59,6 +60,8 @@
     "oxlint": "1.87.0",
     "stylelint": "17.16.0",
     "stylelint-config-recommended": "18.0.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
     "vite": "8.3.4"
   },
   "overrides": {

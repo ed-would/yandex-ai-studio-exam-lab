@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { typograph, typographChildren } from '../src/core/typography.js';
-import { html } from '../src/components/ui.js';
+import { typograph, typographChildren } from '../src/core/typography.ts';
+import { h } from '../src/components/ui.tsx';
 
 test('короткие слова, частицы и числа связаны неразрывными пробелами', () => {
   assert.equal(typograph('Текст в вопросе и в ответе.'), 'Текст в\u00a0вопросе и\u00a0в\u00a0ответе.');
@@ -25,21 +25,29 @@ test('типографика сохраняет формулы, код, числ
 
 test('общий шаблон обрабатывает статический текст, интерполяции и массивы без изменения служебных props', () => {
   const value = 'в вопросе';
-  const node = html`<a href="https://example.test/a?x=1&y=2" data-id="в вопросе" title=${value}>Осталось ${72} секунды ${['и в ответе']}</a>`;
+  const node = h(
+    'a',
+    { href: 'https://example.test/a?x=1&y=2', 'data-id': 'в вопросе', title: value },
+    'Осталось ',
+    72,
+    ' секунды ',
+    ['и в ответе'],
+  );
+  assert.ok(Array.isArray(node.props.children));
   assert.equal(node.props.children[0], 'Осталось 72\u00a0секунды ');
   assert.deepEqual(node.props.children[1], ['и\u00a0в\u00a0ответе']);
   assert.equal(node.props.title, 'в\u00a0вопросе');
   assert.equal(node.props['data-id'], value);
   assert.equal(node.props.href, 'https://example.test/a?x=1&y=2');
   const Component = () => null;
-  assert.equal(html`<${Component} value=${value}/>`.props.value, value);
-  assert.equal(html`<input value=${value}/>`.props.value, value);
-  assert.equal(html`<code>${value}</code>`.props.children, value);
+  assert.equal(h(Component, { value }).props.value, value);
+  assert.equal(h('input', { value }).props.value, value);
+  assert.equal(h('code', null, value).props.children, value);
   assert.deepEqual(typographChildren(['в ', null, ['ответе']]), ['в\u00a0', null, ['ответе']]);
 });
 
 test('во всём банке типограф меняет только пробелы, сохраняя исходные данные', () => {
-  const visit = (value) => {
+  const visit = (value: unknown): void => {
     if (typeof value === 'string') assert.equal(typograph(value).replace(/\s/gu, ''), value.replace(/\s/gu, ''));
     else if (value && typeof value === 'object') Object.values(value).forEach(visit);
   };

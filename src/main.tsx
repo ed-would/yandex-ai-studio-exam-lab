@@ -1,18 +1,23 @@
 import { Component, render } from 'preact';
-import { App } from './app.js';
-import { html } from './components/ui.js';
-import { questions } from './data/bank.js';
+import type { ComponentType } from 'preact';
+import { App } from './app.tsx';
+import { h, Fragment } from './components/ui.tsx';
+import { questions } from './data/bank.ts';
+import type { Question } from './types.ts';
 import './styles.css';
 import './theme.css';
 import './components/progress-bar.css';
 
-const accordionAnimations = new WeakMap();
-document.addEventListener('click', (event) => {
+void Fragment;
+
+type AccordionAnimation = { timer: number; onEnd: (event: TransitionEvent) => void };
+const accordionAnimations = new WeakMap<HTMLDetailsElement, AccordionAnimation>();
+document.addEventListener('click', (event: MouseEvent) => {
   if (!(event.target instanceof Element)) return;
   const summary = event.target.closest('summary');
   const accordion = summary?.parentElement;
   if (!(accordion instanceof HTMLDetailsElement) || !accordion.matches('details.accordion')) return;
-  const panel = accordion.querySelector(':scope > .details-content');
+  const panel = accordion.querySelector<HTMLElement>(':scope > .details-content');
   if (!panel) return;
 
   event.preventDefault();
@@ -51,7 +56,7 @@ document.addEventListener('click', (event) => {
     panel.style.height = '';
     accordionAnimations.delete(accordion);
   };
-  const onEnd = (transitionEvent) => {
+  const onEnd = (transitionEvent: TransitionEvent) => {
     if (transitionEvent.target === panel && transitionEvent.propertyName === 'height') finish();
   };
   panel.addEventListener('transitionend', onEnd);
@@ -60,23 +65,42 @@ document.addEventListener('click', (event) => {
   accordionAnimations.set(accordion, { timer, onEnd });
 });
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends Component<{ children?: import('preact').ComponentChildren }, { error: boolean }> {
   state = { error: false };
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(): { error: boolean } {
     return { error: true };
   }
   render() {
     if (this.state.error)
-      return html`<main class="page"><div class="empty-state"><h1>Не удалось показать страницу</h1><p>Обнови страницу. Сохранённые результаты остаются в браузере.</p><button class="button primary" onClick=${() => window.location.reload()}>Обновить страницу</button></div></main>`;
+      return (
+        <>
+          <main class="page">
+            <div class="empty-state">
+              <h1>Не удалось показать страницу</h1>
+              <p>Обнови страницу. Сохранённые результаты остаются в браузере.</p>
+              <button class="button primary" onClick={() => window.location.reload()}>
+                Обновить страницу
+              </button>
+            </div>
+          </main>
+        </>
+      );
     return this.props.children;
   }
 }
 
-const mount = (Root) =>
-  render(html`<${ErrorBoundary}><${Root} questions=${questions}/></${ErrorBoundary}>`, document.getElementById('app'));
+const mount = (Root: ComponentType<{ questions: Question[] }>) =>
+  render(
+    <>
+      <ErrorBoundary>
+        <Root questions={questions} />
+      </ErrorBoundary>
+    </>,
+    document.getElementById('app')!,
+  );
 
 if (import.meta.env.DEV && import.meta.env.MODE === 'results-preview') {
-  Promise.all([import('./dev/results-preview.js'), import('./dev/results-preview.css')]).then(([preview]) => {
+  Promise.all([import('./dev/results-preview.tsx'), import('./dev/results-preview.css')]).then(([preview]) => {
     preview.preparePreviewRoute();
     mount(preview.ResultsPreview);
   });

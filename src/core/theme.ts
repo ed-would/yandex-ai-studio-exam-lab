@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
 
-export function useTheme() {
-  const read = () => document.documentElement.dataset.theme || 'light';
+export type Theme = 'light' | 'dark';
+
+export function useTheme(): Theme {
+  const read = (): Theme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
   const [theme, setTheme] = useState(read);
   useEffect(() => {
     const update = () => setTheme(read());
