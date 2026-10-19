@@ -1,8 +1,10 @@
+// @ts-check
 /* Выполняется до отрисовки: предпочтение темы независимо от сохранений тестов. */
 (() => {
   const key = 'ai-basics-exam-trainer:theme';
   const root = document.documentElement;
   const system = window.matchMedia?.('(prefers-color-scheme: dark)');
+  /** @param {unknown} value @returns {value is 'light' | 'dark'} */
   const valid = (value) => value === 'light' || value === 'dark';
   const read = () => {
     try {
@@ -23,7 +25,7 @@
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
       button.setAttribute('aria-label', theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему');
       button.setAttribute('aria-pressed', String(theme === 'dark'));
-      button.title = button.getAttribute('aria-label');
+      button.setAttribute('title', button.getAttribute('aria-label') || '');
     });
     window.dispatchEvent(new window.Event('trainer-theme-change'));
   };
@@ -55,7 +57,8 @@
     }
   });
   document.addEventListener('click', (event) => {
-    if (event.target.closest?.('[data-theme-toggle]')) window.examTrainerTheme.toggle();
+    if (event.target instanceof window.Element && event.target.closest('[data-theme-toggle]'))
+      window.examTrainerTheme.toggle();
   });
   document.addEventListener('DOMContentLoaded', apply, { once: true });
   apply();

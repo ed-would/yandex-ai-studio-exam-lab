@@ -21,11 +21,11 @@
   },
   "overrides": [
     {
-      "files": ["*.{js,mjs,cjs}", "scripts/**"],
+      "files": ["*.{js,mjs,cjs,ts,mts,cts}", "scripts/**"],
       "env": { "browser": false, "node": true }
     },
     {
-      "files": ["src/**/*.js", "public/**/*.js"],
+      "files": ["src/**/*.{ts,tsx}", "public/**/*.js"],
       "env": { "browser": true, "node": false }
     },
     {

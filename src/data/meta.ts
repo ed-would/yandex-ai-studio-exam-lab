@@ -6,7 +6,7 @@ export const RESEARCH_DATE = '9 октября 2026';
 export const PROGRAM_URL = 'https://ai-basic-competencies.website.yandexcloud.net/';
 export const TRAINING_TARGET = 80;
 
-export const LEVELS = [
+export const LEVELS: LevelMeta[] = [
   {
     id: 1,
     name: 'Базовый',
@@ -36,7 +36,7 @@ export const LEVELS = [
   },
 ];
 
-export const DOMAINS = [
+export const DOMAINS: DomainMeta[] = [
   {
     id: 1,
     short: 'Основы ИИ',
@@ -195,7 +195,7 @@ export const DOMAINS = [
   },
 ];
 
-export const OFFICIAL_RESOURCES = [
+export const OFFICIAL_RESOURCES: OfficialResource[] = [
   {
     title: 'Техники работы с промптами',
     url: 'https://aistudio.yandex.ru/ru/ai-academy/courses/prompting',
@@ -233,5 +233,8 @@ export const OFFICIAL_RESOURCES = [
   },
 ];
 
-export const levelById = (id) => LEVELS.find((level) => level.id === Number(id));
-export const domainById = (id) => DOMAINS.find((domain) => domain.id === Number(id));
+export const levelById = (id: number | string): LevelMeta | undefined =>
+  LEVELS.find((level) => level.id === Number(id));
+export const domainById = (id: number | string): DomainMeta | undefined =>
+  DOMAINS.find((domain) => domain.id === Number(id));
+import type { DomainMeta, LevelMeta, OfficialResource } from '../types.ts';

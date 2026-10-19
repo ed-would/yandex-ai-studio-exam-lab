@@ -26,5 +26,5 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Lint, validate questions, test and build
+      - name: Lint, test, typecheck, validate questions and build
         run: npm run check

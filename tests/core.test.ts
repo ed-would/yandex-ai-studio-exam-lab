@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile, readdir } from 'node:fs/promises';
+import type {
+  Attempt,
+  AppState,
+  ChoiceQuestion,
+  LevelId,
+  MatchQuestion,
+  Question,
+  QuestionType,
+  Response,
+  StorageLike,
+} from '../src/types.ts';
 import {
   connectPair,
   copy,
@@ -20,7 +31,7 @@ import {
   setDraft,
   submitAnswer,
   toggleBookmark,
-} from '../src/core/exam.js';
+} from '../src/core/exam.ts';
 import {
   clearLevel,
   completeSession,
@@ -33,11 +44,11 @@ import {
   storageKey,
   validateState,
   writeState,
-} from '../src/core/storage.js';
-import { createHtmlReport } from '../src/core/report.js';
-import { resultCoaching, resultOutcome } from '../src/core/coaching.js';
-import { BANK_VERSION, DOMAINS } from '../src/data/meta.js';
-import { validateBank } from '../scripts/validate-bank.mjs';
+} from '../src/core/storage.ts';
+import { createHtmlReport } from '../src/core/report.ts';
+import { resultCoaching, resultOutcome } from '../src/core/coaching.ts';
+import { BANK_VERSION, DOMAINS } from '../src/data/meta.ts';
+import { validateBank } from '../scripts/validate-bank.ts';
 
 // Read the same authored JSON as the application; tests need no browser,
 // bundler, DOM implementation, network or JSON-module import extension.
@@ -45,59 +56,100 @@ const files = await Promise.all(
   Array.from({ length: 6 }, (_, i) => readFile(new URL(`../src/data/domain-${i + 1}.json`, import.meta.url), 'utf8')),
 );
 const questions = files
-  .flatMap((text) => JSON.parse(text))
+  .flatMap((text): Question[] => JSON.parse(text) as Question[])
   .sort((a, b) => a.level - b.level || a.domain - b.domain || a.id.localeCompare(b.id));
-const at = (type, level = 1) => questions.find((q) => q.level === level && q.type === type);
+function at(type: 'match', level?: LevelId): MatchQuestion;
+function at(type: 'single' | 'multi', level?: LevelId): ChoiceQuestion;
+function at(type: QuestionType, level: LevelId = 1): Question {
+  return questions.find((q) => q.level === level && q.type === type)!;
+}
 const start = '2026-10-09T09:00:00.000Z';
 const checked = '2026-10-09T09:01:00.000Z';
 const ended = '2026-10-09T10:00:00.000Z';
-const clone = (value) => JSON.parse(JSON.stringify(value));
-const rightResponse = (q) => clone(q.type === 'match' ? q.pairs : q.correct);
-const wrongResponse = (q) => {
-  if (q.type === 'single') return [q.options.find((o) => !q.correct.includes(o.id)).id];
+const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+function rightResponse(q: MatchQuestion): Record<string, string>;
+function rightResponse(q: ChoiceQuestion): string[];
+function rightResponse(q: Question): Response;
+function rightResponse(q: Question): Response {
+  return clone(q.type === 'match' ? q.pairs : q.correct);
+}
+function wrongResponse(q: MatchQuestion): Record<string, string>;
+function wrongResponse(q: ChoiceQuestion): string[];
+function wrongResponse(q: Question): Response;
+function wrongResponse(q: Question): Response {
+  if (q.type === 'single') return [q.options.find((o) => !q.correct.includes(o.id))!.id];
   if (q.type === 'multi') {
     const extra = q.options.find((o) => !q.correct.includes(o.id));
     return extra ? [...q.correct, extra.id] : q.correct.slice(1);
   }
-  const response = { ...q.pairs };
-  const [left, other] = q.left;
+  const match = q as MatchQuestion;
+  const response = { ...match.pairs };
+  const [left, other] = match.left;
   [response[left.id], response[other.id]] = [response[other.id], response[left.id]];
   return response;
-};
-const attempt = (level = 1, mode = 'exam', ids = null) => makeAttempt(level, questions, mode, ids, start);
-const withSession = (a, revision = 0) => ({
+}
+const attempt = (level: number = 1, mode: string = 'exam', ids: string[] | null = null) =>
+  makeAttempt(level as LevelId, questions, mode as 'exam' | 'mistakes', ids, start);
+const withSession = (a: Attempt, revision = 0): AppState => ({
   ...freshState(),
   revision,
   sessions: { [sessionKey(a.level, a.mode)]: a },
 });
-const completed = (level = 1, isCorrect = () => false, completedAt = ended, mode = 'exam', ids = null) => {
+const completed = (
+  level = 1,
+  isCorrect: (question: Question) => boolean = () => false,
+  completedAt = ended,
+  mode: 'exam' | 'mistakes' = 'exam',
+  ids: string[] | null = null,
+): Attempt => {
   let a = attempt(level, mode, ids);
   for (const id of a.questionIds) {
-    const q = questions.find((item) => item.id === id);
+    const q = questions.find((item) => item.id === id)!;
     a = submitAnswer(a, q, isCorrect(q) ? rightResponse(q) : wrongResponse(q), checked);
   }
   return finishAttempt(a, completedAt);
 };
 
-class MemoryStorage {
-  constructor(entries = []) {
+class MemoryStorage implements StorageLike {
+  values: Map<string, string>;
+  writes: number;
+  constructor(entries: Iterable<readonly [string, string]> = []) {
     this.values = new Map(entries);
     this.writes = 0;
   }
-  getItem(key) {
+  getItem(key: string): string | null {
     return this.values.get(key) ?? null;
   }
-  setItem(key, value) {
+  setItem(key: string, value: string): void {
     this.writes += 1;
     this.values.set(key, String(value));
   }
-  removeItem(key) {
+  removeItem(key: string): void {
     this.values.delete(key);
   }
 }
 
+type CorruptAnswer = Record<string, unknown> & {
+  response: unknown;
+  correct: unknown;
+  submittedAt: unknown;
+  timedOut?: unknown;
+};
+type CorruptAttempt = Omit<Attempt, 'answers' | 'drafts' | 'mode' | 'level'> &
+  Record<string, unknown> & {
+    mode: unknown;
+    level: unknown;
+    answers: Record<string, CorruptAnswer>;
+    drafts: Record<string, unknown>;
+  };
+type CorruptState = Omit<AppState, 'sessions' | 'history'> &
+  Record<string, unknown> & {
+    sessions: Record<string, CorruptAttempt>;
+    history: unknown;
+  };
+
 test('состояние результата меняется ровно на границах 60, 80 и 95 процентов', () => {
-  for (const [percent, expected] of [
+  const boundaries: ReadonlyArray<readonly [number, string]> = [
     [0, 'starting'],
     [59.9, 'starting'],
     [60, 'close'],
@@ -106,8 +158,8 @@ test('состояние результата меняется ровно на �
     [94.9, 'confident'],
     [95, 'excellent'],
     [100, 'excellent'],
-  ])
-    assert.equal(resultOutcome(percent).id, expected, String(percent));
+  ];
+  for (const [percent, expected] of boundaries) assert.equal(resultOutcome(percent).id, expected, String(percent));
 });
 
 test('рекомендации ранжируют реальные ошибки и называют темы из ошибочных заданий', () => {
@@ -226,90 +278,91 @@ test('реальный банк проходит контракт и содер�
 });
 
 test('валидатор обнаруживает поломки распределения, языка, ключей, пар и источников', async (t) => {
-  const cases = [
+  type BankCase = readonly [string, (bank: Question[]) => void];
+  const cases: BankCase[] = [
     [
       'дубликат ID',
-      (bank) => {
+      (bank: Question[]) => {
         bank[1].id = bank[0].id;
       },
     ],
     [
       'нечисловой уровень',
-      (bank) => {
-        bank[0].level = '[';
+      (bank: Question[]) => {
+        (bank[0] as unknown as { level: unknown }).level = '[';
       },
     ],
     [
       'повтор формулировки с пробелами',
-      (bank) => {
+      (bank: Question[]) => {
         bank[1].prompt = `  ${bank[0].prompt.toLocaleUpperCase('ru')}  `;
       },
     ],
     [
       'английский вопрос',
-      (bank) => {
+      (bank: Question[]) => {
         bank[0].prompt = 'Which answer is correct?';
       },
     ],
     [
       'пустое объяснение варианта',
-      (bank) => {
-        bank.find((q) => q.type === 'single').options[0].explanation = '';
+      (bank: Question[]) => {
+        bank.find((q): q is ChoiceQuestion => q.type === 'single')!.options[0].explanation = '';
       },
     ],
     [
       'неизвестный правильный вариант',
-      (bank) => {
-        bank.find((q) => q.type === 'single').correct = ['z'];
+      (bank: Question[]) => {
+        bank.find((q): q is ChoiceQuestion => q.type === 'single')!.correct = ['z'];
       },
     ],
     [
       'два ответа single',
-      (bank) => {
-        bank.find((q) => q.type === 'single').correct = ['a', 'b'];
+      (bank: Question[]) => {
+        bank.find((q): q is ChoiceQuestion => q.type === 'single')!.correct = ['a', 'b'];
       },
     ],
     [
       'слишком мало вариантов multi',
-      (bank) => {
-        bank.find((q) => q.type === 'multi').options.pop();
+      (bank: Question[]) => {
+        bank.find((q): q is ChoiceQuestion => q.type === 'multi')!.options.pop();
       },
     ],
     [
       'повтор правой части пары',
-      (bank) => {
-        const q = bank.find((item) => item.type === 'match');
+      (bank: Question[]) => {
+        const q = bank.find((item): item is MatchQuestion => item.type === 'match')!;
         q.pairs[q.left[1].id] = q.pairs[q.left[0].id];
       },
     ],
     [
       'нет объяснения пары',
-      (bank) => {
-        const q = bank.find((item) => item.type === 'match');
+      (bank: Question[]) => {
+        const q = bank.find((item): item is MatchQuestion => item.type === 'match')!;
         delete q.pairExplanations[q.left[0].id];
       },
     ],
     [
       'источник исполняет код',
-      (bank) => {
+      (bank: Question[]) => {
         bank[0].sources[0].url = 'javascript:alert(1)';
       },
     ],
     [
       'источник с логином',
-      (bank) => {
+      (bank: Question[]) => {
         bank[0].sources[0].url = 'https://user:secret@example.com/article';
       },
     ],
     [
       'сокращённый источник',
-      (bank) => {
+      (bank: Question[]) => {
         bank[0].sources[0].url = 'https://bit.ly/example';
       },
     ],
     [
       'неполная матрица',
-      (bank) => {
+      (bank: Question[]) => {
         bank.pop();
       },
     ],
@@ -320,7 +373,7 @@ test('валидатор обнаруживает поломки распред�
       mutate(bank);
       assert.ok(validateBank(bank).errors.length > 0);
     });
-  assert.ok(validateBank(null).errors.length > 0);
+  assert.ok(validateBank(null as unknown as Question[]).errors.length > 0);
 });
 
 test('полные эталонные ответы всех типов оцениваются строго, без частичных баллов', () => {
@@ -344,13 +397,15 @@ test('single отклоняет два варианта, дубликаты, п�
 });
 
 test('multi требует ровно правильный набор: порядок не важен, лишнее или пропуск дают ноль', () => {
-  const q = questions.find((item) => item.type === 'multi' && item.correct.length >= 2 && item.correct.length <= 4);
+  const q = questions.find(
+    (item): item is ChoiceQuestion => item.type === 'multi' && item.correct.length >= 2 && item.correct.length <= 4,
+  )!;
   assert.equal(evaluate(q, [...q.correct].reverse()), true);
   assert.equal(evaluate(q, q.correct.slice(1)), false);
-  assert.equal(evaluate(q, [...q.correct, q.options.find((o) => !q.correct.includes(o.id)).id]), false);
+  assert.equal(evaluate(q, [...q.correct, q.options.find((o) => !q.correct.includes(o.id))!.id]), false);
   assert.equal(evaluate(q, [...q.correct, q.correct[0]]), false);
-  const one = questions.find((item) => item.type === 'multi' && item.correct.length === 1);
-  const all = questions.find((item) => item.type === 'multi' && item.correct.length === 5);
+  const one = questions.find((item): item is ChoiceQuestion => item.type === 'multi' && item.correct.length === 1)!;
+  const all = questions.find((item): item is ChoiceQuestion => item.type === 'multi' && item.correct.length === 5)!;
   assert.equal(evaluate(one, rightResponse(one)), true);
   assert.equal(evaluate(all, all.options.map((o) => o.id).reverse()), true);
   assert.equal(
@@ -603,6 +658,8 @@ test('статистика уровня учитывает только полн
   );
   assert.equal(stats.best, 100);
   assert.equal(stats.previous, 16.7);
+  assert.ok(stats.latest);
+  assert.ok(stats.latestScore);
   assert.equal(stats.latest.id, third.id);
   assert.equal(stats.latestScore.percent, 100);
   assert.deepEqual(levelStats(freshState(), 1, questions), {
@@ -654,165 +711,171 @@ test('score не доверяет флагу correct даже до валида�
 });
 
 test('повреждённые, несовместимые и структурно неверные сохранения отклоняются', async (t) => {
-  const base = withSession(attempt());
-  const cases = [
+  const base = withSession(attempt()) as unknown as CorruptState;
+  type StateCase = readonly [string, (state: CorruptState) => void];
+  const cases: StateCase[] = [
     [
       'неверная версия схемы',
-      (s) => {
+      (s: CorruptState) => {
         s.schemaVersion += 1;
       },
     ],
     [
       'неверная версия банка',
-      (s) => {
+      (s: CorruptState) => {
         s.bankVersion = 'other';
       },
     ],
     [
       'отрицательная ревизия',
-      (s) => {
+      (s: CorruptState) => {
         s.revision = -1;
       },
     ],
     [
       'дробная ревизия',
-      (s) => {
+      (s: CorruptState) => {
         s.revision = 0.5;
       },
     ],
     [
       'массив вместо sessions',
-      (s) => {
-        s.sessions = [];
+      (s: CorruptState) => {
+        s.sessions = [] as unknown as Record<string, CorruptAttempt>;
       },
     ],
     [
       'объект вместо history',
-      (s) => {
+      (s: CorruptState) => {
         s.history = {};
       },
     ],
     [
       'неверный ключ сессии',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:2'] = s.sessions['exam:1'];
         delete s.sessions['exam:1'];
       },
     ],
     [
       'чужой уровень вопроса',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].questionIds[0] = at('single', 2).id;
       },
     ],
     [
       'дубли вопросов',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].questionIds[1] = s.sessions['exam:1'].questionIds[0];
       },
     ],
     [
       'пустой тест',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].questionIds = [];
       },
     ],
     [
       'сокращённый экзамен',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].questionIds.pop();
       },
     ],
     [
       'переставленные вопросы экзамена',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].questionIds.reverse();
       },
     ],
     [
       'курсор вне теста',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].cursor = 60;
       },
     ],
     [
       'неверная дата',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].startedAt = 'not-a-date';
       },
     ],
     [
       'завершённая активная сессия',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].completedAt = ended;
       },
     ],
     [
       'опасный ID',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].id = '<script>alert(1)</script>';
       },
     ],
     [
       'неизвестный режим',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].mode = 'admin';
       },
     ],
     [
       'чужая закладка',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].bookmarks = [at('single', 2).id];
       },
     ],
     [
       'повтор закладки',
-      (s) => {
+      (s: CorruptState) => {
         const id = at('single').id;
         s.sessions['exam:1'].bookmarks = [id, id];
       },
     ],
     [
       'неизвестный ответ',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].answers.unknown = { response: ['a'], correct: true, submittedAt: checked };
       },
     ],
     [
       'неполный проверенный ответ',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].answers[at('single').id] = { response: [], correct: true, submittedAt: checked };
       },
     ],
     [
       'неизвестный вариант',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].answers[at('single').id] = { response: ['z'], correct: true, submittedAt: checked };
       },
     ],
     [
       'черновик чужого вопроса',
-      (s) => {
+      (s: CorruptState) => {
         s.sessions['exam:1'].drafts[at('single', 2).id] = rightResponse(at('single', 2));
       },
     ],
     [
       'черновик проверенного ответа',
-      (s) => {
+      (s: CorruptState) => {
         const q = at('single');
-        s.sessions['exam:1'] = submitAnswer(s.sessions['exam:1'], q, rightResponse(q), checked);
+        s.sessions['exam:1'] = submitAnswer(
+          s.sessions['exam:1'] as unknown as Attempt,
+          q,
+          rightResponse(q),
+          checked,
+        ) as unknown as CorruptAttempt;
         s.sessions['exam:1'].drafts[q.id] = rightResponse(q);
       },
     ],
     [
       'повтор ID попытки',
-      (s) => {
-        s.history = [finishAttempt(s.sessions['exam:1'], ended)];
+      (s: CorruptState) => {
+        s.history = [finishAttempt(s.sessions['exam:1'] as unknown as Attempt, ended)];
       },
     ],
     [
       'незавершённая попытка в истории',
-      (s) => {
+      (s: CorruptState) => {
         const a = s.sessions['exam:1'];
         s.sessions = {};
         s.history = [a];
@@ -820,9 +883,9 @@ test('повреждённые, несовместимые и структурн
     ],
     [
       'черновик в завершённой истории',
-      (s) => {
+      (s: CorruptState) => {
         const q = at('single');
-        const a = finishAttempt(s.sessions['exam:1'], ended);
+        const a = finishAttempt(s.sessions['exam:1'] as unknown as Attempt, ended);
         a.drafts[q.id] = rightResponse(q);
         s.sessions = {};
         s.history = [a];
@@ -833,10 +896,11 @@ test('повреждённые, несовместимые и структурн
     await t.test(name, () => {
       const damaged = clone(base);
       mutate(damaged);
-      assert.throws(() => validateState(damaged, questions));
+      assert.throws(() => validateState(damaged as unknown, questions));
       assert.throws(() => parseBackup(JSON.stringify({ application: 'ai-practicum', state: damaged }), questions));
     });
-  for (const value of [null, [], 17, 'state', {}, undefined]) assert.throws(() => validateState(value, questions));
+  for (const value of [null, [], 17, 'state', {}, undefined])
+    assert.throws(() => validateState(value as unknown, questions));
 });
 
 test('резервные копии: некорректный JSON, чужое приложение и предел именно в байтах', () => {
@@ -845,7 +909,7 @@ test('резервные копии: некорректный JSON, чужое �
     () => parseBackup(JSON.stringify({ application: 'other', state: freshState() }), questions),
     /резервная копия/u,
   );
-  assert.throws(() => parseBackup(null, questions));
+  assert.throws(() => parseBackup(null as unknown as string, questions));
   const tooManyAscii = 'x'.repeat(MAX_BACKUP_BYTES + 1);
   assert.throws(() => parseBackup(tooManyAscii, questions), /10 МБ/u);
   const multibyte = 'я'.repeat(Math.floor(MAX_BACKUP_BYTES / 2) + 1);
@@ -857,7 +921,7 @@ test('резервные копии: некорректный JSON, чужое �
 
 test('повреждённое локальное сохранение защищено от молчаливой перезаписи при чтении', () => {
   for (const raw of ['', '{неполный JSON']) {
-    const storage = new MemoryStorage([['progress', raw]]);
+    const storage = new MemoryStorage([['progress', raw] as const]);
     const result = readState(storage, 'progress', questions);
     assert.deepEqual(result.state, freshState());
     assert.equal(result.protected, true);
@@ -872,7 +936,7 @@ test('повреждённое локальное сохранение защи�
       getItem() {
         throw new Error('SecurityError');
       },
-    },
+    } as unknown as StorageLike,
     'progress',
     questions,
   );
@@ -883,7 +947,7 @@ test('повреждённое локальное сохранение защи�
 
 test('нехватка места или запрет записи возвращают предупреждение, не уничтожая сохранение', () => {
   const original = JSON.stringify({ ...freshState(), revision: 2 });
-  const storage = new MemoryStorage([['progress', original]]);
+  const storage = new MemoryStorage([['progress', original] as const]);
   storage.setItem = () => {
     const error = new Error('quota full');
     error.name = 'QuotaExceededError';
@@ -898,22 +962,22 @@ test('нехватка места или запрет записи возвра�
 
 test('конфликт вкладок не перезаписывает более свежую ревизию', () => {
   const fresh = { ...freshState(), revision: 5 };
-  const storage = new MemoryStorage([['progress', JSON.stringify(fresh)]]);
+  const storage = new MemoryStorage([['progress', JSON.stringify(fresh)] as const]);
   const staleResult = writeState(storage, 'progress', { ...freshState(), revision: 4 }, 3);
   assert.equal(staleResult.ok, false);
   assert.equal(staleResult.conflict, true);
   assert.equal(storage.writes, 0);
-  assert.deepEqual(JSON.parse(storage.getItem('progress')), fresh);
+  assert.deepEqual(JSON.parse(storage.getItem('progress')!), fresh);
   const newState = { ...fresh, revision: 6 };
   assert.equal(writeState(storage, 'progress', newState, 5).ok, true);
-  assert.deepEqual(JSON.parse(storage.getItem('progress')), newState);
+  assert.deepEqual(JSON.parse(storage.getItem('progress')!), newState);
   const missing = new MemoryStorage();
   assert.equal(writeState(missing, 'progress', newState, 5).conflict, true);
   assert.equal(missing.getItem('progress'), null);
 });
 
 test('несовместимое содержимое не перезаписывается при проверке ревизии', () => {
-  const storage = new MemoryStorage([['progress', '{bad']]);
+  const storage = new MemoryStorage([['progress', '{bad'] as const]);
   const result = writeState(storage, 'progress', freshState(), 0);
   assert.equal(result.ok, false);
   assert.equal(storage.getItem('progress'), '{bad');
@@ -948,14 +1012,15 @@ test('HTML-разбор показывает десятые и убирает л
     .filter((q) => q.level === 1)
     .slice(0, 12)
     .map((q) => q.id);
-  for (const [correct, percent] of [
+  const cases: ReadonlyArray<readonly [number, string]> = [
     [0, '0'],
     [7, '58,3'],
     [12, '100'],
-  ]) {
+  ];
+  for (const [correct, percent] of cases) {
     let a = makeAttempt(1, questions, 'mistakes', ids, start);
     for (const id of ids.slice(0, correct)) {
-      const q = questions.find((item) => item.id === id);
+      const q = questions.find((item) => item.id === id)!;
       a = submitAnswer(a, q, q.type === 'match' ? q.pairs : q.correct, checked);
     }
     const html = createHtmlReport(finishAttempt(a, ended), questions);
@@ -1003,33 +1068,39 @@ test('copy и сохранение ответа не создают общих �
   delete response[q.left[0].id];
   assert.equal(Object.keys(saved.answers[q.id].response).length, q.left.length);
   const cloned = copy(saved);
-  cloned.answers[q.id].response[q.left[0].id] = 'missing';
+  (cloned.answers[q.id].response as Record<string, string>)[q.left[0].id] = 'missing';
   assert.equal(evaluate(q, saved.answers[q.id].response), true);
 });
 
 test('импорт не переносит счётчик устройства и очищает посторонние поля без мутации источника', () => {
   const q = at('single');
   const a = submitAnswer(attempt(), q, rightResponse(q), checked);
-  a.unusedPayload = { nested: 'unused'.repeat(1000) };
-  a.answers[q.id].unusedPayload = 'ignored';
+  (a as unknown as Record<string, unknown>).unusedPayload = { nested: 'unused'.repeat(1000) };
+  (a.answers[q.id] as unknown as Record<string, unknown>).unusedPayload = 'ignored';
   a.answers[q.id].correct = false;
   const state = withSession(a, Number.MAX_SAFE_INTEGER);
   const original = JSON.stringify(state);
   const result = parseBackup(JSON.stringify(makeBackup(state)), questions);
   assert.equal(result.revision, 0);
-  assert.equal(result.sessions['exam:1'].unusedPayload, undefined);
-  assert.equal(result.sessions['exam:1'].answers[q.id].unusedPayload, undefined);
+  assert.equal((result.sessions['exam:1'] as unknown as Record<string, unknown>).unusedPayload, undefined);
+  assert.equal(
+    (result.sessions['exam:1'].answers[q.id] as unknown as Record<string, unknown>).unusedPayload,
+    undefined,
+  );
   assert.equal(result.sessions['exam:1'].answers[q.id].correct, true);
   assert.equal(JSON.stringify(state), original);
   assert.deepEqual(validateState(result, questions), result);
 });
 
 test('responsive-изображения имеют реальные размеры и существующие локальные файлы', async () => {
-  const manifest = JSON.parse(await readFile(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'));
+  type ImageManifestEntry = { width: number; height: number; variants: Array<[number, string]> };
+  const manifest = JSON.parse(
+    await readFile(new URL('../src/data/image-variants.json', import.meta.url), 'utf8'),
+  ) as Record<string, ImageManifestEntry>;
   for (const [source, image] of Object.entries(manifest)) {
     assert.ok(image.width > 0 && image.height > 0, source);
-    const original = await readFile(new URL(`../public/images/${source}`, import.meta.url)).catch((error) => {
-      if (error.code !== 'ENOENT') throw error;
+    const original = await readFile(new URL(`../public/images/${source}`, import.meta.url)).catch((error: unknown) => {
+      if (!(error instanceof Error) || !('code' in error) || error.code !== 'ENOENT') throw error;
       return null;
     });
     let previous = 0;
@@ -1073,6 +1144,8 @@ test('таймер даёт 72 секунды и сохраняет сроки �
   assert.equal(questionSecondsLeft(timed, first, startMs + 100000), 0);
   const moved = moveCursor(timed, 1, new Date(startMs + 20000).toISOString());
   const returned = moveCursor(moved, 0, new Date(startMs + 30000).toISOString());
+  assert.ok(returned.timing);
+  assert.ok(timed.timing);
   assert.equal(returned.timing.deadlines[first], timed.timing.deadlines[first]);
   assert.equal(questionSecondsLeft(returned, first, startMs + 30000), 42);
   assert.equal(questionSecondsLeft(returned, timed.questionIds[1], startMs + 30000), 62);
@@ -1082,8 +1155,8 @@ test('таймер даёт 72 секунды и сохраняет сроки �
 test('таймер фиксирует ошибку для любого формата и не принимает просроченный ответ или черновик', () => {
   const deadline = new Date(Date.parse(start) + 72000).toISOString();
   const justBefore = new Date(Date.parse(deadline) - 1).toISOString();
-  for (const type of ['single', 'multi', 'match']) {
-    const q = at(type);
+  for (const type of ['single', 'multi', 'match'] as const) {
+    const q = type === 'match' ? at('match') : at(type);
     const timed = makeAttempt(1, questions, 'mistakes', [q.id], start, true);
     const drafted = setDraft(timed, q, rightResponse(q), start);
     const accepted = submitAnswer(drafted, q, rightResponse(q), justBefore);
@@ -1128,29 +1201,29 @@ test('таймер не меняет старые попытки и отклон
   const expired = expireTimedQuestions(timed, questions, new Date(Date.parse(start) + 72000).toISOString());
   const original = withSession(expired);
   for (const mutate of [
-    (a) => {
-      a.timing.secondsPerQuestion = 73;
+    (a: Attempt) => {
+      a.timing!.secondsPerQuestion = 73;
     },
-    (a) => {
-      a.timing.deadlines.unknown = ended;
+    (a: Attempt) => {
+      a.timing!.deadlines.unknown = ended;
     },
-    (a) => {
-      a.timing.deadlines[a.questionIds[0]] = 'broken';
+    (a: Attempt) => {
+      a.timing!.deadlines[a.questionIds[0]] = 'broken';
     },
-    (a) => {
-      a.timing.deadlines[a.questionIds[0]] = ended;
+    (a: Attempt) => {
+      a.timing!.deadlines[a.questionIds[0]] = ended;
     },
-    (a) => {
+    (a: Attempt) => {
       delete a.timing;
     },
-    (a) => {
+    (a: Attempt) => {
       a.answers[a.questionIds[0]].response = rightResponse(questions[0]);
     },
-    (a) => {
+    (a: Attempt) => {
       a.answers[a.questionIds[0]].timedOut = false;
     },
-    (a) => {
-      delete a.timing.deadlines[a.questionIds[a.cursor]];
+    (a: Attempt) => {
+      delete a.timing!.deadlines[a.questionIds[a.cursor]];
     },
   ]) {
     const broken = clone(original);

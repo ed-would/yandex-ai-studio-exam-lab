@@ -1,12 +1,12 @@
 # Agent map
 
-Preact + htm + Vite; Russian AI exam trainer. Load only task-relevant references.
+Preact + TypeScript/TSX + Vite; Russian AI exam trainer. Load only task-relevant references.
 
 - Overview and workflow: [README](README.md), [contributing](CONTRIBUTING.md).
-- Commands and dependencies: [package.json](package.json), [Vite config](vite.config.js), [braces patch](vendor/braces/README.md).
+- Commands and dependencies: [package.json](package.json), [Vite config](vite.config.ts), [braces patch](vendor/braces/README.md).
 - Question bank: [contract](docs/CONTENT_CONTRACT.md), [sources](docs/SOURCE_REVIEW.md), [data](src/data/), `docs/research-domain-{1..6}.md`.
-- Attempts and scoring: [exam](src/core/exam.js), [app](src/app.js).
-- Progress and import: [storage](src/core/storage.js), [core tests](tests/core.test.mjs).
+- Attempts and scoring: [exam](src/core/exam.ts), [app](src/app.tsx).
+- Progress and import: [storage](src/core/storage.ts), [core tests](tests/core.test.ts).
 - UI and themes: [design system](DESIGN.md), [components](src/components/), [styles](src/styles.css), [theme](src/theme.css), [HIG plan](docs/plans/audit-apple-hig.md).
 - Result previews: [dev fixtures](src/dev/); `npm run dev:results`.
 - Design assets: [public assets](public/).
@@ -23,7 +23,7 @@ Code changes: `npm run check`. Browser verification: global `/pw` (Playwright MC
 
 ## Shared palette contract
 
-Read [DESIGN.md](DESIGN.md) before changing UI colors. `public/theme-controls.css` is the single runtime source for level primitives and general `--ui-*` tokens. General links, active navigation, progress and primary actions use solid expert purple (`--level-3-accent`, #6841AB) in light theme, and the composite three-level gradient with neutral text/focus fallbacks in dark theme; do not add private color copies or a fourth accent. The standalone HTML export in `src/core/report.js` must mirror these values.
+Read [DESIGN.md](DESIGN.md) before changing UI colors. `public/theme-controls.css` is the single runtime source for level primitives and general `--ui-*` tokens. General links, active navigation, progress and primary actions use solid expert purple (`--level-3-accent`, #6841AB) in light theme, and the composite three-level gradient with neutral text/focus fallbacks in dark theme; do not add private color copies or a fourth accent. The standalone HTML export in `src/core/report.ts` must mirror these values.
 
 - `#004C59` is reserved exclusively for the Yandex AI Studio logo badge, identical in both themes.
 - Individual lime, teal and lilac level palettes retain the corresponding test identity. Light general controls intentionally share expert purple; dark general controls use the approved composite gradient of all three levels. These are explicit UI role exceptions.

@@ -1,14 +1,15 @@
-import { APP_NAME, domainById, levelById, PROGRAM_URL, BANK_VERSION } from '../data/meta.js';
-import { evaluate, scoreAttempt } from './exam.js';
-import { typograph } from './typography.js';
+import { APP_NAME, domainById, levelById, PROGRAM_URL, BANK_VERSION } from '../data/meta.ts';
+import { evaluate, scoreAttempt } from './exam.ts';
+import { typograph } from './typography.ts';
+import type { Attempt, Question } from '../types.ts';
 
-const esc = (value) =>
+const esc = (value: unknown): string =>
   String(value ?? '').replace(
     /[&<>"']/g,
-    (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
+    (char: string) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char,
   );
 
-export function createHtmlReport(attempt, questions, theme = 'light') {
+export function createHtmlReport(attempt: Attempt, questions: Question[], theme: 'light' | 'dark' = 'light'): string {
   // Standalone export mirrors level primitives and the test fill opacity rules.
   const palettes = {
     1: ['#465c16', '#e6efa9', '#f5f7e5', '#d3e38c', '#343c27', '#292e24'],
@@ -20,28 +21,33 @@ export function createHtmlReport(attempt, questions, theme = 'light') {
   const bank = new Map(questions.map((q) => [q.id, q]));
   const blocks = attempt.questionIds
     .map((id, index) => {
-      const q = bank.get(id),
-        answer = attempt.answers[id];
+      const q = bank.get(id);
+      if (!q) return '';
+      const answer = attempt.answers[id];
       const correct = answer && evaluate(q, answer.response);
       const status = correct ? 'Верно' : answer?.timedOut ? 'Ошибка · время вышло' : answer ? 'Ошибка' : 'Пропущено';
       let answers;
       if (q.type === 'match') {
+        const response = answer && !Array.isArray(answer.response) ? answer.response : undefined;
         answers = q.left
           .map((left) => {
             const right = q.right.find((r) => r.id === q.pairs[left.id]);
-            const chosen = q.right.find((r) => r.id === answer?.response[left.id]);
-            return `<li><strong>${esc(left.text)} → ${esc(right.text)}</strong><p class="${chosen?.id === right.id ? 'ok' : 'bad'}">Твой ответ: ${esc(chosen?.text || 'не дан')}.</p><p>${esc(q.pairExplanations[left.id])}</p></li>`;
+            const chosen = q.right.find((r) => r.id === response?.[left.id]);
+            const rightText = right?.text ?? 'неизвестно';
+            const rightId = right?.id;
+            return `<li><strong>${esc(left.text)} → ${esc(rightText)}</strong><p class="${chosen?.id === rightId ? 'ok' : 'bad'}">Твой ответ: ${esc(chosen?.text || 'не дан')}.</p><p>${esc(q.pairExplanations[left.id])}</p></li>`;
           })
           .join('');
       } else {
+        const response = answer && Array.isArray(answer.response) ? answer.response : [];
         answers = q.options
           .map(
             (option) =>
-              `<li><strong>${esc(option.text)}</strong><p class="${q.correct.includes(option.id) ? 'ok' : 'bad'}">${q.correct.includes(option.id) ? 'Верный вариант' : 'Неверный вариант'}${answer?.response.includes(option.id) ? ' · твой выбор' : ''}.</p><p>${esc(option.explanation)}</p></li>`,
+              `<li><strong>${esc(option.text)}</strong><p class="${q.correct.includes(option.id) ? 'ok' : 'bad'}">${q.correct.includes(option.id) ? 'Верный вариант' : 'Неверный вариант'}${response.includes(option.id) ? ' · твой выбор' : ''}.</p><p>${esc(option.explanation)}</p></li>`,
           )
           .join('');
       }
-      return `<article><div class="meta">${index + 1}. ${esc(domainById(q.domain).short)} · <b class="${correct ? 'ok' : 'bad'}">${status}</b></div><h2>${esc(q.prompt)}</h2><p>${esc(q.explanation)}</p><aside><b>Запомнить:</b> ${esc(q.takeaway)}</aside><ul>${answers}</ul><div class="sources">${q.sources
+      return `<article><div class="meta">${index + 1}. ${esc(domainById(q.domain)?.short ?? '')} · <b class="${correct ? 'ok' : 'bad'}">${status}</b></div><h2>${esc(q.prompt)}</h2><p>${esc(q.explanation)}</p><aside><b>Запомнить:</b> ${esc(q.takeaway)}</aside><ul>${answers}</ul><div class="sources">${q.sources
         .filter((s) => /^https:\/\//.test(s.url))
         .map((s) => `<a href="${esc(s.url)}" rel="noopener noreferrer" target="_blank">${esc(s.title)}</a>`)
         .join(' · ')}</div></article>`;
@@ -61,5 +67,5 @@ a{color:var(--accent);overflow-wrap:anywhere;text-underline-offset:.2em;transiti
 @media(forced-colors:active){a{color:LinkText!important}a:focus-visible{outline-color:Highlight}}
 @media screen and (max-width:570px){body{margin:16px auto;padding:0 16px}h1{font-size:26px}header,article{padding:16px;margin:16px 0;border-radius:16px}header strong{font-size:24px}ul{padding-left:20px}}
 @media print{:root,html[data-theme=dark]{--accent:${palette[0]};--fill-soft:${palette[1]};--fill-pale:${palette[2]};--inset-opacity:8%;--ink:#25212b;--muted:#68636f;--success:#267045;--error:#d32f2f;--canvas:#fff}body{padding:0;font-size:11pt}article{break-inside:avoid;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:16px 0}header{border:0;padding:0}}
-</style></head><body><header><div class="meta">${esc(APP_NAME)} · СОХРАНЁННЫЙ РАЗБОР</div><h1>${esc(levelById(attempt.level).name)} · уровень ${attempt.level}</h1><p>${attempt.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'}</p><strong>${score.correct} / ${score.total} · ${score.percent.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}%</strong><p>Верно: ${score.correct}. Ошибки: ${score.wrong}. Пропущено: ${score.unanswered}.</p><p>Завершено: ${esc(attempt.completedAt)}. Версия вопросов: ${BANK_VERSION}.</p></header>${blocks}<footer>Независимые авторские задания по <a href="${PROGRAM_URL}">программе «Основы работы с ИИ»</a>. Этот результат не является официальной оценкой Яндекса. В файле сохранены исходные ответы и полный разбор.</footer></body></html>`);
+</style></head><body><header><div class="meta">${esc(APP_NAME)} · СОХРАНЁННЫЙ РАЗБОР</div><h1>${esc(levelById(attempt.level)?.name ?? '')} · уровень ${attempt.level}</h1><p>${attempt.mode === 'exam' ? 'Полный экзамен' : 'Работа над ошибками'}</p><strong>${score.correct} / ${score.total} · ${score.percent.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}%</strong><p>Верно: ${score.correct}. Ошибки: ${score.wrong}. Пропущено: ${score.unanswered}.</p><p>Завершено: ${esc(attempt.completedAt)}. Версия вопросов: ${BANK_VERSION}.</p></header>${blocks}<footer>Независимые авторские задания по <a href="${PROGRAM_URL}">программе «Основы работы с ИИ»</a>. Этот результат не является официальной оценкой Яндекса. В файле сохранены исходные ответы и полный разбор.</footer></body></html>`);
 }

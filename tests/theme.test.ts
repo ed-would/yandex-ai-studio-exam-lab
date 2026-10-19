@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import type { TestContext } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { Window } from 'happy-dom';
@@ -7,15 +8,19 @@ import { Window } from 'happy-dom';
 const source = readFileSync(new URL('../public/theme.js', import.meta.url), 'utf8');
 const key = 'ai-basics-exam-trainer:theme';
 
-function setup(t, { dark = false, saved = null, blocked = false } = {}) {
+type SetupOptions = { dark?: boolean; saved?: string | null; blocked?: boolean };
+type MockMediaQueryList = EventTarget & { matches: boolean };
+
+function setup(t: TestContext, { dark = false, saved = null, blocked = false }: SetupOptions = {}) {
   const window = new Window({ url: 'https://example.test/trainer/' });
   const document = window.document;
   t.after(() => window.close());
   document.head.innerHTML = '<meta name="theme-color" content="#ffffff">';
   document.body.innerHTML = '<button data-theme-toggle><svg><path/></svg></button>';
-  const system = new window.EventTarget();
-  system.matches = dark;
-  window.matchMedia = () => system;
+  const system = new window.EventTarget() as unknown as MockMediaQueryList;
+  let systemMatches = dark;
+  Object.defineProperty(system, 'matches', { get: () => systemMatches });
+  window.matchMedia = (() => system) as unknown as typeof window.matchMedia;
   window.localStorage.setItem('exam-progress', 'saved answers');
   if (saved !== null) window.localStorage.setItem(key, saved);
   if (blocked)
@@ -25,27 +30,32 @@ function setup(t, { dark = false, saved = null, blocked = false } = {}) {
       },
     });
   runInNewContext(source, { window, document });
-  const changeSystem = (value) => {
-    system.matches = value;
-    system.dispatchEvent(new window.Event('change'));
+  const changeSystem = (value: boolean) => {
+    systemMatches = value;
+    system.dispatchEvent(new window.Event('change') as unknown as Event);
   };
-  return { window, document, changeSystem, button: document.querySelector('button') };
+  const button = document.querySelector('button');
+  assert.ok(button);
+  return { window, document, changeSystem, button };
 }
 
 test('тема применяется до рендера: выбор пользователя важнее системной темы', (t) => {
-  for (const [dark, saved, expected] of [
+  const cases: ReadonlyArray<readonly [boolean, string | null, 'dark' | 'light']> = [
     [true, null, 'dark'],
     [false, null, 'light'],
     [true, 'light', 'light'],
     [false, 'dark', 'dark'],
     [true, 'unknown', 'dark'],
-  ]) {
+  ];
+  for (const [dark, saved, expected] of cases) {
     const { document, button } = setup(t, { dark, saved });
     assert.equal(document.documentElement.dataset.theme, expected);
     assert.equal(document.documentElement.style.colorScheme, expected);
     assert.equal(button.getAttribute('aria-pressed'), String(expected === 'dark'));
-    assert.match(button.getAttribute('aria-label'), expected === 'dark' ? /светлую/ : /тёмную/);
-    assert.equal(document.querySelector('meta').content, expected === 'dark' ? '#17151d' : '#ffffff');
+    assert.match(button.getAttribute('aria-label') ?? '', expected === 'dark' ? /светлую/ : /тёмную/);
+    const meta = document.querySelector('meta');
+    assert.ok(meta);
+    assert.equal(meta.content, expected === 'dark' ? '#17151d' : '#ffffff');
   }
 });
 
@@ -53,7 +63,9 @@ test('системная тема меняется до явного выбор�
   const { window, document, button, changeSystem } = setup(t);
   changeSystem(true);
   assert.equal(document.documentElement.dataset.theme, 'dark');
-  button.querySelector('path').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  const path = button.querySelector('path');
+  assert.ok(path);
+  path.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   assert.equal(document.documentElement.dataset.theme, 'light');
   assert.equal(window.localStorage.getItem(key), 'light');
   changeSystem(true);
@@ -72,7 +84,7 @@ test('тема синхронизируется между вкладками, �
   window.dispatchEvent(new window.StorageEvent('storage', { key: 'exam-progress' }));
   assert.equal(document.documentElement.dataset.theme, 'dark');
   window.localStorage.removeItem(key);
-  window.dispatchEvent(new window.StorageEvent('storage', { key: null }));
+  window.dispatchEvent(new window.StorageEvent('storage', { key: null as unknown as string }));
   assert.equal(document.documentElement.dataset.theme, 'light');
   changeSystem(true);
   assert.equal(document.documentElement.dataset.theme, 'dark');
@@ -92,7 +104,9 @@ test('при запрете localStorage переключение работае
 test('изменения sessionStorage не сбрасывают выбранную тему', (t) => {
   const { window, document } = setup(t, { saved: 'dark' });
   window.localStorage.setItem(key, 'light');
-  window.dispatchEvent(new window.StorageEvent('storage', { key: null, storageArea: window.sessionStorage }));
+  window.dispatchEvent(
+    new window.StorageEvent('storage', { key: null as unknown as string, storageArea: window.sessionStorage }),
+  );
   assert.equal(document.documentElement.dataset.theme, 'dark');
   window.dispatchEvent(new window.StorageEvent('storage', { key, storageArea: window.localStorage }));
   assert.equal(document.documentElement.dataset.theme, 'light');

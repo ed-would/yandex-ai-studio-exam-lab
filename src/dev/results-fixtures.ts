@@ -1,13 +1,25 @@
-import { evaluate, finishAttempt, isValidResponse, makeAttempt, submitAnswer, toggleBookmark } from '../core/exam.js';
+import { evaluate, finishAttempt, isValidResponse, makeAttempt, submitAnswer, toggleBookmark } from '../core/exam.ts';
+import type { Attempt, AttemptMode, LevelId, Question, Response } from '../types.ts';
 
 const FIXTURE_STARTED_AT = '2026-01-01T09:00:00.000Z';
 const FIXTURE_SUBMITTED_AT = '2026-01-01T09:05:00.000Z';
 const FIXTURE_COMPLETED_AT = '2026-01-01T09:30:00.000Z';
-const LEVELS = [1, 2, 3];
-const DOMAINS = [1, 2, 3, 4, 5, 6];
-const TYPES = ['single', 'multi', 'match'];
+const LEVELS: LevelId[] = [1, 2, 3];
+const DOMAINS = [1, 2, 3, 4, 5, 6] as const;
+const TYPES: Question['type'][] = ['single', 'multi', 'match'];
+type FixtureStatus = 'correct' | 'wrong' | 'skipped';
+type ResultScenario = {
+  id: string;
+  label: string;
+  mode: AttemptMode;
+  total: number;
+  answered: number;
+  correct: number;
+  skipped: number;
+  early?: boolean;
+};
 
-export const RESULT_SCENARIOS = [
+export const RESULT_SCENARIOS: ResultScenario[] = [
   { id: 'empty', label: 'Без ответов', mode: 'exam', total: 60, answered: 0, correct: 0, skipped: 60 },
   { id: 'all-wrong', label: 'Все ответы неверны', mode: 'exam', total: 60, answered: 60, correct: 0, skipped: 0 },
   { id: 'below60', label: 'Ниже 60%', mode: 'exam', total: 60, answered: 60, correct: 35, skipped: 0 },
@@ -39,13 +51,13 @@ export const RESULT_SCENARIOS = [
   },
 ];
 
-export function previewAttemptId(level, scenarioId) {
+export function previewAttemptId(level: LevelId | number, scenarioId: string): string {
   return `preview-${level}-${scenarioId}`;
 }
 
-const clone = (value) => JSON.parse(JSON.stringify(value));
+const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
-function questionHash(question) {
+function questionHash(question: Question): number {
   let hash = 2166136261;
   for (const character of `${question.level}:${question.domain}:${question.type}:${question.id}`) {
     hash ^= character.charCodeAt(0);
@@ -54,9 +66,9 @@ function questionHash(question) {
   return hash >>> 0;
 }
 
-function validateBank(questions) {
+function validateBank(questions: Question[]): void {
   if (!Array.isArray(questions)) throw new Error('Результаты нельзя построить без банка вопросов.');
-  const ids = new Set();
+  const ids = new Set<string>();
   for (const question of questions) {
     if (!question || typeof question !== 'object' || typeof question.id !== 'string' || ids.has(question.id)) {
       throw new Error('Банк содержит некорректные или повторяющиеся идентификаторы вопросов.');
@@ -88,8 +100,8 @@ function validateBank(questions) {
   if (questions.length !== 180) throw new Error('Банк должен содержать 180 вопросов.');
 }
 
-function spreadQuestions(levelQuestions) {
-  const queues = new Map();
+function spreadQuestions(levelQuestions: Question[]): Question[] {
+  const queues = new Map<string, Question[]>();
   for (const domain of DOMAINS) {
     for (const type of TYPES) {
       queues.set(
@@ -100,12 +112,13 @@ function spreadQuestions(levelQuestions) {
       );
     }
   }
-  const result = [];
+  const result: Question[] = [];
   for (let round = 0; result.length < levelQuestions.length; round++) {
     for (const domain of DOMAINS) {
       for (const type of TYPES) {
         const queue = queues.get(`${domain}:${type}`);
-        if (queue?.length) result.push(queue.shift());
+        const question = queue?.shift();
+        if (question) result.push(question);
       }
     }
     if (round > levelQuestions.length) throw new Error('Не удалось равномерно распределить вопросы банка.');
@@ -113,14 +126,14 @@ function spreadQuestions(levelQuestions) {
   return result;
 }
 
-function statusQuestions(orderedQuestions, correct, answered) {
+function statusQuestions(orderedQuestions: Question[], correct: number, answered: number): Map<string, FixtureStatus> {
   const wrong = answered - correct;
   const statusOrder = [
     ...Array(correct).fill('correct'),
     ...Array(wrong).fill('wrong'),
     ...Array(orderedQuestions.length - answered).fill('skipped'),
   ];
-  const result = new Map();
+  const result = new Map<string, FixtureStatus>();
   const step = 37;
   for (let index = 0; index < statusOrder.length; index++) {
     result.set(orderedQuestions[(index * step) % orderedQuestions.length].id, statusOrder[index]);
@@ -128,7 +141,7 @@ function statusQuestions(orderedQuestions, correct, answered) {
   return result;
 }
 
-function wrongResponse(question) {
+function wrongResponse(question: Question): Response {
   if (question.type === 'single') {
     const option = question.options.find((item) => !question.correct.includes(item.id));
     if (!option) throw new Error(`Для вопроса ${question.id} нельзя построить неверный одиночный ответ.`);
@@ -152,9 +165,9 @@ function wrongResponse(question) {
   throw new Error(`Для вопроса ${question.id} нельзя построить неверный ответ.`);
 }
 
-function practiceQuestions(levelQuestions) {
-  const selected = [];
-  const cycles = [
+function practiceQuestions(levelQuestions: Question[]): Question[] {
+  const selected: Question[] = [];
+  const cycles: Array<Array<Question['type']>> = [
     ['single', 'multi'],
     ['multi', 'match'],
     ['match', 'single'],
@@ -162,7 +175,7 @@ function practiceQuestions(levelQuestions) {
     ['multi', 'match'],
     ['match', 'single'],
   ];
-  for (const [domain, types] of DOMAINS.map((domain, index) => [domain, cycles[index]])) {
+  for (const [domain, types] of DOMAINS.map((domain, index): [number, Question['type'][]] => [domain, cycles[index]])) {
     for (const type of types) {
       const question = levelQuestions.find(
         (candidate) => candidate.domain === domain && candidate.type === type && !selected.includes(candidate),
@@ -174,7 +187,7 @@ function practiceQuestions(levelQuestions) {
   return selected;
 }
 
-function makeFixture(level, scenario, levelQuestions) {
+function makeFixture(level: LevelId, scenario: ResultScenario, levelQuestions: Question[]): Attempt {
   const allQuestions = spreadQuestions(levelQuestions);
   const selected = scenario.mode === 'mistakes' ? practiceQuestions(levelQuestions) : levelQuestions;
   const selectedIds = selected.map((question) => question.id);
@@ -195,7 +208,9 @@ function makeFixture(level, scenario, levelQuestions) {
       status === 'correct'
         ? clone(question.type === 'match' ? question.pairs : question.correct)
         : wrongResponse(question);
-    attempt = submitAnswer(attempt, questionById.get(question.id), response, FIXTURE_SUBMITTED_AT);
+    const source = questionById.get(question.id);
+    if (!source) throw new Error(`Вопрос ${question.id} отсутствует в банке.`);
+    attempt = submitAnswer(attempt, source, response, FIXTURE_SUBMITTED_AT);
   }
   for (const domain of [1, 3, 5]) {
     const question = selected.find((candidate) => candidate.domain === domain);
@@ -205,7 +220,7 @@ function makeFixture(level, scenario, levelQuestions) {
   return { ...attempt, id: previewAttemptId(level, scenario.id) };
 }
 
-export function createResultFixtures(questions) {
+export function createResultFixtures(questions: Question[]): Attempt[] {
   validateBank(questions);
   return LEVELS.flatMap((level) => {
     const levelQuestions = questions.filter((question) => question.level === level);
