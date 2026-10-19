@@ -49,6 +49,7 @@ void Fragment;
 const MEMORY_WARNING =
   'Прогресс этой попытки хранится только в памяти вкладки. Скачай копию до её закрытия или обновления.';
 const TAB_WARNING = 'Прогресс переживёт обновление только в этой вкладке. Скачай копию до закрытия вкладки.';
+const hasProgress = (state: AppState): boolean => Object.keys(state.sessions).length > 0 || state.history.length > 0;
 
 type RoutePage = 'home' | 'exam' | 'mistakes' | 'results' | 'study' | 'history';
 type Route = { page: RoutePage; id: string };
@@ -117,7 +118,9 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
   const initialCacheState = initialCache.current;
   const initialState = initialCacheState || initialResult.state;
   const memoryOnly = useRef(Boolean(store.current && suppliedStorage === undefined && !window.navigator?.locks));
-  const memoryWarning = [initialResult.warning, MEMORY_WARNING].filter(Boolean).join(' ');
+  const memoryWarning = [initialResult.warning, hasProgress(initialState) ? MEMORY_WARNING : '']
+    .filter(Boolean)
+    .join(' ');
   const [state, setState] = useState<AppState>(initialState);
   const liveState = useRef(state);
   const driver = useRef<Driver>({
@@ -129,12 +132,17 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     conflict: false,
   });
   const initialWarning = initialCacheState
-    ? [initialResult.warning, TAB_WARNING].filter(Boolean).join(' ')
+    ? [initialResult.warning, hasProgress(initialState) || hasProgress(initialResult.state) ? TAB_WARNING : '']
+        .filter(Boolean)
+        .join(' ')
     : memoryOnly.current
       ? memoryWarning
       : initialResult.warning;
   const [warning, setWarning] = useState(initialWarning);
   const [dismissedWarning, setDismissedWarning] = useState('');
+  const warningRef = useRef<HTMLDivElement>(null);
+  const warningStatusRef = useRef<HTMLButtonElement>(null);
+  const navigationRef = useRef<HTMLElement>(null);
   const [route, setRoute] = useState(routeFromHash);
   const previousRoute = useRef(route);
   const [modal, setModal] = useState<ModalState | null>(null);
@@ -156,6 +164,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     transform: (state: AppState) => AppState,
     recover = false,
     requirePersistence = recover,
+    fullReset = false,
   ): Promise<boolean> {
     const cache = (next: AppState, baseWarning = '') => {
       const saved = writeTabProgress(tabStore.current, key.current, driver.current.sourceRaw, next);
@@ -176,7 +185,40 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
       const revision = driver.current.revision;
       next = { ...next, revision: revision < Number.MAX_SAFE_INTEGER ? revision + 1 : 0 };
       const force = recover && driver.current.protected;
-      if (memoryOnly.current) {
+      if (fullReset) {
+        let currentRaw: string | null;
+        try {
+          currentRaw = store.current?.getItem(key.current) ?? null;
+        } catch {
+          setWarning('Не удалось прочитать сохранения. Очистка отменена. Обнови страницу и повтори попытку.');
+          return false;
+        }
+        if (currentRaw !== driver.current.sourceRaw) {
+          driver.current.conflict = true;
+          setWarning(
+            'Прогресс изменился в другой вкладке. Обнови данные перед продолжением, чтобы не перезаписать результат.',
+          );
+          return false;
+        }
+        const sourceRevision = force ? null : currentRaw === null ? 0 : JSON.parse(currentRaw).revision;
+        const saved = writeState(store.current, key.current, next, sourceRevision);
+        if (!saved.ok) {
+          if (saved.conflict) driver.current.conflict = true;
+          setWarning(saved.warning ?? '');
+          return false;
+        }
+        // Успешная запись делает старый кэш непригодным даже если его удаление не удалось.
+        writeTabProgress(tabStore.current, key.current, driver.current.sourceRaw, null);
+        driver.current = {
+          revision: next.revision,
+          protected: false,
+          raw: null,
+          sourceRaw: JSON.stringify(next),
+          durable: true,
+          conflict: false,
+        };
+        setWarning('');
+      } else if (memoryOnly.current) {
         if (force) {
           const saved = writeState(store.current, key.current, next);
           if (!saved.ok) {
@@ -260,9 +302,11 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
     setState(nextState);
     setWarning(
       cached
-        ? [result.warning, TAB_WARNING].filter(Boolean).join(' ')
+        ? [result.warning, hasProgress(nextState) || hasProgress(result.state) ? TAB_WARNING : '']
+            .filter(Boolean)
+            .join(' ')
         : memoryOnly.current
-          ? [result.warning, MEMORY_WARNING].filter(Boolean).join(' ')
+          ? [result.warning, hasProgress(nextState) ? MEMORY_WARNING : ''].filter(Boolean).join(' ')
           : result.warning,
     );
     notify('Сохранения обновлены.', 'success');
@@ -466,7 +510,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
       dangerous: true,
       confirmText: 'Очистить результаты',
       onConfirm: async () => {
-        if (await commit((current) => (level ? clearLevel(current, level) : freshState()), !level, true)) {
+        if (await commit((current) => (level ? clearLevel(current, level) : freshState()), !level, true, !level)) {
           setModal(null);
           notify(level ? `Результаты уровня ${level} удалены.` : 'Все результаты удалены.', 'success');
         }
@@ -505,6 +549,27 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
   const navActive = ['exam', 'mistakes', 'results', 'home'].includes(route.page) ? 'home' : route.page;
   const hasOriginal = driver.current.raw !== null;
 
+  useLayoutEffect(() => {
+    const navigation = navigationRef.current;
+    const label = navigation?.querySelector<HTMLElement>('[aria-current="page"] .nav-label');
+    if (!navigation || !label) return;
+    const measure = () => {
+      const bounds = navigation.getBoundingClientRect();
+      const active = label.getBoundingClientRect();
+      navigation.style.setProperty('--nav-indicator-left', `${active.left - bounds.left}px`);
+      navigation.style.setProperty('--nav-indicator-width', `${active.width}px`);
+    };
+    measure();
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    observer?.observe(navigation);
+    observer?.observe(label);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [navActive]);
+
   return (
     <>
       <div class="app-shell">
@@ -524,7 +589,7 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
             <a class="brand-link" href="#/" aria-label={`${APP_NAME}: главная`}>
               <Wordmark />
             </a>
-            <nav class="primary-nav" aria-label="Основная навигация">
+            <nav class="primary-nav" aria-label="Основная навигация" ref={navigationRef}>
               <a
                 class={navActive === 'home' ? 'active' : ''}
                 href="#/"
@@ -548,19 +613,30 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
               </a>
             </nav>
             {warning && (
-              <>
-                <span class="local-status">
-                  <i class="status-warning" />
-                  Проверь сохранение
-                </span>
-              </>
+              <button
+                class="local-status"
+                type="button"
+                ref={warningStatusRef}
+                aria-label="Проблема с сохранением"
+                aria-expanded={warning !== dismissedWarning}
+                aria-controls="storage-warning"
+                title="Проблема с сохранением: показать причину и действия"
+                onClick={() => {
+                  setDismissedWarning('');
+                  window.requestAnimationFrame(() => warningRef.current?.focus());
+                }}
+              >
+                <i class="status-warning" aria-hidden="true" />
+                <Icon name="info" size={20} />
+                <span class="local-status-label">Проблема с сохранением</span>
+              </button>
             )}
             <ThemeToggle />
           </div>
         </header>
         {warning && warning !== dismissedWarning && (
           <>
-            <div class="storage-warning" role="alert">
+            <div id="storage-warning" class="storage-warning" role="alert" tabIndex={-1} ref={warningRef}>
               <span class="storage-warning-icon">
                 <Icon name="info" size={22} />
               </span>
@@ -590,6 +666,10 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
                     <Icon name="sliders" size={16} />
                     Управление данными
                   </a>
+                  <button type="button" class="text-button danger-text" onClick={() => clearScores()}>
+                    <Icon name="trash" size={16} />
+                    Очистить все результаты
+                  </button>
                   {hasOriginal && (
                     <>
                       <button class="text-button" onClick={backup}>
@@ -605,7 +685,10 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
                 type="button"
                 aria-label="Скрыть сообщение"
                 title="Скрыть сообщение"
-                onClick={() => setDismissedWarning(warning)}
+                onClick={() => {
+                  setDismissedWarning(warning);
+                  warningStatusRef.current?.focus({ preventScroll: true });
+                }}
               >
                 <Icon name="close" size={20} />
               </button>

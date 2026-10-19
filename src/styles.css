@@ -256,9 +256,22 @@ h3 {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 8px;
   font-size: 11px;
   color: var(--muted);
   white-space: nowrap;
+}
+.local-status .icon {
+  display: none;
+}
+.local-status-label {
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+}
+.local-status:hover .local-status-label {
+  text-decoration-style: solid;
 }
 .local-status i,
 .live-dot {
@@ -1354,7 +1367,7 @@ h3 {
 }
 .disconnect:hover {
   background: var(--error-bg);
-  color: var(--error-text);
+  color: color-mix(in srgb, var(--error-text) 80%, black);
 }
 .clear-pairs {
   margin-top: 14px;
@@ -2836,6 +2849,16 @@ details.accordion--surface.topic-coverage[open] > summary {
 }
 @media (max-width: 1100px) {
   .local-status {
+    flex: 0 0 44px;
+    width: 44px;
+    justify-content: center;
+    color: var(--warning-text);
+  }
+  .local-status .icon {
+    display: block;
+  }
+  .local-status i,
+  .local-status-label {
     display: none;
   }
 
@@ -7404,6 +7427,7 @@ summary > .icon:last-child {
 }
 :is(.text-button.danger-text, .stats-card-footer .text-button) {
   color: var(--error-text);
+  text-underline-offset: 0.25em;
 }
 :is(a[href], button, summary, select, input):focus-visible {
   outline: 3px solid var(--focus);
@@ -7471,14 +7495,14 @@ input[type='search']::-webkit-search-cancel-button {
     border-color: var(--accent);
   }
   .button.danger:not(:disabled, [aria-disabled='true']):hover {
-    background-color: color-mix(in srgb, var(--error-text) 82%, var(--ink));
+    background-color: color-mix(in srgb, var(--error-text) 80%, black);
   }
   .text-button:not(:disabled, [aria-disabled='true']):hover {
     color: color-mix(in srgb, var(--accent) 80%, #25212b);
     text-decoration-color: currentColor;
   }
-  :is(.text-button.danger-text, .stats-card-footer .text-button):hover {
-    color: #782b20;
+  :is(.text-button.danger-text, .stats-card-footer .text-button):not(:disabled, [aria-disabled='true']):hover {
+    color: color-mix(in srgb, var(--error-text) 80%, black);
   }
   :is(.study-nav button, .filter-pills button):hover {
     background-color: var(--accent-pale);
@@ -7526,7 +7550,7 @@ input[type='search']::-webkit-search-cancel-button {
   .disconnect:hover {
     border-color: var(--error-text);
     background-color: var(--error-bg);
-    color: var(--error-text);
+    color: color-mix(in srgb, var(--error-text) 80%, black);
   }
   :is(summary, .map-toggle, .select-option):hover {
     background-color: color-mix(in srgb, var(--accent) 8%, transparent);
@@ -7592,11 +7616,15 @@ input[type='search']::-webkit-search-cancel-button {
   border-color: var(--accent);
 }
 .button.danger:not(:disabled, [aria-disabled='true']):active {
-  background-color: color-mix(in srgb, var(--error-text) 68%, var(--ink));
+  background-color: color-mix(in srgb, var(--error-text) 80%, white);
 }
 :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a):active {
   opacity: 0.72;
   transform: none;
+}
+:is(.text-button.danger-text, .stats-card-footer .text-button):not(:disabled, [aria-disabled='true']):active {
+  color: color-mix(in srgb, var(--error-text) 80%, white);
+  opacity: 1;
 }
 :is(.study-nav button, .filter-pills button, .select-trigger, .select-option, .map-toggle):not(:disabled):active {
   background-color: color-mix(in srgb, var(--accent) 18%, white);
@@ -7622,8 +7650,8 @@ input[type='search']::-webkit-search-cancel-button {
   border-color: var(--accent);
 }
 .disconnect:active {
-  background: #f4d4ca;
-  color: #832f24;
+  background: color-mix(in srgb, var(--error-bg) 96%, white);
+  color: color-mix(in srgb, var(--error-text) 80%, white);
 }
 summary:active {
   background-color: color-mix(in srgb, var(--accent) 14%, transparent);
@@ -7770,6 +7798,16 @@ input[type='search']::-webkit-search-cancel-button:active {
     gap: 0 16px;
     padding: 0 var(--header-inline);
   }
+  .header-inner:has(.local-status) {
+    grid-template-columns: minmax(0, 1fr) 44px 44px;
+  }
+  .header-inner > .local-status {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .header-inner:has(.local-status) > .theme-toggle {
+    grid-column: 3;
+  }
   .header-inner .brand-link {
     display: flex;
     grid-column: 1;
@@ -7785,7 +7823,6 @@ input[type='search']::-webkit-search-cancel-button:active {
     grid-row: 1;
   }
   .header-inner nav.primary-nav {
-    --nav-active: 0;
     position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7798,25 +7835,21 @@ input[type='search']::-webkit-search-cancel-button:active {
     margin: 0 calc(var(--header-inline) * -1);
     border-top: 1px solid var(--line);
   }
-  .header-inner nav.primary-nav:has(a[href='#/history'][aria-current='page']) {
-    --nav-active: 1;
-  }
-  .header-inner nav.primary-nav:has(a[href='#/study'][aria-current='page']) {
-    --nav-active: 2;
-  }
   .header-inner nav.primary-nav::after {
     position: absolute;
     bottom: -1px;
-    left: 16px;
-    width: calc(100% / 3 - 32px);
+    left: 0;
+    width: var(--nav-indicator-width, 0px);
     height: 2px;
     border-radius: 2px;
     background-color: var(--accent);
     background-image: var(--ui-gradient);
     content: '';
     pointer-events: none;
-    transform: translateX(calc(var(--nav-active) * (100% + 32px)));
-    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateX(var(--nav-indicator-left, 0px));
+    transition:
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 280ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .header-inner nav.primary-nav a {
     min-width: 0;
@@ -7835,6 +7868,16 @@ input[type='search']::-webkit-search-cancel-button:active {
     --header-inline: 16px;
     column-gap: 12px;
   }
+  .header-inner:has(.local-status) {
+    column-gap: 8px;
+  }
+  .header-inner:has(.local-status) .brand-link {
+    padding-block: 8px;
+  }
+  .header-inner:has(.local-status) .wordmark-title {
+    min-width: 0;
+    white-space: normal;
+  }
   .header-inner .wordmark-title {
     display: grid;
     font-size: 16px;
@@ -7842,6 +7885,23 @@ input[type='search']::-webkit-search-cancel-button:active {
   }
   .header-inner .wordmark-tagline {
     display: none;
+  }
+}
+@media (max-width: 375px) {
+  .header-inner nav.primary-nav a {
+    font-size: 0.875rem;
+  }
+}
+@media (width < 375px) {
+  .header-inner .wordmark {
+    gap: 6px;
+  }
+  .header-inner .brand-symbol {
+    width: 36px;
+    height: 36px;
+  }
+  .header-inner .wordmark-title {
+    font-size: 14px;
   }
 }
 

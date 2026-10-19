@@ -42,13 +42,13 @@ picture.section-backdrop {
   }
   @media (hover: hover) and (pointer: fine) {
     html .history-page .button.secondary.danger:not(:disabled, [aria-disabled='true']):hover {
-      color: color-mix(in srgb, var(--error-text) 88%, var(--ink));
+      color: color-mix(in srgb, color-mix(in srgb, var(--error-text) 88%, var(--ink)) 80%, black);
       background: var(--clear-hover-surface);
       border-color: var(--error-text);
     }
   }
   html .history-page .button.secondary.danger:not(:disabled, [aria-disabled='true']):active {
-    color: color-mix(in srgb, var(--error-text) 88%, var(--ink));
+    color: color-mix(in srgb, color-mix(in srgb, var(--error-text) 88%, var(--ink)) 80%, white);
     background: color-mix(in srgb, var(--clear-hover-surface) 96%, var(--ink));
     border-color: var(--error-text);
   }
@@ -664,17 +664,18 @@ picture.section-backdrop {
     html[data-theme='dark'] :is(.text-button, .source-links a, .breadcrumb a, .competency-caption a):hover {
       color: color-mix(in srgb, var(--accent) 85%, white);
     }
-    html[data-theme='dark'] :is(.text-button.danger-text, .stats-card-footer .text-button):hover {
-      color: #ffcfbf;
+    html[data-theme='dark']
+      :is(.text-button.danger-text, .stats-card-footer .text-button):not(:disabled, [aria-disabled='true']):hover {
+      color: color-mix(in srgb, var(--error-text) 80%, black);
     }
     html[data-theme='dark'] .disconnect:hover {
-      color: #ffcfbf;
+      color: color-mix(in srgb, var(--error-text) 80%, black);
       background: var(--error-bg);
       border-color: var(--error-text);
     }
     html[data-theme='dark'] .button.danger:hover {
       color: var(--action-ink);
-      background: color-mix(in srgb, var(--error-text) 82%, var(--ink));
+      background: color-mix(in srgb, var(--error-text) 80%, black);
     }
     html[data-theme='dark'] :is(.source-search, select):hover {
       background: var(--surface-raised);
@@ -705,11 +706,16 @@ picture.section-backdrop {
   }
   html[data-theme='dark'] .button.danger:active {
     color: var(--action-ink);
-    background: color-mix(in srgb, var(--error-text) 68%, var(--ink));
+    background: color-mix(in srgb, var(--error-text) 80%, white);
+  }
+  html[data-theme='dark']
+    :is(.text-button.danger-text, .stats-card-footer .text-button):not(:disabled, [aria-disabled='true']):active {
+    color: color-mix(in srgb, var(--error-text) 80%, white);
+    opacity: 1;
   }
   html[data-theme='dark'] .disconnect:active {
-    color: #fff0e8;
-    background: #58343b;
+    color: color-mix(in srgb, var(--error-text) 80%, white);
+    background: color-mix(in srgb, var(--error-bg) 96%, white);
   }
   html[data-theme='dark'] .source-search:focus-within {
     background: var(--surface-raised);
