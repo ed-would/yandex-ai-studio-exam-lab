@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://aistudio.yandex.ru/"><img src="https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat" alt="Тематика: Yandex AI Studio"></a>
   <a href="#банк-вопросов"><img src="https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-6841AB?style=flat" alt="Quiz: 180 вопросов"></a>
+  <a href="docs/DEVELOPMENT.md#стек-и-устройство"><img src="https://img.shields.io/badge/TypeScript-strict-6841AB?style=flat" alt="TypeScript: строгая проверка типов"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-6841AB?style=flat" alt="Лицензия MIT"></a>
 </p>
 
