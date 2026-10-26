@@ -1,0 +1,6 @@
+node_modules/
+.bin/
+.hyperframes/
+snaps/
+renders/
+audio/*.wav
