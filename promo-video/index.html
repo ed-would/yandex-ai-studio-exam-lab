@@ -1,0 +1,2389 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Unbounded";
+        font-style: normal;
+        font-weight: 200 900;
+        src: url(assets/fonts/unbounded-cyrillic-variable.woff2) format("woff2");
+        unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+      @font-face {
+        font-family: "Unbounded";
+        font-style: normal;
+        font-weight: 200 900;
+        src: url(assets/fonts/unbounded-latin-variable.woff2) format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @property --n {
+        syntax: "<integer>";
+        inherits: true;
+        initial-value: 0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #17151d;
+      }
+      #root {
+        --bg: #17151d;
+        --surface: #24212d;
+        --raised: #302b3a;
+        --line: #494152;
+        --ink: #f2edf8;
+        --muted: #b9b0c5;
+        --acc: #c5a8f2;
+        --accs: #3b304d;
+        --l1: #d3e38c;
+        --l1s: #343c27;
+        --l1p: #292e24;
+        --l2: #93d7d0;
+        --l2s: #273f40;
+        --l2p: #242f33;
+        --l3: #c5a8f2;
+        --l3s: #3b304d;
+        --l3p: #2e273d;
+        --ok: #74d680;
+        --okbg: #20372e;
+        --bad: #ff5c5c;
+        --grad: linear-gradient(110deg, #d3e38c, #93d7d0 50%, #c5a8f2);
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Arial, "Helvetica Neue", sans-serif;
+      }
+      .clip,
+      .in {
+        position: absolute;
+        inset: 0;
+      }
+      .abs {
+        position: absolute;
+      }
+      .disp {
+        font-family: "Unbounded", Arial, sans-serif;
+        font-weight: 450;
+        letter-spacing: -0.035em;
+        line-height: 1.12;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .cnt::before {
+        counter-reset: n var(--n);
+        content: counter(n);
+      }
+      .ico {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: none;
+      }
+      .gradtext {
+        background: linear-gradient(110deg, #d3e38c, #93d7d0 25%, #c5a8f2 50%, #d3e38c 75%, #93d7d0);
+        background-size: 300% 100%;
+        background-position: 0% 50%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        height: 40px;
+        padding: 0 18px;
+        border-radius: 999px;
+        font-size: 17px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+        flex: none;
+      }
+      .key {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 23px;
+        line-height: 1.4;
+        color: var(--ink);
+      }
+      .key .bar {
+        width: 6px;
+        height: 34px;
+        border-radius: 3px;
+        flex: none;
+      }
+
+      /* ------------------------------------------------ background */
+      #bg .glow {
+        position: absolute;
+        width: 1400px;
+        height: 1400px;
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+      #g1 {
+        left: -500px;
+        top: 300px;
+        background: radial-gradient(circle, rgba(211, 227, 140, 0.13), transparent 62%);
+      }
+      #g2 {
+        left: 300px;
+        top: -700px;
+        background: radial-gradient(circle, rgba(147, 215, 208, 0.12), transparent 62%);
+      }
+      #g3 {
+        left: 1000px;
+        top: 200px;
+        background: radial-gradient(circle, rgba(197, 168, 242, 0.16), transparent 62%);
+      }
+
+      /* ------------------------------------------------ S1 hook */
+      #s1-kick {
+        left: 0;
+        right: 0;
+        top: 330px;
+        text-align: center;
+        font-size: 26px;
+        color: var(--l3);
+        letter-spacing: 0.02em;
+      }
+      #s1-kick span {
+        display: inline-block;
+      }
+      #s1-q {
+        left: 0;
+        right: 0;
+        top: 400px;
+        text-align: center;
+        font-size: 104px;
+      }
+      #s1-q .ln {
+        display: block;
+      }
+      #s1-q .w {
+        display: inline-block;
+        margin: 0 0.12em;
+      }
+      #burst {
+        left: 660px;
+        top: 240px;
+        width: 600px;
+        height: 600px;
+      }
+      #s1-flash {
+        left: 460px;
+        top: 40px;
+        width: 1000px;
+        height: 1000px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(242, 237, 248, 0.9), rgba(197, 168, 242, 0.35) 30%, transparent 62%);
+        opacity: 0;
+      }
+      #s1-logo {
+        left: 224px;
+        top: 360px;
+        width: 220px;
+        height: 220px;
+        opacity: 0;
+      }
+      #s1-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      #s1-word {
+        left: 494px;
+        top: 378px;
+        font-size: 74px;
+        white-space: nowrap;
+      }
+      #s1-word .ln {
+        display: block;
+      }
+      #s1-sub {
+        left: 498px;
+        top: 488px;
+        font-size: 30px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      #s1-plat {
+        left: 498px;
+        top: 552px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 24px;
+        color: var(--muted);
+      }
+      #s1-plat img,
+      #s9-plat img {
+        height: 34px;
+        display: block;
+      }
+
+      /* ------------------------------------------------ S2 inventory */
+      #s2-kick {
+        left: 100px;
+        top: 150px;
+        font-size: 30px;
+        color: var(--muted);
+      }
+      #s2-num {
+        left: 92px;
+        top: 250px;
+        font-size: 230px;
+        font-weight: 500;
+        letter-spacing: -0.05em;
+        line-height: 1;
+      }
+      #s2-numlab {
+        left: 100px;
+        top: 500px;
+        font-size: 46px;
+      }
+      #mosaic {
+        left: 660px;
+        top: 300px;
+        width: 1182px;
+        height: 210px;
+      }
+      .tile {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        will-change: transform;
+      }
+      .tile.single {
+        border-radius: 50%;
+      }
+      .tile.match {
+        border-radius: 5px;
+        width: 24px;
+        height: 24px;
+        margin: 3px;
+      }
+      .glab {
+        top: 534px;
+        width: 354px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 600;
+      }
+      .glab b {
+        color: var(--muted);
+        font-weight: 400;
+        margin-left: 6px;
+      }
+      #s2-form {
+        left: 660px;
+        top: 640px;
+        width: 1182px;
+        text-align: center;
+        font-size: 40px;
+        white-space: nowrap;
+      }
+      #s2-form span {
+        display: inline-block;
+      }
+      #s2-form .x {
+        color: var(--muted);
+        margin: 0 0.3em;
+      }
+      #s2-legend {
+        left: 660px;
+        top: 740px;
+        width: 1182px;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        font-size: 22px;
+        color: var(--muted);
+      }
+      #s2-legend > div {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .lg {
+        width: 20px;
+        height: 20px;
+        background: var(--ink);
+        border-radius: 5px;
+      }
+      .lg.single {
+        border-radius: 50%;
+      }
+      .lg.match {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        transform: rotate(45deg);
+      }
+      #s2-chips {
+        left: 100px;
+        top: 880px;
+        display: flex;
+        gap: 16px;
+      }
+      #s2-chips .pill {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 20px;
+        height: 48px;
+        padding: 0 22px;
+      }
+
+      /* ------------------------------------------------ world */
+      #world {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5800px;
+        height: 3300px;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+      .neb {
+        position: absolute;
+        border-radius: 50%;
+      }
+      .bd {
+        position: absolute;
+        opacity: 0;
+      }
+      .bd img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+      #orbit {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5800px;
+        height: 3300px;
+        overflow: visible;
+      }
+      .comet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 220px;
+        height: 22px;
+        offset-path: path("M 700 1650 A 2200 1100 0 1 1 5100 1650 A 2200 1100 0 1 1 700 1650");
+        offset-rotate: auto;
+        offset-anchor: 90% 50%;
+        offset-distance: 0%;
+        opacity: 0;
+      }
+      .comet i {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 24px 8px currentColor;
+      }
+      .comet s {
+        position: absolute;
+        right: 10px;
+        top: 7px;
+        width: 210px;
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(90deg, transparent, currentColor);
+        opacity: 0.6;
+      }
+      .dust {
+        position: absolute;
+        border-radius: 50%;
+        will-change: transform;
+      }
+      .sc {
+        position: absolute;
+        width: 640px;
+        height: 640px;
+      }
+      .scf,
+      .scf img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .scglow {
+        position: absolute;
+        inset: -60px;
+        border-radius: 50%;
+        opacity: 0.55;
+      }
+      .wl {
+        position: absolute;
+        width: 900px;
+        text-align: center;
+        opacity: 0;
+      }
+      .wl .nm {
+        font-size: 88px;
+      }
+      .wl .ds {
+        font-size: 56px;
+        color: #d6cfe0;
+        margin-top: 16px;
+      }
+      #hub {
+        position: absolute;
+        left: 2580px;
+        top: 1330px;
+        width: 640px;
+        height: 640px;
+      }
+      #hub-halo {
+        position: absolute;
+        inset: -60px;
+        opacity: 0;
+      }
+      #hub-glow {
+        position: absolute;
+        inset: -200px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(197, 168, 242, 0.28), rgba(147, 215, 208, 0.08) 40%, transparent 65%);
+        opacity: 0;
+      }
+      #hub-logo {
+        position: absolute;
+        left: 192px;
+        top: 192px;
+        width: 256px;
+        height: 256px;
+        opacity: 0;
+      }
+      #hub-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .frame {
+        position: absolute;
+        width: 1920px;
+        height: 1080px;
+      }
+      .frame > * {
+        position: absolute;
+        opacity: 0;
+      }
+      .badge {
+        left: 760px;
+        top: 118px;
+      }
+      .h2 {
+        left: 760px;
+        top: 166px;
+        font-size: 48px;
+        white-space: nowrap;
+      }
+      .sub {
+        left: 760px;
+        top: 236px;
+        font-size: 22px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      /* F1 question */
+      .t1 .pill.lvl {
+        background: var(--l1s);
+        color: var(--l1);
+      }
+      #qcard {
+        left: 760px;
+        top: 262px;
+        width: 1080px;
+        height: 600px;
+        border-radius: 28px;
+        background: rgba(36, 33, 45, 0.94);
+        border: 1px solid rgba(211, 227, 140, 0.2);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      }
+      #qcard > * {
+        position: absolute;
+      }
+      #q-meta {
+        left: 32px;
+        top: 26px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 18px;
+      }
+      #q-meta .pill {
+        height: 32px;
+        font-size: 15px;
+        padding: 0 14px;
+        background: var(--l1s);
+        color: var(--l1);
+      }
+      #q-state {
+        right: 32px;
+        top: 26px;
+        width: 160px;
+        height: 32px;
+      }
+      #q-state .pill {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 32px;
+        font-size: 15px;
+        padding: 0 14px;
+        opacity: 0;
+      }
+      #st-draft {
+        background: var(--l3s);
+        color: var(--l3);
+      }
+      #st-ok {
+        background: var(--okbg);
+        color: var(--ok);
+      }
+      #q-text {
+        left: 32px;
+        top: 72px;
+        width: 1016px;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      #q-hint {
+        left: 32px;
+        top: 160px;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .opt {
+        left: 32px;
+        width: 1016px;
+        height: 62px;
+        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        opacity: 0;
+      }
+      .opt .ov {
+        position: absolute;
+        inset: -1px;
+        border-radius: 16px;
+        opacity: 0;
+      }
+      .opt .ov.sel {
+        border: 2px solid var(--l1);
+        background: rgba(211, 227, 140, 0.07);
+      }
+      .opt .ov.ok {
+        border: 2px solid var(--ok);
+        background: var(--okbg);
+      }
+      .opt .rad {
+        position: relative;
+        margin-left: 20px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--muted);
+        flex: none;
+      }
+      .opt .lt {
+        position: relative;
+        width: 46px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 18px;
+        flex: none;
+      }
+      .opt .tx {
+        position: relative;
+      }
+      .opt .okic {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--ok);
+        color: #17151d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+      }
+      .opt .okic .ico {
+        width: 20px;
+        height: 20px;
+        stroke-width: 3;
+      }
+      #pick {
+        left: 57px;
+        top: 225px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--l1);
+        box-shadow: 0 0 16px 4px rgba(211, 227, 140, 0.55);
+        opacity: 0;
+      }
+      #q-foot1,
+      #q-foot2 {
+        left: 32px;
+        top: 510px;
+        width: 1016px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 17px;
+        color: var(--muted);
+      }
+      #q-foot2 {
+        opacity: 0;
+      }
+      .btn {
+        height: 56px;
+        padding: 0 26px;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      #btn-check {
+        background: var(--l1);
+        color: #172327;
+      }
+      #btn-lock {
+        background: var(--l1s);
+        color: var(--l1);
+      }
+      #q-src {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--l1);
+        font-size: 18px;
+      }
+      .box {
+        left: 32px;
+        width: 1016px;
+        border-radius: 18px;
+        padding: 16px 22px;
+        opacity: 0;
+      }
+      #q-expl {
+        top: 284px;
+        height: 112px;
+        background: var(--raised);
+        border: 1px solid var(--line);
+      }
+      #q-take {
+        top: 408px;
+        height: 90px;
+        background: var(--l1p);
+        border: 1px solid rgba(211, 227, 140, 0.35);
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .box h4 {
+        font-size: 17px;
+        margin-bottom: 6px;
+      }
+      .box p {
+        font-size: 19px;
+        line-height: 1.45;
+      }
+      #q-take .ico {
+        color: var(--l1);
+        width: 30px;
+        height: 30px;
+      }
+      .t1 .key .bar {
+        background: var(--l1);
+      }
+      .keypos {
+        left: 760px;
+        top: 900px;
+      }
+
+      /* F2 formats */
+      .t2 .pill.lvl {
+        background: var(--l2s);
+        color: var(--l2);
+      }
+      .tok {
+        width: 520px;
+      }
+      .tok .edge,
+      .tok .plate {
+        position: absolute;
+        inset: 0;
+      }
+      .tok .edge {
+        background: var(--l2);
+        opacity: 0.85;
+        transform: translate(-7px, 9px);
+      }
+      .tok .plate {
+        background: linear-gradient(180deg, #2f2a3b, #231f2b);
+        box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.06), 0 18px 40px rgba(0, 0, 0, 0.4);
+      }
+      #tk1,
+      #tk2 {
+        height: 120px;
+      }
+      #tk3 {
+        height: 190px;
+      }
+      #tk1 .edge,
+      #tk1 .plate {
+        border-radius: 60px;
+      }
+      #tk2 .edge,
+      #tk2 .plate,
+      #tk3 .edge,
+      #tk3 .plate {
+        border-radius: 28px;
+      }
+      .hole {
+        position: absolute;
+        width: 66px;
+        height: 66px;
+        border-radius: 50%;
+        background: #17151d;
+        border: 3px solid rgba(147, 215, 208, 0.55);
+        box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.6);
+        top: 27px;
+      }
+      .sq {
+        position: absolute;
+        width: 62px;
+        height: 62px;
+        border-radius: 12px;
+        background: #17151d;
+        border: 3px solid rgba(147, 215, 208, 0.55);
+        box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.6);
+        top: 29px;
+      }
+      .sq svg {
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        width: 44px;
+        height: 44px;
+        overflow: visible;
+      }
+      #ball {
+        position: absolute;
+        left: 175px;
+        top: 38px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #e3fbf7, #93d7d0 45%, #3f8f88);
+        box-shadow: 0 0 22px rgba(147, 215, 208, 0.55);
+      }
+      .node {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #17151d;
+        border: 3px solid rgba(147, 215, 208, 0.45);
+      }
+      .node i {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+      }
+      #wires {
+        position: absolute;
+        inset: 0;
+        overflow: visible;
+      }
+      .flab {
+        left: 1320px;
+        width: 520px;
+      }
+      .flab .nm {
+        font-size: 32px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .flab .pill {
+        height: 32px;
+        font-size: 15px;
+        padding: 0 14px;
+        background: var(--l2s);
+        color: var(--l2);
+        letter-spacing: 0;
+        font-family: Arial, "Helvetica Neue", sans-serif;
+      }
+      .flab .ds {
+        font-size: 20px;
+        color: var(--muted);
+        margin-top: 12px;
+        line-height: 1.4;
+      }
+      #timer {
+        left: 30px;
+        top: 170px;
+        width: 740px;
+        height: 740px;
+        overflow: visible;
+      }
+      #tlab {
+        left: 100px;
+        top: 905px;
+        width: 600px;
+        text-align: center;
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 14px;
+      }
+      #tlab .cnt {
+        font-size: 64px;
+        color: var(--l2);
+      }
+      #tlab span {
+        font-size: 24px;
+        color: var(--muted);
+      }
+      .t2 .key .bar {
+        background: var(--l2);
+      }
+
+      /* F3 results */
+      .t3 .pill.lvl {
+        background: var(--l3s);
+        color: var(--l3);
+      }
+      .t3 .badge,
+      .t3 .h2,
+      .t3 .sub {
+        left: 80px;
+      }
+      #ring {
+        left: 100px;
+        top: 300px;
+        width: 300px;
+        height: 300px;
+        overflow: visible;
+      }
+      #ring-num {
+        left: 100px;
+        top: 392px;
+        width: 300px;
+        text-align: center;
+        color: var(--ok);
+      }
+      #ring-num .cnt {
+        font-size: 82px;
+      }
+      #ring-num span {
+        font-size: 36px;
+        margin-left: 4px;
+      }
+      #ring-cap {
+        left: 100px;
+        top: 486px;
+        width: 300px;
+        text-align: center;
+        font-size: 17px;
+        color: var(--ok);
+      }
+      #demo {
+        left: 100px;
+        top: 614px;
+        width: 300px;
+        text-align: center;
+        font-size: 16px;
+        color: var(--muted);
+        font-style: italic;
+      }
+      .fact {
+        top: 310px;
+        width: 220px;
+        height: 104px;
+        border-radius: 20px;
+        background: var(--l3p);
+        border: 1px solid rgba(197, 168, 242, 0.22);
+        padding: 16px 20px;
+      }
+      .fact .lb {
+        font-size: 17px;
+        color: var(--muted);
+      }
+      .fact .vl {
+        font-size: 40px;
+        margin-top: 8px;
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .fact .vl small {
+        font-size: 20px;
+        color: var(--muted);
+      }
+      .dbar {
+        width: 340px;
+        height: 46px;
+      }
+      .dbar .row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 17px;
+      }
+      .dbar .row b {
+        font-weight: 600;
+      }
+      .dbar .track {
+        position: absolute;
+        left: 0;
+        top: 30px;
+        width: 340px;
+        height: 8px;
+        border-radius: 4px;
+        background: var(--l3s);
+      }
+      .dbar .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 340px;
+        height: 8px;
+        border-radius: 4px;
+        background: var(--l3);
+        transform-origin: 0 50%;
+      }
+      #rec-h {
+        left: 80px;
+        top: 668px;
+        font-size: 26px;
+      }
+      #rec {
+        left: 80px;
+        top: 720px;
+        display: flex;
+        gap: 14px;
+      }
+      #rec .pill {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        height: 46px;
+        font-size: 18px;
+        font-weight: 400;
+      }
+      #rec .pill b {
+        color: var(--bad);
+        font-weight: 600;
+      }
+      #btn-rep {
+        left: 80px;
+        top: 806px;
+        background: var(--l3);
+        color: #172327;
+        height: 62px;
+      }
+      #btn-rep .ico {
+        width: 26px;
+        height: 26px;
+        stroke-width: 2.2;
+      }
+      #rep-cap {
+        left: 500px;
+        top: 826px;
+        font-size: 20px;
+        color: var(--muted);
+      }
+      .t3 .keypos {
+        left: 80px;
+        top: 920px;
+      }
+      .t3 .key .bar {
+        background: var(--l3);
+      }
+      .conf {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        opacity: 0;
+      }
+
+      /* hub materials */
+      #fh .hh {
+        left: 0;
+        width: 1920px;
+        top: 112px;
+        text-align: center;
+        font-size: 54px;
+      }
+      #fh .hs {
+        left: 0;
+        width: 1920px;
+        top: 190px;
+        text-align: center;
+        font-size: 23px;
+        color: var(--muted);
+      }
+      .dom {
+        width: 400px;
+        height: 104px;
+        border-radius: 22px;
+        background: rgba(46, 39, 61, 0.92);
+        border: 1px solid rgba(197, 168, 242, 0.28);
+        padding: 16px 22px;
+      }
+      .dom .nr {
+        font-family: "Unbounded", Arial, sans-serif;
+        font-size: 18px;
+        color: var(--l3);
+      }
+      .dom .nm {
+        font-size: 22px;
+        font-weight: 600;
+        position: absolute;
+        left: 70px;
+        top: 15px;
+      }
+      .dom .wt {
+        position: absolute;
+        left: 22px;
+        top: 58px;
+        font-size: 16px;
+        color: var(--muted);
+      }
+      .dom .wtrack {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        top: 84px;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--l3s);
+      }
+      .dom .wfill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 356px;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--l3);
+        transform-origin: 0 50%;
+      }
+      #hlines {
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: visible;
+      }
+      #fh .srcs {
+        left: 0;
+        width: 1920px;
+        top: 900px;
+        display: flex;
+        justify-content: center;
+      }
+      #fh .srcs .pill {
+        background: var(--l3p);
+        color: var(--ink);
+        border: 1px solid rgba(197, 168, 242, 0.28);
+        height: 52px;
+        font-size: 20px;
+        font-weight: 400;
+        padding: 0 24px;
+      }
+      #fh .srcs .ico {
+        color: var(--l3);
+      }
+
+      /* ------------------------------------------------ wide heading */
+      #s3h-back {
+        left: 0;
+        right: 0;
+        top: 760px;
+        height: 320px;
+        background: radial-gradient(ellipse 34% 48% at 50% 62%, rgba(23, 21, 29, 0.88), transparent);
+        opacity: 0;
+      }
+      #s3h-t {
+        left: 0;
+        right: 0;
+        top: 846px;
+        text-align: center;
+        font-size: 54px;
+      }
+      .s3h-s {
+        left: 0;
+        right: 0;
+        top: 930px;
+        text-align: center;
+        font-size: 26px;
+        color: var(--muted);
+        opacity: 0;
+      }
+
+      /* ------------------------------------------------ HUD */
+      #hud-band {
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 120px;
+        background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 92%, transparent), transparent);
+      }
+      #hud-logo {
+        left: 40px;
+        top: 26px;
+        width: 48px;
+        height: 48px;
+      }
+      #hud-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      #hud-word {
+        left: 102px;
+        top: 28px;
+        font-size: 21px;
+        white-space: nowrap;
+      }
+      #hud-tag {
+        left: 102px;
+        top: 57px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .nav {
+        top: 38px;
+        width: 170px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+        opacity: 0.5;
+      }
+      #nav-ind {
+        top: 70px;
+        left: 745px;
+        width: 90px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--grad);
+      }
+
+      /* ------------------------------------------------ S8 progress */
+      #s8in {
+        --ms: 0px;
+        background: var(--bg);
+        -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-500 -500 1000 1000'><g fill='white'><path d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(72)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(144)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(216)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(288)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><circle r='190'/></g></svg>");
+        mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-500 -500 1000 1000'><g fill='white'><path d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(72)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(144)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(216)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><path transform='rotate(288)' d='M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z'/><circle r='190'/></g></svg>");
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-size: var(--ms) var(--ms);
+        mask-size: var(--ms) var(--ms);
+      }
+      #s8in > * {
+        position: absolute;
+        opacity: 0;
+      }
+      #s8-h {
+        left: 120px;
+        top: 150px;
+        font-size: 60px;
+        white-space: nowrap;
+      }
+      #s8-s {
+        left: 120px;
+        top: 240px;
+        font-size: 25px;
+        color: var(--muted);
+      }
+      #toggle {
+        left: 1700px;
+        top: 146px;
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        color: var(--acc);
+      }
+      #toggle svg {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        width: 34px;
+        height: 34px;
+      }
+      #tg-cap {
+        left: 1380px;
+        top: 240px;
+        width: 398px;
+        text-align: right;
+        font-size: 19px;
+        color: var(--muted);
+      }
+      #hist {
+        left: 120px;
+        top: 330px;
+        width: 900px;
+        height: 560px;
+        border-radius: 28px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+      #hist > * {
+        position: absolute;
+      }
+      #hist-h {
+        left: 36px;
+        top: 32px;
+        font-size: 28px;
+      }
+      #hist-n {
+        right: 36px;
+        top: 40px;
+        font-size: 17px;
+        color: var(--muted);
+        font-style: italic;
+      }
+      .hb {
+        bottom: 70px;
+        width: 70px;
+        border-radius: 14px 14px 6px 6px;
+        background: var(--acc);
+        transform-origin: 50% 100%;
+      }
+      .hbl {
+        bottom: 30px;
+        width: 70px;
+        text-align: center;
+        font-size: 16px;
+        color: var(--muted);
+      }
+      #goal {
+        left: 36px;
+        right: 36px;
+        height: 0;
+        border-top: 2px dashed var(--ok);
+      }
+      #goal span {
+        position: absolute;
+        left: 0;
+        top: -30px;
+        font-size: 16px;
+        color: var(--ok);
+      }
+      .file {
+        left: 1100px;
+        width: 700px;
+        height: 250px;
+        border-radius: 28px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+      #file1 {
+        top: 330px;
+      }
+      #file2 {
+        top: 640px;
+      }
+      .file .doc {
+        position: absolute;
+        left: 36px;
+        top: 40px;
+        width: 128px;
+        height: 166px;
+        border-radius: 16px;
+        background: var(--raised);
+        border: 2px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Unbounded", Arial, sans-serif;
+        font-size: 34px;
+        color: var(--acc);
+      }
+      .file .doc::after {
+        content: "";
+        position: absolute;
+        right: -2px;
+        top: -2px;
+        width: 34px;
+        height: 34px;
+        border-radius: 0 14px 0 10px;
+        background: var(--line);
+      }
+      .file .ft {
+        position: absolute;
+        left: 200px;
+        top: 52px;
+        font-size: 34px;
+      }
+      .file .fd {
+        position: absolute;
+        left: 200px;
+        top: 108px;
+        width: 460px;
+        font-size: 21px;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+      #s8-key {
+        left: 120px;
+        top: 940px;
+      }
+      #s8-key .bar {
+        background: var(--acc);
+      }
+
+      /* ------------------------------------------------ wipe + finale */
+      #wipe-bar {
+        left: 0;
+        top: -200px;
+        width: 520px;
+        height: 1480px;
+        background: linear-gradient(90deg, #d3e38c, #93d7d0 50%, #c5a8f2);
+        transform-origin: 50% 50%;
+      }
+      #s9in {
+        background: #17151d;
+      }
+      #s9in > * {
+        position: absolute;
+      }
+      #s9-glow {
+        left: 500px;
+        top: -300px;
+        width: 1700px;
+        height: 1700px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(197, 168, 242, 0.22), rgba(147, 215, 208, 0.07) 40%, transparent 64%);
+        opacity: 0;
+      }
+      .fsc {
+        left: 780px;
+        top: 360px;
+        width: 360px;
+        height: 360px;
+      }
+      .fsc img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      #s9-flash {
+        left: 460px;
+        top: 40px;
+        width: 1000px;
+        height: 1000px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(197, 168, 242, 0.4) 28%, transparent 62%);
+        opacity: 0;
+      }
+      #hero {
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+      #hero img {
+        position: absolute;
+        left: 428px;
+        top: 60px;
+        width: 1500px;
+        height: 1000px;
+        -webkit-mask-image: radial-gradient(circle at 35.5% 48%, #000 28%, transparent 56%);
+        mask-image: radial-gradient(circle at 35.5% 48%, #000 28%, transparent 56%);
+      }
+      #s9-logo {
+        left: 120px;
+        top: 150px;
+        width: 140px;
+        height: 140px;
+        opacity: 0;
+      }
+      #s9-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .s9w {
+        left: 116px;
+        font-size: 92px;
+        white-space: nowrap;
+        opacity: 0;
+      }
+      #s9-w1 {
+        top: 318px;
+      }
+      #s9-w2 {
+        top: 424px;
+      }
+      #s9-sub {
+        left: 122px;
+        top: 562px;
+        font-size: 30px;
+        opacity: 0;
+      }
+      #s9-plat {
+        left: 122px;
+        top: 612px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 26px;
+        color: var(--muted);
+        opacity: 0;
+      }
+      #s9-stats {
+        left: 122px;
+        top: 712px;
+        display: flex;
+        gap: 56px;
+        align-items: baseline;
+      }
+      #s9-stats > div {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        font-size: 26px;
+        opacity: 0;
+      }
+      #s9-stats .cnt {
+        font-family: "Unbounded", Arial, sans-serif;
+        font-size: 64px;
+      }
+      #cta {
+        left: 122px;
+        top: 840px;
+        height: 76px;
+        padding: 0 36px;
+        border-radius: 20px;
+        background: var(--grad);
+        color: #172327;
+        font-size: 26px;
+        opacity: 0;
+      }
+      #cta .ico {
+        width: 28px;
+        height: 28px;
+        stroke-width: 2.2;
+      }
+      #s9-url {
+        left: 560px;
+        top: 866px;
+        font-size: 22px;
+        color: var(--muted);
+        opacity: 0;
+      }
+      #s9-disc {
+        left: 122px;
+        top: 1000px;
+        font-size: 17px;
+        color: var(--muted);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="85" data-width="1920" data-height="1080">
+      <svg width="0" height="0" style="position: absolute">
+        <defs>
+          <linearGradient id="pg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="-70" y2="-400">
+            <stop offset="0" stop-color="#1d4f58" />
+            <stop offset="0.22" stop-color="#3f3a8f" />
+            <stop offset="0.55" stop-color="#8f73dc" />
+            <stop offset="0.85" stop-color="#cbb8f7" />
+            <stop offset="1" stop-color="#efe8ff" />
+          </linearGradient>
+          <radialGradient id="pl" gradientUnits="userSpaceOnUse" cx="-150" cy="-300" r="150">
+            <stop offset="0" stop-color="#e6efa9" stop-opacity="0.75" />
+            <stop offset="1" stop-color="#e6efa9" stop-opacity="0" />
+          </radialGradient>
+          <g id="petal">
+            <path d="M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z" fill="url(#pg)" />
+            <path d="M0 0 C70 -40 135 -175 70 -310 C25 -410 -125 -430 -180 -335 C-225 -255 -160 -115 0 0 Z" fill="url(#pl)" />
+            <path d="M14 -22 C78 -82 120 -200 66 -300" fill="none" stroke="#e6efa9" stroke-width="14" stroke-linecap="round" opacity="0.7" />
+          </g>
+          <linearGradient id="og" gradientUnits="userSpaceOnUse" x1="700" y1="0" x2="5100" y2="0">
+            <stop offset="0" stop-color="#d3e38c" />
+            <stop offset="0.5" stop-color="#93d7d0" />
+            <stop offset="1" stop-color="#c5a8f2" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <!-- persistent background -->
+      <div id="bg" class="clip" data-start="0" data-duration="85" data-track-index="0">
+        <div id="g1" class="glow"></div>
+        <div id="g2" class="glow"></div>
+        <div id="g3" class="glow"></div>
+      </div>
+
+      <!-- S1 hook + logo bloom -->
+      <div id="s1" class="clip" data-start="0" data-duration="7" data-track-index="1">
+        <div class="in" id="s1in">
+          <div id="s1-kick" class="abs"><span>Экзамен «Основы работы с ИИ»</span></div>
+          <div id="s1-q" class="abs disp">
+            <span class="ln"><span class="w">Как</span><span class="w">подготовиться</span></span>
+            <span class="ln"><span class="w">к</span><span class="w">экзамену?</span></span>
+          </div>
+          <div id="s1-flash" class="abs"></div>
+          <svg id="burst" class="abs" viewBox="-500 -500 1000 1000">
+            <g class="pa"><g transform="rotate(0)"><use href="#petal" /></g></g>
+            <g class="pa"><g transform="rotate(72)"><use href="#petal" /></g></g>
+            <g class="pa"><g transform="rotate(144)"><use href="#petal" /></g></g>
+            <g class="pa"><g transform="rotate(216)"><use href="#petal" /></g></g>
+            <g class="pa"><g transform="rotate(288)"><use href="#petal" /></g></g>
+            <circle class="pc" r="46" fill="#241a4a" />
+          </svg>
+          <div id="s1-lock" class="abs" style="inset: 0">
+            <div id="s1-logo" class="abs"><img src="assets/img/logo-flower.webp" alt="" /></div>
+            <div id="s1-word" class="abs disp gradtext">Тренажёр компетенций ИИ</div>
+            <div id="s1-sub" class="abs">Практика перед экзаменом «Основы работы с ИИ»</div>
+            <div id="s1-plat" class="abs">на платформе <img src="assets/img/ai-studio.svg" alt="Yandex AI Studio" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2 inventory mosaic -->
+      <div id="s2" class="clip" data-start="6.7" data-duration="8.2" data-track-index="2">
+        <div class="in" id="s2in">
+          <div id="s2-kick" class="abs">Что внутри</div>
+          <div id="s2-num" class="abs disp cnt"></div>
+          <div id="s2-numlab" class="abs disp">вопросов</div>
+          <div id="mosaic" class="abs"></div>
+          <div class="abs glab" style="left: 660px; color: var(--l1)">Базовый<b>60</b></div>
+          <div class="abs glab" style="left: 1074px; color: var(--l2)">Продвинутый<b>60</b></div>
+          <div class="abs glab" style="left: 1488px; color: var(--l3)">Экспертный<b>60</b></div>
+          <div id="s2-form" class="abs disp">
+            <span id="fm1">3 уровня</span><span class="x" id="fx1">×</span><span id="fm2">6 доменов</span><span class="x" id="fx2">×</span><span id="fm3">10 заданий</span>
+          </div>
+          <div id="s2-legend" class="abs">
+            <div><i class="lg single"></i>4 с одним ответом</div>
+            <div><i class="lg"></i>4 мультивыбора</div>
+            <div><i class="lg match"></i>2 сопоставления</div>
+            <div>— в каждом домене уровня</div>
+          </div>
+          <div id="s2-chips" class="abs">
+            <span class="pill">Авторские вопросы</span>
+            <span class="pill">Разбор каждого варианта</span>
+            <span class="pill">Без регистрации</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORLD: orbit of three trajectories -->
+      <div id="w" class="clip" data-start="14.2" data-duration="53.4" data-track-index="3">
+        <div class="in" id="win">
+          <div id="world">
+            <div class="neb" style="left: 0; top: 1200px; width: 1900px; height: 1900px; background: radial-gradient(circle, rgba(211, 227, 140, 0.1), transparent 62%)"></div>
+            <div class="neb" style="left: 1950px; top: -400px; width: 1900px; height: 1900px; background: radial-gradient(circle, rgba(147, 215, 208, 0.1), transparent 62%)"></div>
+            <div class="neb" style="left: 3950px; top: 1200px; width: 1900px; height: 1900px; background: radial-gradient(circle, rgba(197, 168, 242, 0.12), transparent 62%)"></div>
+
+            <div class="bd" id="bd1" style="left: 506px; top: 1680px; width: 1920px; height: 874px; -webkit-mask-image: radial-gradient(ellipse 55% 60% at 68% 50%, #000 30%, transparent 100%); mask-image: radial-gradient(ellipse 55% 60% at 68% 50%, #000 30%, transparent 100%)"><img src="assets/img/banner-1.webp" alt="" /></div>
+            <div class="bd" id="bd2" style="left: 2500px; top: 113px; width: 1920px; height: 874px; -webkit-mask-image: radial-gradient(ellipse 55% 60% at 68% 50%, #000 30%, transparent 100%); mask-image: radial-gradient(ellipse 55% 60% at 68% 50%, #000 30%, transparent 100%)"><img src="assets/img/banner-2.webp" alt="" /></div>
+            <div class="bd" id="bd3" style="left: 3374px; top: 1575px; width: 1920px; height: 1080px; -webkit-mask-image: radial-gradient(ellipse 55% 60% at 62% 50%, #000 30%, transparent 100%); mask-image: radial-gradient(ellipse 55% 60% at 62% 50%, #000 30%, transparent 100%)"><img src="assets/img/result-3.webp" alt="" /></div>
+            <div class="bd" id="bdh" style="left: 1850px; top: 950px; width: 2100px; height: 1400px; -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 20%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 20%, transparent 100%)"><img src="assets/img/study-night.webp" alt="" /></div>
+
+            <svg id="orbit" viewBox="0 0 5800 3300">
+              <ellipse cx="2900" cy="1650" rx="2380" ry="1250" fill="none" stroke="rgba(242,237,248,0.07)" stroke-width="4" stroke-dasharray="6 22" id="orbit2" />
+              <path id="orbit1" d="M 700 1650 A 2200 1100 0 1 1 5100 1650 A 2200 1100 0 1 1 700 1650" pathLength="1" fill="none" stroke="url(#og)" stroke-width="7" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" opacity="0.85" />
+            </svg>
+            <div class="comet" id="cm1" style="color: #d3e38c"><s></s><i></i></div>
+            <div class="comet" id="cm2" style="color: #93d7d0"><s></s><i></i></div>
+            <div class="comet" id="cm3" style="color: #c5a8f2"><s></s><i></i></div>
+
+            <div id="dustlayer"></div>
+
+            <div id="hub">
+              <div id="hub-glow"></div>
+              <svg id="hub-halo" viewBox="-500 -500 1000 1000">
+                <g transform="rotate(0)"><use href="#petal" /></g>
+                <g transform="rotate(72)"><use href="#petal" /></g>
+                <g transform="rotate(144)"><use href="#petal" /></g>
+                <g transform="rotate(216)"><use href="#petal" /></g>
+                <g transform="rotate(288)"><use href="#petal" /></g>
+              </svg>
+              <div id="hub-logo"><img src="assets/img/logo-flower.webp" alt="" /></div>
+            </div>
+
+            <div class="sc" id="sc1" style="left: 586px; top: 1795px">
+              <div class="scglow" style="background: radial-gradient(circle, rgba(211, 227, 140, 0.22), transparent 65%)"></div>
+              <div class="scf"><img src="assets/img/sculpt-1.webp" alt="" /></div>
+            </div>
+            <div class="sc" id="sc2" style="left: 2580px; top: 230px">
+              <div class="scglow" style="background: radial-gradient(circle, rgba(147, 215, 208, 0.22), transparent 65%)"></div>
+              <div class="scf"><img src="assets/img/sculpt-2.webp" alt="" /></div>
+            </div>
+            <div class="sc" id="sc3" style="left: 4574px; top: 1795px">
+              <div class="scglow" style="background: radial-gradient(circle, rgba(197, 168, 242, 0.24), transparent 65%)"></div>
+              <div class="scf"><img src="assets/img/sculpt-3.webp" alt="" /></div>
+            </div>
+
+            <div class="wl" id="wl1" style="left: 456px; top: 2470px"><div class="nm disp" style="color: var(--l1)">1 · Базовый</div><div class="ds">основные понятия ИИ</div></div>
+            <div class="wl" id="wl2" style="left: 2450px; top: 905px"><div class="nm disp" style="color: var(--l2)">2 · Продвинутый</div><div class="ds">выбор подхода и ошибки</div></div>
+            <div class="wl" id="wl3" style="left: 4444px; top: 2470px"><div class="nm disp" style="color: var(--l3)">3 · Экспертный</div><div class="ds">несколько ограничений сразу</div></div>
+
+            <!-- F1: Базовый, вопрос и разбор -->
+            <div class="frame t1" id="f1" style="left: 506px; top: 1575px">
+              <div class="badge"><span class="pill lvl"><i class="dot"></i>Уровень 1 · Базовый</span></div>
+              <div class="h2 disp">Как проходит вопрос?</div>
+              <div id="qcard">
+                <div id="q-meta"><b>Вопрос 01</b><span class="muted">/ 60</span><span class="pill">Один ответ</span><span class="muted">Домен 1 · Основы ИИ</span></div>
+                <div id="q-state"><span class="pill" id="st-draft"><i class="dot"></i>Черновик</span><span class="pill" id="st-ok"><i class="dot"></i>Верно · 1 балл</span></div>
+                <div id="q-text">Какая ситуация лучше всего показывает использование машинного обучения?</div>
+                <div id="q-hint">Выбери один верный вариант.</div>
+                <div class="opt" id="oA" style="top: 200px"><div class="ov sel"></div><div class="rad"></div><div class="lt">А</div><div class="tx">Сервис присылает напоминание ровно в указанное пользователем время.</div></div>
+                <div class="opt" id="oB" style="top: 272px"><div class="ov sel"></div><div class="ov ok"></div><div class="rad"></div><div class="okic"><svg class="ico" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg></div><div class="lt">Б</div><div class="tx">Фильтр распознаёт спам, обучившись на размеченных письмах.</div></div>
+                <div class="opt" id="oC" style="top: 344px"><div class="rad"></div><div class="lt">В</div><div class="tx">Таблица умножает цену на количество по записанной формуле.</div></div>
+                <div class="opt" id="oD" style="top: 416px"><div class="rad"></div><div class="lt">Г</div><div class="tx">Форма отклоняет пароль, если в нём меньше восьми символов.</div></div>
+                <div id="pick"></div>
+                <div class="box" id="q-expl"><h4 class="muted">Разбор</h4><p>Модель вывела закономерности из примеров и применяет их к новым данным. В остальных вариантах поведение полностью задано готовым правилом.</p></div>
+                <div class="box" id="q-take">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /><path d="M9 18h6" /><path d="M10 22h4" /></svg>
+                  <div><h4 style="color: var(--l1)">Запомнить</h4><p>Ищите обучение на примерах, а не только автоматическое выполнение действий.</p></div>
+                </div>
+                <div id="q-foot1"><span>Ответ засчитывается после проверки.</span><span class="btn" id="btn-check">Проверить <svg class="ico" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg></span></div>
+                <div id="q-foot2">
+                  <span id="q-src"><svg class="ico" viewBox="0 0 24 24"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>Источники: Google for Developers · Yandex Cloud</span>
+                  <span class="btn" id="btn-lock"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>Ответ зафиксирован</span>
+                </div>
+              </div>
+              <div class="keypos key" id="k1"><i class="bar"></i><span>Проверенный ответ не меняется: новую оценку даёт новая попытка.</span></div>
+            </div>
+
+            <!-- F2: Продвинутый, форматы и таймер -->
+            <div class="frame t2" id="f2" style="left: 2500px; top: 10px">
+              <div class="badge"><span class="pill lvl"><i class="dot"></i>Уровень 2 · Продвинутый</span></div>
+              <div class="h2 disp">Выбрать. Отметить. Связать.</div>
+              <div class="sub">Три формата заданий: вид ответа меняется от вопроса к вопросу.</div>
+              <svg id="timer" viewBox="0 0 740 740"></svg>
+              <div id="tlab"><b class="cnt disp"></b><span>секунды на вопрос</span></div>
+
+              <div class="tok" id="tk1" style="left: 760px; top: 300px">
+                <div class="edge"></div>
+                <div class="plate"></div>
+                <div class="hole" style="left: 46px"></div>
+                <div class="hole" style="left: 164px"></div>
+                <div class="hole" style="left: 282px"></div>
+                <div class="hole" style="left: 400px"></div>
+                <div id="ball"></div>
+              </div>
+              <div class="flab" id="fl1" style="top: 306px"><div class="nm disp">Один ответ <span class="pill">72 задания</span></div><div class="ds">Один правильный вариант из четырёх</div></div>
+
+              <div class="tok" id="tk2" style="left: 760px; top: 462px">
+                <div class="edge"></div>
+                <div class="plate"></div>
+                <div class="sq" style="left: 34px"></div>
+                <div class="sq" style="left: 128px"><svg viewBox="0 0 44 44"><path class="chk" d="M8 23 L18 33 L37 11" pathLength="1" fill="none" stroke="#93d7d0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1" /></svg></div>
+                <div class="sq" style="left: 222px"></div>
+                <div class="sq" style="left: 316px"><svg viewBox="0 0 44 44"><path class="chk" d="M8 23 L18 33 L37 11" pathLength="1" fill="none" stroke="#93d7d0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1" /></svg></div>
+                <div class="sq" style="left: 410px"><svg viewBox="0 0 44 44"><path class="chk" d="M8 23 L18 33 L37 11" pathLength="1" fill="none" stroke="#93d7d0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1" /></svg></div>
+              </div>
+              <div class="flab" id="fl2" style="top: 468px"><div class="nm disp">Мультивыбор <span class="pill">72 задания</span></div><div class="ds">Весь набор верных из пяти вариантов, частичного зачёта нет</div></div>
+
+              <div class="tok" id="tk3" style="left: 760px; top: 624px">
+                <div class="edge"></div>
+                <div class="plate"></div>
+                <svg id="wires" viewBox="0 0 520 190">
+                  <path class="wire" d="M70 40 C 260 40, 260 95, 450 95" pathLength="1" fill="none" stroke="#93d7d0" stroke-width="8" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" />
+                  <path class="wire" d="M70 95 C 260 95, 260 150, 450 150" pathLength="1" fill="none" stroke="#c2ece7" stroke-width="8" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" />
+                  <path class="wire" d="M70 150 C 260 150, 260 40, 450 40" pathLength="1" fill="none" stroke="#4fa39b" stroke-width="8" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" />
+                </svg>
+                <div class="node" style="left: 50px; top: 20px"><i style="background: #93d7d0"></i></div>
+                <div class="node" style="left: 50px; top: 75px"><i style="background: #c2ece7"></i></div>
+                <div class="node" style="left: 50px; top: 130px"><i style="background: #4fa39b"></i></div>
+                <div class="node" style="left: 430px; top: 20px"><i style="background: #4fa39b"></i></div>
+                <div class="node" style="left: 430px; top: 75px"><i style="background: #93d7d0"></i></div>
+                <div class="node" style="left: 430px; top: 130px"><i style="background: #c2ece7"></i></div>
+              </div>
+              <div class="flab" id="fl3" style="top: 660px"><div class="nm disp">Сопоставление <span class="pill">36 заданий</span></div><div class="ds">Связать все пары двух колонок</div></div>
+
+              <div class="keypos key" id="k2"><i class="bar"></i><span>Таймер по желанию: 72 секунды на вопрос, темп 60 минут на 50 вопросов.</span></div>
+            </div>
+
+            <!-- F3: Экспертный, результат -->
+            <div class="frame t3" id="f3" style="left: 3374px; top: 1575px">
+              <div class="badge"><span class="pill lvl"><i class="dot"></i>Уровень 3 · Экспертный</span></div>
+              <div class="h2 disp">Где пробелы?</div>
+              <div class="sub">Итог, карта доменов и темы для повторения.</div>
+              <svg id="ring" viewBox="0 0 300 300">
+                <circle cx="150" cy="150" r="125" fill="rgba(46,39,61,0.95)" stroke="#3b304d" stroke-width="20" />
+                <path id="ring-arc" d="M150 25 A125 125 0 1 1 149.99 25" pathLength="1" fill="none" stroke="#c5a8f2" stroke-width="20" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" />
+              </svg>
+              <div id="ring-num" class="disp"><b class="cnt"></b><span>%</span></div>
+              <div id="ring-cap">Цель достигнута</div>
+              <div id="demo">демонстрационный пример</div>
+              <div class="fact" id="fa1" style="left: 440px"><div class="lb">Верно</div><div class="vl disp" style="color: var(--ok)"><b class="cnt"></b><small>/ 60</small></div></div>
+              <div class="fact" id="fa2" style="left: 680px"><div class="lb">Ошибки</div><div class="vl disp" style="color: var(--bad)"><b class="cnt"></b></div></div>
+              <div class="fact" id="fa3" style="left: 920px"><div class="lb">Пропущено</div><div class="vl disp"><b>0</b></div></div>
+              <div id="dbars"></div>
+              <div id="rec-h" class="disp">Что подтянуть в первую очередь</div>
+              <div id="rec" style="opacity: 1">
+                <span class="pill">Применение в работе · <b>3 ошибки</b></span>
+                <span class="pill">Ценность для бизнеса · <b>3 ошибки</b></span>
+              </div>
+              <div class="btn" id="btn-rep"><svg class="ico" id="rep-ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>Работа над ошибками (12)</div>
+              <div id="rep-cap">Отдельная попытка по ошибкам и пропускам</div>
+              <div class="keypos key" id="k3"><i class="bar"></i><span>Разбор фильтруется: ошибки, пропуски, закладки, домены.</span></div>
+            </div>
+
+            <!-- Hub: материалы -->
+            <div class="frame" id="fh" style="left: 1940px; top: 1110px">
+              <div class="hh disp">Карта подготовки</div>
+              <div class="hs">Короткие опоры по шести доменам и открытые источники</div>
+              <svg id="hlines" viewBox="0 0 1920 1080"></svg>
+              <div class="srcs" id="hsrc"><span class="pill"><svg class="ico" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>Документация AI Studio · Yandex Cloud · Google for Developers · 7 рекомендаций программы</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- wide-shot heading -->
+      <div id="s3h" class="clip" data-start="16.3" data-duration="6.1" data-track-index="4">
+        <div class="in">
+          <div id="s3h-back" class="abs"></div>
+          <div id="s3h-t" class="abs disp" style="opacity: 0">Выбери свою точку старта</div>
+          <div class="abs s3h-s" id="s3h-s1">Три уровня по 60 заданий. Все открыты сразу.</div>
+          <div class="abs s3h-s" id="s3h-s2">Рекомендуем по порядку: от базового к экспертному.</div>
+        </div>
+      </div>
+
+      <!-- S8 progress + theme -->
+      <div id="s8" class="clip" data-start="66.4" data-duration="9.5" data-track-index="6">
+        <div class="in" id="s8in">
+          <div id="s8-h" class="disp">Прогресс остаётся у тебя</div>
+          <div id="s8-s">Хранится в браузере: без аккаунта, сервера и регистрации.</div>
+          <div id="toggle">
+            <svg class="ico" id="ic-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
+            <svg class="ico" id="ic-sun" viewBox="0 0 24 24" style="opacity: 0"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>
+          </div>
+          <div id="tg-cap">Светлая и тёмная темы</div>
+          <div id="hist">
+            <div id="hist-h" class="disp">История попыток</div>
+            <div id="hist-n">условные данные</div>
+            <div id="goal"><span>цель 80%</span></div>
+          </div>
+          <div class="file" id="file1"><div class="doc">{ }</div><div class="ft disp">JSON-копия</div><div class="fd">Переносит весь прогресс в другой браузер или на другое устройство.</div></div>
+          <div class="file" id="file2"><div class="doc">&lt;/&gt;</div><div class="ft disp">HTML-разбор</div><div class="fd">Ответы, объяснения и источники одной попытки отдельным файлом.</div></div>
+          <div id="s8-key" class="key"><i class="bar"></i><span>Тема меняется, а прогресс и черновики остаются на месте.</span></div>
+        </div>
+      </div>
+
+      <!-- HUD -->
+      <div id="hud" class="clip" data-start="15" data-duration="60.6" data-track-index="5">
+        <div class="in" id="hudin" style="opacity: 0">
+          <div id="hud-band" class="abs"></div>
+          <div id="hud-logo" class="abs"><img src="assets/img/logo-flower.webp" alt="" /></div>
+          <div id="hud-word" class="abs disp">Тренажёр компетенций ИИ</div>
+          <div id="hud-tag" class="abs">Практика перед экзаменом</div>
+          <div class="abs nav" id="nv0" style="left: 705px">Тесты</div>
+          <div class="abs nav" id="nv1" style="left: 875px">Прогресс</div>
+          <div class="abs nav" id="nv2" style="left: 1045px">Материалы</div>
+          <div id="nav-ind" class="abs"></div>
+        </div>
+      </div>
+
+      <!-- wipe -->
+      <div id="wipe" class="clip" data-start="74.8" data-duration="1.3" data-track-index="7">
+        <div class="in"><div id="wipe-bar" class="abs"></div></div>
+      </div>
+
+      <!-- S9 finale -->
+      <div id="s9" class="clip" data-start="74.9" data-duration="10.1" data-track-index="8">
+        <div class="in" id="s9in">
+          <div id="s9-glow"></div>
+          <div id="hero"><img src="assets/img/hero-night.webp" alt="" /></div>
+          <div class="fsc" id="fs1"><img src="assets/img/sculpt-1.webp" alt="" /></div>
+          <div class="fsc" id="fs2"><img src="assets/img/sculpt-2.webp" alt="" /></div>
+          <div class="fsc" id="fs3"><img src="assets/img/sculpt-3.webp" alt="" /></div>
+          <div id="s9-flash"></div>
+          <div id="s9-logo"><img src="assets/img/logo-flower.webp" alt="" /></div>
+          <div class="s9w disp gradtext" id="s9-w1">Тренажёр</div>
+          <div class="s9w disp gradtext" id="s9-w2">компетенций ИИ</div>
+          <div id="s9-sub">Подготовка к экзамену «Основы работы с ИИ»</div>
+          <div id="s9-plat">на платформе <img src="assets/img/ai-studio.svg" alt="Yandex AI Studio" /></div>
+          <div id="s9-stats">
+            <div id="st1"><b class="cnt" style="color: var(--l1)"></b>вопросов</div>
+            <div id="st2"><b class="cnt" style="color: var(--l2)"></b>уровня</div>
+            <div id="st3"><b class="cnt" style="color: var(--l3)"></b>доменов</div>
+          </div>
+          <div class="btn" id="cta">Начать подготовку <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></div>
+          <div id="s9-url">github.com/ed-would/yandex-ai-studio-exam-lab</div>
+          <div id="s9-disc">Независимый учебный проект: не создан и не одобрен Яндексом, официальный банк экзамена не используется.</div>
+        </div>
+      </div>
+
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="85" data-track-index="11" data-volume="1"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => Array.from(document.querySelectorAll(s));
+        const SVGNS = "http://www.w3.org/2000/svg";
+        function mulberry32(a) {
+          return function () {
+            a |= 0;
+            a = (a + 0x6d2b79f5) | 0;
+            let t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        const rnd = mulberry32(20261004);
+        const R = (a, b) => a + (b - a) * rnd();
+
+        /* ---------- camera ---------- */
+        const cam = (x, y, s) => ({ x: 960 - x * s, y: 540 - y * s, scale: s });
+        const WIDE0 = { ...cam(2900, 1480, 0.37), transformOrigin: "0 0" };
+        const WIDE = cam(2900, 1480, 0.34);
+        const WIDE2 = cam(2900, 1470, 0.333);
+        const F1 = [1466, 2115];
+        const F2 = [3460, 550];
+        const F3 = [4334, 2115];
+        const HB = [2900, 1650];
+
+        /* ---------- build: mosaic tiles ---------- */
+        const LV = ["#d3e38c", "#93d7d0", "#c5a8f2"];
+        const mosaic = $("#mosaic");
+        const tiles = [];
+        for (let g = 0; g < 3; g++)
+          for (let r = 0; r < 6; r++)
+            for (let c = 0; c < 10; c++) {
+              const el = document.createElement("div");
+              const kind = c < 4 ? "single" : c < 8 ? "multi" : "match";
+              el.className = "tile " + kind;
+              const lx = g * 414 + c * 36;
+              const ly = r * 36;
+              el.style.left = lx + "px";
+              el.style.top = ly + "px";
+              const mixp = Math.round(R(62, 100));
+              el.style.background = "color-mix(in srgb, " + LV[g] + " " + mixp + "%, #17151d)";
+              mosaic.appendChild(el);
+              tiles.push({ el, g, r, c, kind, cx: 660 + lx + 15, cy: 300 + ly + 15, rot: R(-200, 200), ord: rnd() });
+            }
+
+        /* ---------- build: world dust ---------- */
+        const dustlayer = $("#dustlayer");
+        const dust = [];
+        const DC = ["#d3e38c", "#93d7d0", "#c5a8f2", "#f2edf8"];
+        for (let i = 0; i < 90; i++) {
+          const el = document.createElement("div");
+          el.className = "dust";
+          const s = R(5, 16);
+          el.style.width = s + "px";
+          el.style.height = s + "px";
+          el.style.left = R(200, 5600) + "px";
+          el.style.top = R(100, 3200) + "px";
+          const col = DC[Math.floor(rnd() * 4)];
+          el.style.background = col;
+          el.style.boxShadow = "0 0 " + Math.round(s * 1.6) + "px " + col;
+          el.style.opacity = R(0.12, 0.5).toFixed(2);
+          dustlayer.appendChild(el);
+          dust.push({ el, dx: R(-50, 50), dy: R(-40, 40), d: R(5, 9) });
+        }
+
+        /* ---------- build: timer ticks (72) ---------- */
+        const timer = $("#timer");
+        const ticksLit = [];
+        for (let i = 0; i < 72; i++) {
+          const a = (i / 72) * Math.PI * 2 - Math.PI / 2;
+          const r1 = 336,
+            r2 = 360;
+          for (const lit of [false, true]) {
+            const ln = document.createElementNS(SVGNS, "line");
+            ln.setAttribute("x1", (370 + Math.cos(a) * r1).toFixed(1));
+            ln.setAttribute("y1", (370 + Math.sin(a) * r1).toFixed(1));
+            ln.setAttribute("x2", (370 + Math.cos(a) * r2).toFixed(1));
+            ln.setAttribute("y2", (370 + Math.sin(a) * r2).toFixed(1));
+            ln.setAttribute("stroke", lit ? "#93d7d0" : "rgba(147,215,208,0.16)");
+            ln.setAttribute("stroke-width", i % 6 === 0 ? "6" : "4");
+            ln.setAttribute("stroke-linecap", "round");
+            if (lit) {
+              ln.setAttribute("opacity", "0");
+              ticksLit.push(ln);
+            }
+            timer.appendChild(ln);
+          }
+        }
+
+        /* ---------- build: domain bars (demo 48/60) ---------- */
+        const DOM = [
+          ["Основы ИИ", 8],
+          ["Применение в работе", 7],
+          ["Ответственный ИИ", 9],
+          ["Ценность для бизнеса", 7],
+          ["Агенты и платформа", 9],
+          ["Алиса AI Про", 8],
+        ];
+        const dbars = $("#dbars");
+        dbars.style.cssText = "left:0;top:0;width:1920px;height:1080px;opacity:1";
+        const dbarEls = [];
+        DOM.forEach(([nm, v], i) => {
+          const el = document.createElement("div");
+          el.className = "dbar abs";
+          el.style.left = (i < 3 ? 440 : 820) + "px";
+          el.style.top = 450 + (i % 3) * 64 + "px";
+          el.style.opacity = "0";
+          el.innerHTML = '<div class="row"><span>' + nm + "</span><b>" + v + '/10</b></div><div class="track"><div class="fill"></div></div>';
+          dbars.appendChild(el);
+          dbarEls.push({ el, fill: el.querySelector(".fill"), v });
+        });
+
+        /* ---------- build: confetti ---------- */
+        const f3 = $("#f3");
+        const conf = [];
+        const CC = ["#c5a8f2", "#d3e38c", "#93d7d0", "#74d680", "#f2edf8"];
+        for (let i = 0; i < 34; i++) {
+          const el = document.createElement("div");
+          el.className = "conf";
+          el.style.left = 250 - 7 + "px";
+          el.style.top = 450 - 7 + "px";
+          el.style.background = CC[i % 5];
+          if (i % 3 === 0) el.style.borderRadius = "50%";
+          f3.appendChild(el);
+          const a = (i / 34) * Math.PI * 2 + R(-0.2, 0.2);
+          const sp = R(150, 260);
+          conf.push({ el, x: Math.cos(a) * sp * 1.15, y: Math.sin(a) * sp * 0.55 + 20, rot: R(-360, 360) });
+        }
+
+        /* ---------- build: hub domains ---------- */
+        const HD = [
+          ["01", "Основы ИИ", 14],
+          ["02", "Применение в работе", 18],
+          ["03", "Ответственный ИИ", 12],
+          ["04", "Ценность для бизнеса", 16],
+          ["05", "Агенты и платформа", 12],
+          ["06", "Алиса AI Про", 28],
+        ];
+        const fh = $("#fh");
+        const hlines = $("#hlines");
+        const domEls = [];
+        HD.forEach(([nr, nm, w], i) => {
+          const left = i < 3;
+          const x = left ? 140 : 1380;
+          const y = 278 + (i % 3) * 210;
+          const el = document.createElement("div");
+          el.className = "dom";
+          el.style.left = x + "px";
+          el.style.top = y + "px";
+          el.innerHTML = '<div class="nr">' + nr + '</div><div class="nm">' + nm + '</div><div class="wt">≈' + w + '% программы экзамена</div><div class="wtrack"><div class="wfill"></div></div>';
+          fh.appendChild(el);
+          const p = document.createElementNS(SVGNS, "path");
+          const sx = left ? 960 - 150 : 960 + 150;
+          const sy = 540 + ((i % 3) - 1) * 60;
+          const ex = left ? x + 400 : x;
+          const ey = y + 52;
+          const mx = (sx + ex) / 2;
+          p.setAttribute("d", "M" + sx + " " + sy + " C" + mx + " " + sy + " " + mx + " " + ey + " " + ex + " " + ey);
+          p.setAttribute("pathLength", "1");
+          p.setAttribute("fill", "none");
+          p.setAttribute("stroke", "rgba(197,168,242,0.55)");
+          p.setAttribute("stroke-width", "3");
+          p.setAttribute("stroke-dasharray", "1");
+          p.setAttribute("stroke-dashoffset", "1");
+          hlines.appendChild(p);
+          domEls.push({ el, fill: el.querySelector(".wfill"), w, line: p, left });
+        });
+
+        /* ---------- build: history bars ---------- */
+        const hist = $("#hist");
+        const HV = [52, 58, 65, 70, 76, 80, 85];
+        const hbars = [];
+        const chartH = 330;
+        HV.forEach((v, i) => {
+          const b = document.createElement("div");
+          b.className = "hb";
+          b.style.left = 60 + i * 116 + "px";
+          b.style.height = Math.round((v / 100) * chartH) + "px";
+          hist.appendChild(b);
+          const l = document.createElement("div");
+          l.className = "hbl";
+          l.style.left = 60 + i * 116 + "px";
+          l.textContent = v + "%";
+          hist.appendChild(l);
+          hbars.push({ b, l });
+        });
+        $("#goal").style.top = 560 - 70 - Math.round(0.8 * chartH) + "px";
+
+        /* ================= timeline ================= */
+        const tl = gsap.timeline({ paused: true });
+                const press = (sel, t, depth = 0.9) => {
+          tl.fromTo(sel, { scale: 1 }, { scale: depth, duration: 0.1, ease: "power2.in", immediateRender: false }, t);
+          tl.fromTo(sel, { scale: depth }, { scale: 1, duration: 0.38, ease: "back.out(3)", immediateRender: false }, t + 0.1);
+        };
+        const fadeIn = (sel, t, d = 0.5, extra = {}) => tl.fromTo(sel, { opacity: 0, y: 24, ...(extra.from || {}) }, { opacity: 1, y: 0, duration: d, ease: "power3.out", ...(extra.to || {}) }, t);
+        const fadeOut = (sel, t, d = 0.4) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: d, ease: "power2.in", immediateRender: false }, t);
+
+        /* background glows drift */
+        tl.fromTo("#g1", { x: 0, y: 0 }, { x: 220, y: -140, duration: 85, ease: "sine.inOut" }, 0);
+        tl.fromTo("#g2", { x: 0, y: 0 }, { x: -160, y: 200, duration: 85, ease: "sine.inOut" }, 0);
+        tl.fromTo("#g3", { x: 0, y: 0 }, { x: -260, y: -120, duration: 85, ease: "sine.inOut" }, 0);
+
+        /* ---------- S1 ---------- */
+        tl.fromTo("#s1-kick span", { opacity: 0, y: 18, clipPath: "inset(0 100% 0 0)" }, { opacity: 1, y: 0, clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.out" }, 0.3);
+        const qw = $$("#s1-q .w");
+        tl.fromTo(qw, { opacity: 0, y: 90, rotationX: -70 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "back.out(1.6)", stagger: 0.14 }, 0.8);
+        tl.fromTo(["#s1-kick", "#s1-q"], { scale: 1, opacity: 1, filter: "blur(0px)" }, { scale: 0.05, opacity: 0, filter: "blur(10px)", duration: 0.35, ease: "power3.in" }, 2.7);
+        tl.fromTo("#s1-flash", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 2.98);
+        tl.fromTo("#s1-flash", { opacity: 1 }, { opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, 3.23);
+        const pa = $$("#burst .pa");
+        tl.fromTo(pa, { scale: 0, rotation: -160, svgOrigin: "0 0" }, { scale: 1, rotation: 0, svgOrigin: "0 0", duration: 1.0, ease: "back.out(1.4)", stagger: 0.07 }, 3.0);
+        tl.fromTo("#burst .pc", { scale: 0, svgOrigin: "0 0" }, { scale: 1, svgOrigin: "0 0", duration: 0.5, ease: "back.out(2)" }, 3.15);
+        tl.fromTo("#burst", { x: 0, y: 0, scale: 1, rotation: 0 }, { x: -626, y: -70, scale: 0.37, rotation: 200, duration: 0.9, ease: "power3.inOut" }, 3.95);
+        tl.fromTo("#s1-logo", { opacity: 0, rotation: -40 }, { opacity: 1, rotation: 0, duration: 0.45, ease: "power2.out" }, 4.55);
+        tl.fromTo("#burst", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 4.65);
+        tl.fromTo("#s1-word", { opacity: 0, clipPath: "inset(0 100% -20% 0)", x: -30 }, { opacity: 1, clipPath: "inset(0 0% -20% 0)", x: 0, duration: 0.8, ease: "power3.out" }, 4.7);
+        tl.fromTo("#s1-word", { backgroundPosition: "0% 50%" }, { backgroundPosition: "100% 50%", duration: 2.2, ease: "sine.inOut" }, 4.7);
+        fadeIn("#s1-sub", 5.25, 0.6);
+        fadeIn("#s1-plat", 5.6, 0.6);
+        tl.fromTo("#s1-lock", { scale: 1, opacity: 1, transformOrigin: "50% 50%" }, { scale: 0.02, opacity: 0, duration: 0.45, ease: "power4.in" }, 6.5);
+
+        /* ---------- S2 ---------- */
+        tiles.forEach((t) => {
+          const dx = 960 - t.cx,
+            dy = 540 - t.cy;
+          const st = 6.95 + t.g * 0.18 + t.ord * 0.9;
+          tl.fromTo(t.el, { x: dx, y: dy, scale: 0, rotation: t.rot }, { x: 0, y: 0, scale: 1, rotation: t.kind === "match" ? 45 : 0, duration: 0.8, ease: "power3.out" }, st);
+        });
+        fadeIn("#s2-kick", 7.2, 0.5);
+        tl.fromTo("#s2-num", { "--n": 0, opacity: 0 }, { "--n": 180, opacity: 1, duration: 1.9, ease: "power2.out", snap: { "--n": 1 } }, 7.0);
+        fadeIn("#s2-numlab", 7.5, 0.5);
+        tl.fromTo(".glab", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, 8.6);
+        const pulse = (els, t) => tl.fromTo(els, { scale: 1 }, { scale: 1.32, duration: 0.16, yoyo: true, repeat: 1, ease: "power1.inOut", immediateRender: false }, t);
+        fadeIn("#fm1", 9.5, 0.45);
+        for (let g = 0; g < 3; g++) pulse(tiles.filter((t) => t.g === g).map((t) => t.el), 9.55 + g * 0.14);
+        fadeIn("#fx1", 10.15, 0.3);
+        fadeIn("#fm2", 10.25, 0.45);
+        for (let r = 0; r < 6; r++) pulse(tiles.filter((t) => t.r === r).map((t) => t.el), 10.3 + r * 0.08);
+        fadeIn("#fx2", 10.95, 0.3);
+        fadeIn("#fm3", 11.05, 0.45);
+        for (let c = 0; c < 10; c++) pulse(tiles.filter((t) => t.c === c).map((t) => t.el), 11.1 + c * 0.05);
+        tl.fromTo("#s2-legend > div", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: "power3.out" }, 11.9);
+        tl.fromTo("#s2-chips .pill", { opacity: 0, y: 20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.12, ease: "back.out(1.7)" }, 12.4);
+        tl.fromTo(["#s2-kick", "#s2-num", "#s2-numlab", ".glab", "#s2-form", "#s2-legend", "#s2-chips"], { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.in", immediateRender: false }, 13.8);
+        const TGT = [
+          [282, 756],
+          [960, 225],
+          [1638, 756],
+        ];
+        tiles.forEach((t) => {
+          const [tx, ty] = TGT[t.g];
+          tl.fromTo(t.el, { x: 0, y: 0, scale: 1, opacity: 1 }, { x: tx - t.cx, y: ty - t.cy, scale: 0.3, opacity: 0, duration: 0.75, ease: "power3.in", immediateRender: false }, 13.95 + t.ord * 0.3);
+        });
+
+        /* ---------- WORLD ---------- */
+        tl.fromTo("#world", WIDE0, { ...WIDE, duration: 2.2, ease: "power2.out" }, 14.2);
+        tl.fromTo("#world", WIDE, { ...WIDE2, duration: 5.8, ease: "sine.inOut", immediateRender: false }, 16.4);
+        tl.fromTo("#win", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power1.out" }, 14.35);
+        ["#sc1", "#sc2", "#sc3"].forEach((s, i) => {
+          tl.fromTo(s, { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.9, ease: "back.out(1.5)" }, 14.85 + i * 0.12);
+          tl.fromTo(s + " .scf", { y: -16, rotation: -2 }, { y: 16, rotation: 2, duration: 3.2 + i * 0.4, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor(52 / (3.2 + i * 0.4)) - 1) }, 14.2);
+        });
+        tl.fromTo("#orbit1", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 15.1);
+        tl.fromTo("#orbit2", { opacity: 0 }, { opacity: 1, duration: 1.2 }, 15.4);
+        tl.fromTo("#hub-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 15.5);
+        tl.fromTo("#hub-halo", { opacity: 0, scale: 0.3, rotation: -90 }, { opacity: 0.32, scale: 1, rotation: 0, duration: 1.4, ease: "power3.out" }, 15.5);
+        tl.fromTo("#hub-halo", { rotation: 0 }, { rotation: 70, duration: 50, ease: "none", immediateRender: false }, 16.9);
+        tl.fromTo("#hub-logo", { opacity: 0, scale: 0.2, rotation: -120 }, { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: "back.out(1.6)" }, 15.7);
+        tl.fromTo(".wl", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "power3.out" }, 16.2);
+        ["#cm1", "#cm2", "#cm3"].forEach((s, i) => {
+          tl.fromTo(s, { opacity: 0 }, { opacity: 0.9, duration: 0.6 }, 17.2 + i * 0.6);
+          tl.fromTo(s, { offsetDistance: "0%" }, { offsetDistance: "100%", duration: 7, ease: "none", repeat: 6 }, 17.2 + i * 0.6 - i * 2.33);
+        });
+        dust.forEach((d, i) => {
+          tl.fromTo(d.el, { x: -d.dx, y: -d.dy }, { x: d.dx, y: d.dy, duration: d.d, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor(52 / d.d) - 1) }, 14.2);
+        });
+
+        /* wide heading overlay */
+        tl.fromTo("#s3h-back", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 16.4);
+        tl.fromTo("#s3h-t", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 16.6);
+        fadeIn("#s3h-s1", 17.1, 0.6);
+        fadeOut("#s3h-s1", 19.4, 0.3);
+        fadeIn("#s3h-s2", 19.7, 0.6);
+        fadeOut(["#s3h-t", "#s3h-s2", "#s3h-back"], 21.9, 0.4);
+
+        /* HUD */
+        tl.fromTo("#hudin", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 15.4);
+        tl.fromTo("#nv0", { opacity: 0.5 }, { opacity: 1, duration: 0.4 }, 15.6);
+        tl.fromTo("#nav-ind", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 15.7);
+        const navTo = (from, to, t) => {
+          tl.fromTo("#nv" + from, { opacity: 1 }, { opacity: 0.5, duration: 0.3, immediateRender: false }, t);
+          tl.fromTo("#nv" + to, { opacity: 0.5 }, { opacity: 1, duration: 0.3, immediateRender: false }, t);
+          tl.fromTo("#nav-ind", { x: from * 170 }, { x: to * 170, duration: 0.28, ease: "power3.out", immediateRender: false }, t);
+        };
+        navTo(0, 2, 59.8);
+        navTo(2, 1, 66.6);
+        tl.fromTo("#hudin", { opacity: 1 }, { opacity: 0, duration: 0.4, immediateRender: false }, 74.9);
+
+        /* ---------- flight to F1 ---------- */
+        tl.fromTo(".wl", { opacity: 1 }, { opacity: 0, duration: 0.6, immediateRender: false }, 22.2);
+        tl.fromTo("#world", WIDE2, { ...cam(F1[0], F1[1], 1), duration: 1.8, ease: "power3.inOut", immediateRender: false }, 22.2);
+        tl.fromTo("#world", cam(F1[0], F1[1], 1), { ...cam(F1[0], F1[1], 1.025), duration: 10.6, ease: "sine.inOut", immediateRender: false }, 24.0);
+        tl.fromTo("#bd1", { opacity: 0 }, { opacity: 0.55, duration: 1.2 }, 23.4);
+
+        /* ---------- F1 ---------- */
+        let b = 24.0;
+        fadeIn("#f1 .badge", b + 0.1, 0.5);
+        fadeIn("#f1 .h2", b + 0.25, 0.6);
+        tl.fromTo("#qcard", { opacity: 0, y: 60, rotationX: 12, transformPerspective: 1400 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.8, ease: "power3.out" }, b + 0.5);
+        tl.fromTo(["#oA", "#oB", "#oC", "#oD"], { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, stagger: 0.12, ease: "power3.out" }, b + 0.9);
+        tl.fromTo("#pick", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(3)" }, b + 2.4);
+        tl.fromTo("#oA .ov.sel", { opacity: 0 }, { opacity: 1, duration: 0.2 }, b + 2.4);
+        tl.fromTo("#st-draft", { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.3 }, b + 2.45);
+        tl.fromTo("#pick", { y: 0, scale: 1 }, { y: 36, scale: 1.6, duration: 0.2, ease: "power2.out", immediateRender: false }, b + 3.2);
+        tl.fromTo("#pick", { y: 36, scale: 1.6 }, { y: 72, scale: 1, duration: 0.25, ease: "back.out(3)", immediateRender: false }, b + 3.4);
+        tl.fromTo("#oA .ov.sel", { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, b + 3.25);
+        tl.fromTo("#oB .ov.sel", { opacity: 0 }, { opacity: 1, duration: 0.2 }, b + 3.35);
+        press("#btn-check", b + 4.2);
+        tl.fromTo("#oB .ov.ok", { opacity: 0 }, { opacity: 1, duration: 0.3 }, b + 4.45);
+        tl.fromTo("#oB .okic", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.5)" }, b + 4.45);
+        tl.fromTo(["#pick", "#oB .rad"], { opacity: 1 }, { opacity: 0, duration: 0.15, immediateRender: false }, b + 4.45);
+        fadeOut("#st-draft", b + 4.45, 0.2);
+        tl.fromTo("#st-ok", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.5)" }, b + 4.5);
+        tl.fromTo(["#oA", "#oC", "#oD"], { opacity: 1, x: 0 }, { opacity: 0, x: -30, duration: 0.35, stagger: 0.06, ease: "power2.in", immediateRender: false }, b + 5.0);
+        tl.fromTo("#q-hint", { opacity: 1 }, { opacity: 0, duration: 0.3 }, b + 5.0);
+        tl.fromTo("#oB", { y: 0 }, { y: -72, duration: 0.55, ease: "power3.inOut" }, b + 5.25);
+        tl.fromTo("#q-foot1", { opacity: 1 }, { opacity: 0, duration: 0.3 }, b + 5.3);
+        tl.fromTo("#q-foot2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 }, b + 5.5);
+        tl.fromTo("#q-expl", { opacity: 0, y: 30, clipPath: "inset(0 0 100% 0 round 18px)" }, { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0 round 18px)", duration: 0.6, ease: "power3.out" }, b + 5.7);
+        tl.fromTo("#q-take", { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, b + 6.5);
+        tl.fromTo("#sc1 .scglow", { opacity: 0.55, scale: 1 }, { opacity: 1, scale: 1.25, duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }, b + 4.45);
+        fadeIn("#k1", b + 7.6, 0.6);
+
+        /* ---------- flight F1 -> F2 ---------- */
+        b = 34.6;
+        fadeOut("#f1 > *", b, 0.5);
+        tl.fromTo("#bd1", { opacity: 0.55 }, { opacity: 0, duration: 1, immediateRender: false }, b);
+        tl.fromTo("#world", cam(F1[0], F1[1], 1.025), { ...cam(2300, 1300, 0.5), duration: 1.0, ease: "power2.in", immediateRender: false }, b);
+        tl.fromTo("#world", cam(2300, 1300, 0.5), { ...cam(F2[0], F2[1], 1), duration: 1.0, ease: "power3.out", immediateRender: false }, b + 1.0);
+        tl.fromTo("#world", cam(F2[0], F2[1], 1), { ...cam(F2[0], F2[1], 1.025), duration: 9.4, ease: "sine.inOut", immediateRender: false }, b + 2.0);
+        tl.fromTo("#bd2", { opacity: 0 }, { opacity: 0.55, duration: 1.2 }, b + 1.4);
+
+        /* ---------- F2 ---------- */
+        b = 36.6;
+        fadeIn("#f2 .badge", b + 0.1, 0.5);
+        fadeIn("#f2 .h2", b + 0.25, 0.6);
+        fadeIn("#f2 .sub", b + 0.6, 0.6);
+        tl.fromTo("#tk1", { opacity: 0, x: 80, rotationY: -25, transformPerspective: 1200 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "power3.out" }, b + 1.0);
+        fadeIn("#fl1", b + 1.2, 0.5);
+        tl.fromTo("#ball", { y: -220, scale: 0.7, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.8, ease: "bounce.out" }, b + 1.6);
+        tl.fromTo("#tk2", { opacity: 0, x: 80, rotationY: -25, transformPerspective: 1200 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "power3.out" }, b + 2.4);
+        fadeIn("#fl2", b + 2.6, 0.5);
+        const chks = $$("#tk2 .chk");
+        tl.fromTo(chks[0], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, b + 3.0);
+        tl.fromTo(chks[1], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, b + 3.35);
+        tl.fromTo(chks[2], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, b + 3.7);
+        tl.fromTo(chks.map((c) => c.closest(".sq")), { scale: 1.25 }, { scale: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.35 }, b + 3.0);
+        tl.fromTo("#tk3", { opacity: 0, x: 80, rotationY: -25, transformPerspective: 1200 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "power3.out" }, b + 4.0);
+        fadeIn("#fl3", b + 4.2, 0.5);
+        $$("#wires .wire").forEach((w, i) => tl.fromTo(w, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" }, b + 4.5 + i * 0.4));
+        tl.fromTo("#timer", { opacity: 0, scale: 0.85, rotation: -30 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.8, ease: "power3.out" }, b + 5.6);
+        tl.fromTo(ticksLit, { opacity: 0 }, { opacity: 1, duration: 0.05, stagger: 0.028 }, b + 6.0);
+        tl.fromTo("#tlab", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, b + 5.9);
+        tl.fromTo("#tlab .cnt", { "--n": 0 }, { "--n": 72, duration: 2.0, ease: "none", snap: { "--n": 1 } }, b + 6.0);
+        fadeIn("#k2", b + 6.8, 0.6);
+
+        /* ---------- flight F2 -> F3 ---------- */
+        b = 46.0;
+        fadeOut("#f2 > *", b, 0.5);
+        tl.fromTo("#bd2", { opacity: 0.55 }, { opacity: 0, duration: 1, immediateRender: false }, b);
+        tl.fromTo("#world", cam(F2[0], F2[1], 1.025), { ...cam(4100, 1300, 0.5), duration: 1.0, ease: "power2.in", immediateRender: false }, b);
+        tl.fromTo("#world", cam(4100, 1300, 0.5), { ...cam(F3[0], F3[1], 1), duration: 1.0, ease: "power3.out", immediateRender: false }, b + 1.0);
+        tl.fromTo("#world", cam(F3[0], F3[1], 1), { ...cam(F3[0], F3[1], 1.025), duration: 9.8, ease: "sine.inOut", immediateRender: false }, b + 2.0);
+        tl.fromTo("#bd3", { opacity: 0 }, { opacity: 0.6, duration: 1.2 }, b + 1.4);
+
+        /* ---------- F3 ---------- */
+        b = 48.0;
+        fadeIn("#f3 .badge", b + 0.1, 0.5);
+        fadeIn("#f3 .h2", b + 0.25, 0.6);
+        fadeIn("#f3 .sub", b + 0.55, 0.6);
+        tl.fromTo("#ring", { opacity: 0, scale: 0.6, rotation: -60 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: "back.out(1.5)" }, b + 0.8);
+        tl.fromTo("#ring-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0.2, duration: 1.7, ease: "power2.inOut" }, b + 0.95);
+        tl.fromTo("#ring-num", { opacity: 0, "--n": 0 }, { opacity: 1, "--n": 80, duration: 1.7, ease: "power2.inOut", snap: { "--n": 1 } }, b + 0.95);
+        tl.fromTo("#ring-num", { scale: 1 }, { scale: 1.12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, b + 2.65);
+        fadeIn("#ring-cap", b + 2.7, 0.4);
+        fadeIn("#demo", b + 3.0, 0.5);
+        conf.forEach((c) => {
+          tl.fromTo(c.el, { x: 0, y: 0, opacity: 1, scale: 0.4, rotation: 0 }, { x: c.x, y: c.y, scale: 1, rotation: c.rot, duration: 0.6, ease: "power3.out" }, b + 2.65);
+          tl.fromTo(c.el, { y: c.y, opacity: 1 }, { y: c.y + 220, opacity: 0, rotation: c.rot * 2, duration: 1.1, ease: "power1.in", immediateRender: false }, b + 3.25);
+        });
+        tl.fromTo(".fact", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, b + 1.3);
+        tl.fromTo("#fa1 .cnt", { "--n": 0 }, { "--n": 48, duration: 1.3, ease: "power2.out", snap: { "--n": 1 } }, b + 1.4);
+        tl.fromTo("#fa2 .cnt", { "--n": 0 }, { "--n": 12, duration: 1.1, ease: "power2.out", snap: { "--n": 1 } }, b + 1.5);
+        dbarEls.forEach((d, i) => {
+          tl.fromTo(d.el, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, b + 3.0 + i * 0.1);
+          tl.fromTo(d.fill, { scaleX: 0 }, { scaleX: d.v / 10, duration: 0.8, ease: "power3.out" }, b + 3.15 + i * 0.1);
+        });
+        fadeIn("#rec-h", b + 4.4, 0.5);
+        tl.fromTo("#rec .pill", { opacity: 0, y: 20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.15, ease: "back.out(1.8)" }, b + 4.8);
+        tl.fromTo("#btn-rep", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, b + 5.6);
+        press("#btn-rep", b + 6.4, 0.92);
+        tl.fromTo("#rep-ico", { rotation: 0 }, { rotation: -360, duration: 0.8, ease: "power3.inOut", transformOrigin: "50% 50%" }, b + 6.45);
+        fadeIn("#rep-cap", b + 6.6, 0.5);
+        fadeIn("#k3", b + 7.2, 0.6);
+
+        /* ---------- flight F3 -> hub ---------- */
+        b = 57.8;
+        fadeOut("#f3 > *:not(.conf)", b, 0.5);
+        tl.fromTo("#bd3", { opacity: 0.6 }, { opacity: 0, duration: 1, immediateRender: false }, b);
+        tl.fromTo("#world", cam(F3[0], F3[1], 1.025), { ...cam(3700, 2050, 0.55), duration: 1.0, ease: "power2.in", immediateRender: false }, b);
+        tl.fromTo("#world", cam(3700, 2050, 0.55), { ...cam(HB[0], HB[1], 1), duration: 1.0, ease: "power3.out", immediateRender: false }, b + 1.0);
+        tl.fromTo("#world", cam(HB[0], HB[1], 1), { ...cam(HB[0], HB[1], 1.04), duration: 7.8, ease: "sine.inOut", immediateRender: false }, b + 2.0);
+        tl.fromTo("#bdh", { opacity: 0 }, { opacity: 0.5, duration: 1.2 }, b + 1.2);
+
+        /* ---------- hub: materials ---------- */
+        b = 59.8;
+        tl.fromTo("#hub-halo", { opacity: 0.32, scale: 1 }, { opacity: 0.42, scale: 0.74, duration: 1.0, ease: "power3.out", immediateRender: false }, b - 0.2);
+        tl.fromTo("#hub-logo", { scale: 1 }, { scale: 1.1, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, b - 0.1);
+        fadeIn("#fh .hh", b + 0.2, 0.6);
+        fadeIn("#fh .hs", b + 0.5, 0.6);
+        tl.fromTo("#hlines", { opacity: 0 }, { opacity: 1, duration: 0.2 }, b + 0.7);
+        domEls.forEach((d, i) => {
+          tl.fromTo(d.line, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, b + 0.8 + i * 0.12);
+          tl.fromTo(d.el, { opacity: 0, x: d.left ? 60 : -60, scale: 0.9 }, { opacity: 1, x: 0, scale: 1, duration: 0.55, ease: "back.out(1.6)" }, b + 1.15 + i * 0.12);
+          tl.fromTo(d.fill, { scaleX: 0 }, { scaleX: d.w / 28, duration: 0.7, ease: "power3.out" }, b + 1.9 + i * 0.1);
+        });
+        tl.fromTo("#hsrc", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, b + 3.0);
+
+        /* ---------- S8: flower-mask reveal, progress + theme ---------- */
+        b = 66.4;
+        tl.fromTo("#s8in", { "--ms": "0px" }, { "--ms": "5200px", duration: 1.1, ease: "power2.in" }, b);
+        fadeIn("#s8-h", b + 1.0, 0.6);
+        fadeIn("#s8-s", b + 1.3, 0.6);
+        tl.fromTo("#hist", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, b + 1.5);
+        hbars.forEach((h, i) => {
+          tl.fromTo(h.b, { scaleY: 0 }, { scaleY: 1, duration: 0.55, ease: "power3.out" }, b + 1.8 + i * 0.1);
+          tl.fromTo(h.l, { opacity: 0 }, { opacity: 1, duration: 0.3 }, b + 2.1 + i * 0.1);
+        });
+        tl.fromTo("#goal", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, b + 2.7);
+        tl.fromTo("#file1", { opacity: 0, x: -520, rotation: -8, scale: 0.7 }, { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.8, ease: "power3.out" }, b + 3.1);
+        tl.fromTo("#file2", { opacity: 0, x: -520, rotation: 8, scale: 0.7 }, { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.8, ease: "power3.out" }, b + 3.5);
+        tl.fromTo(["#toggle", "#tg-cap"], { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, b + 3.9);
+        const DARK = { "--bg": "#17151d", "--surface": "#24212d", "--raised": "#302b3a", "--line": "#494152", "--ink": "#f2edf8", "--muted": "#b9b0c5", "--acc": "#c5a8f2", "--ok": "#74d680" };
+        const LIGHT = { "--bg": "#ffffff", "--surface": "#f0edf4", "--raised": "#e8e2f0", "--line": "#e4e0e9", "--ink": "#25212b", "--muted": "#68636f", "--acc": "#6841ab", "--ok": "#267045" };
+        const click = (t) => press("#toggle", t, 0.86);
+        click(b + 4.5);
+        tl.fromTo("#root", DARK, { ...LIGHT, duration: 0.6, ease: "power2.inOut" }, b + 4.6);
+        tl.fromTo("#ic-moon", { opacity: 1, rotation: 0 }, { opacity: 0, rotation: 90, duration: 0.35 }, b + 4.6);
+        tl.fromTo("#ic-sun", { opacity: 0, rotation: -90 }, { opacity: 1, rotation: 0, duration: 0.35 }, b + 4.7);
+        fadeIn("#s8-key", b + 5.3, 0.6);
+        click(b + 7.0);
+        tl.fromTo("#root", LIGHT, { ...DARK, duration: 0.6, ease: "power2.inOut", immediateRender: false }, b + 7.1);
+        tl.fromTo("#ic-sun", { opacity: 1, rotation: 0 }, { opacity: 0, rotation: 90, duration: 0.35, immediateRender: false }, b + 7.1);
+        tl.fromTo("#ic-moon", { opacity: 0, rotation: -90 }, { opacity: 1, rotation: 0, duration: 0.35, immediateRender: false }, b + 7.2);
+
+        /* ---------- wipe ---------- */
+        tl.fromTo("#wipe-bar", { x: -700, skewX: -14 }, { x: 2300, skewX: -14, duration: 1.1, ease: "power3.inOut" }, 74.85);
+        tl.fromTo("#s9in", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.0, ease: "power3.inOut" }, 74.95);
+
+        /* ---------- S9 finale ---------- */
+        b = 75.4;
+        tl.fromTo("#s9-glow", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 1.4, ease: "power2.out" }, b);
+        const ORB = [
+          [-1400, 260, 200],
+          [0, -900, 270],
+          [1400, 260, 340],
+        ];
+        ["#fs1", "#fs2", "#fs3"].forEach((s, k) => {
+          const a0 = (ORB[k][2] * Math.PI) / 180;
+          const N = 10;
+          const pt = (p) => {
+            const rr = 820 * (1 - p) + 30 * p;
+            const a = a0 + p * 2.4;
+            return { x: Math.cos(a) * rr * 1.3, y: Math.sin(a) * rr * 0.6, scale: 1 - 0.75 * p, rotation: p * 140 };
+          };
+          for (let j = 0; j < N; j++) {
+            const ease = j === 0 ? "power1.in" : j === N - 1 ? "power2.in" : "none";
+            tl.fromTo(s, pt(j / N), { ...pt((j + 1) / N), duration: 1.9 / N, ease, immediateRender: j === 0 }, b + 0.1 + (j * 1.9) / N);
+          }
+          tl.fromTo(s, { opacity: 1 }, { opacity: 0, duration: 0.25, immediateRender: false }, b + 2.0);
+        });
+        tl.fromTo("#s9-flash", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1.1, duration: 0.25, ease: "power2.out" }, b + 2.05);
+        tl.fromTo("#s9-flash", { opacity: 1 }, { opacity: 0, duration: 1.1, ease: "power2.out", immediateRender: false }, b + 2.3);
+        tl.fromTo("#hero", { opacity: 0, scale: 0.35, rotation: -40, x: 0 }, { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: "back.out(1.3)" }, b + 2.1);
+        tl.fromTo("#hero", { x: 0, scale: 1 }, { x: 470, scale: 0.92, duration: 1.0, ease: "power3.inOut", immediateRender: false }, b + 3.2);
+        tl.fromTo("#hero", { y: 0 }, { y: -18, duration: 2.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, b + 4.2);
+        tl.fromTo("#s9-logo", { opacity: 0, scale: 0.3, rotation: -120 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.8, ease: "back.out(1.7)" }, b + 3.5);
+        tl.fromTo("#s9-w1", { opacity: 0, y: 70, clipPath: "inset(0 0 100% 0)" }, { opacity: 1, y: 0, clipPath: "inset(0 0 -20% 0)", duration: 0.7, ease: "power3.out" }, b + 3.7);
+        tl.fromTo("#s9-w2", { opacity: 0, y: 70, clipPath: "inset(0 0 100% 0)" }, { opacity: 1, y: 0, clipPath: "inset(0 0 -20% 0)", duration: 0.7, ease: "power3.out" }, b + 3.85);
+        tl.fromTo(".s9w", { backgroundPosition: "0% 50%" }, { backgroundPosition: "100% 50%", duration: 3.0, ease: "sine.inOut" }, b + 3.8);
+        fadeIn("#s9-sub", b + 4.4, 0.6);
+        fadeIn("#s9-plat", b + 4.7, 0.6);
+        [
+          ["#st1", 180],
+          ["#st2", 3],
+          ["#st3", 6],
+        ].forEach(([s, v], i) => {
+          tl.fromTo(s, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, b + 5.1 + i * 0.18);
+          tl.fromTo(s + " .cnt", { "--n": 0 }, { "--n": v, duration: v > 10 ? 1.0 : 0.5, ease: "power2.out", snap: { "--n": 1 } }, b + 5.1 + i * 0.18);
+        });
+        tl.fromTo("#cta", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2)" }, b + 6.1);
+        fadeIn("#s9-url", b + 6.4, 0.5);
+        press("#cta", b + 7.1, 0.93);
+        fadeIn("#s9-disc", b + 7.4, 0.6);
+
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

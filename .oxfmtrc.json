@@ -17,6 +17,7 @@
     "assets/**",
     "docs/**",
     "vendor/**",
+    "promo-video/**",
     "public/images/**",
     "public/fonts/**",
     "package-lock.json",
