@@ -435,13 +435,52 @@
         width: 640px;
         height: 640px;
       }
-      .scf,
-      .scf img {
+      .scf {
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
+      }
+      .medal {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 64%, var(--mc), var(--me) 72%);
+        box-shadow: 0 54px 100px rgba(0, 0, 0, 0.62), 0 18px 36px rgba(0, 0, 0, 0.45), 0 0 0 3px var(--mr);
+      }
+      .medal img {
+        position: absolute;
+        left: -7%;
+        top: 12%;
+        width: 114%;
+        height: auto;
         display: block;
+        -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 66%, transparent 100%);
+        mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 66%, transparent 100%);
+      }
+      .medal::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        box-shadow: inset 0 -40px 80px rgba(0, 0, 0, 0.38), inset 0 26px 50px rgba(255, 255, 255, 0.05);
+      }
+      .m1 {
+        --mc: #46482e;
+        --me: #2a2f1e;
+        --mr: rgba(211, 227, 140, 0.35);
+      }
+      .m2 {
+        --mc: #25474d;
+        --me: #1c3439;
+        --mr: rgba(147, 215, 208, 0.35);
+      }
+      .m3 {
+        --mc: #45345b;
+        --me: #2c203f;
+        --mr: rgba(197, 168, 242, 0.38);
       }
       .scglow {
         position: absolute;
@@ -1423,10 +1462,12 @@
         width: 360px;
         height: 360px;
       }
-      .fsc img {
-        width: 100%;
-        height: 100%;
-        display: block;
+      .fsc .medal {
+        left: 0;
+        top: 0;
+        width: 360px;
+        height: 360px;
+        box-shadow: 0 34px 64px rgba(0, 0, 0, 0.6), 0 12px 24px rgba(0, 0, 0, 0.45), 0 0 0 2px var(--mr);
       }
       #s9-flash {
         left: 460px;
@@ -1667,15 +1708,15 @@
 
             <div class="sc" id="sc1" style="left: 586px; top: 1795px">
               <div class="scglow" style="background: radial-gradient(circle, rgba(211, 227, 140, 0.22), transparent 65%)"></div>
-              <div class="scf"><img src="assets/img/sculpt-1.webp" alt="" /></div>
+              <div class="scf"><div class="medal m1"><img src="assets/img/medal-1.webp" alt="" /></div></div>
             </div>
             <div class="sc" id="sc2" style="left: 2580px; top: 230px">
               <div class="scglow" style="background: radial-gradient(circle, rgba(147, 215, 208, 0.22), transparent 65%)"></div>
-              <div class="scf"><img src="assets/img/sculpt-2.webp" alt="" /></div>
+              <div class="scf"><div class="medal m2"><img src="assets/img/medal-2.webp" alt="" /></div></div>
             </div>
             <div class="sc" id="sc3" style="left: 4574px; top: 1795px">
               <div class="scglow" style="background: radial-gradient(circle, rgba(197, 168, 242, 0.24), transparent 65%)"></div>
-              <div class="scf"><img src="assets/img/sculpt-3.webp" alt="" /></div>
+              <div class="scf"><div class="medal m3"><img src="assets/img/medal-3.webp" alt="" /></div></div>
             </div>
 
             <div class="wl" id="wl1" style="left: 456px; top: 2470px"><div class="nm disp" style="color: var(--l1)">1 · Базовый</div><div class="ds">основные понятия ИИ</div></div>
@@ -1852,9 +1893,9 @@
         <div class="in" id="s9in">
           <div id="s9-glow"></div>
           <div id="hero"><img src="assets/img/hero-night.webp" alt="" /></div>
-          <div class="fsc" id="fs1"><img src="assets/img/sculpt-1.webp" alt="" /></div>
-          <div class="fsc" id="fs2"><img src="assets/img/sculpt-2.webp" alt="" /></div>
-          <div class="fsc" id="fs3"><img src="assets/img/sculpt-3.webp" alt="" /></div>
+          <div class="fsc" id="fs1"><div class="medal m1"><img src="assets/img/medal-1.webp" alt="" /></div></div>
+          <div class="fsc" id="fs2"><div class="medal m2"><img src="assets/img/medal-2.webp" alt="" /></div></div>
+          <div class="fsc" id="fs3"><div class="medal m3"><img src="assets/img/medal-3.webp" alt="" /></div></div>
           <div id="s9-flash"></div>
           <div id="s9-logo"><img src="assets/img/logo-flower.webp" alt="" /></div>
           <div class="s9w disp gradtext" id="s9-w1">Тренажёр</div>
@@ -2136,8 +2177,8 @@
         tl.fromTo("#world", WIDE, { ...WIDE2, duration: 5.8, ease: "sine.inOut", immediateRender: false }, 16.4);
         tl.fromTo("#win", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power1.out" }, 14.35);
         ["#sc1", "#sc2", "#sc3"].forEach((s, i) => {
-          tl.fromTo(s, { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.9, ease: "back.out(1.5)" }, 14.85 + i * 0.12);
-          tl.fromTo(s + " .scf", { y: -16, rotation: -2 }, { y: 16, rotation: 2, duration: 3.2 + i * 0.4, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor(52 / (3.2 + i * 0.4)) - 1) }, 14.2);
+          tl.fromTo(s, { scale: 0, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.9, ease: "back.out(1.5)" }, 14.85 + i * 0.12);
+          tl.fromTo(s + " .scf", { y: -14, rotation: -1.5 }, { y: 14, rotation: 1.5, duration: 3.2 + i * 0.4, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor(52 / (3.2 + i * 0.4)) - 1) }, 14.2);
         });
         tl.fromTo("#orbit1", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 15.1);
         tl.fromTo("#orbit2", { opacity: 0 }, { opacity: 1, duration: 1.2 }, 15.4);
@@ -2350,7 +2391,7 @@
           const pt = (p) => {
             const rr = 820 * (1 - p) + 30 * p;
             const a = a0 + p * 2.4;
-            return { x: Math.cos(a) * rr * 1.3, y: Math.sin(a) * rr * 0.6, scale: 1 - 0.75 * p, rotation: p * 140 };
+            return { x: Math.cos(a) * rr * 1.3, y: Math.sin(a) * rr * 0.6, scale: 1 - 0.75 * p };
           };
           for (let j = 0; j < N; j++) {
             const ease = j === 0 ? "power1.in" : j === N - 1 ? "power2.in" : "none";
