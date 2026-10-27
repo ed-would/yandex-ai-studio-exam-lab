@@ -33,6 +33,7 @@ export default defineConfig({
           'theme-controls.css',
           'accordion.css',
           'favicon.png',
+          'social-preview.jpg',
           'fonts/unbounded-cyrillic-variable.woff2',
           'fonts/unbounded-latin-variable.woff2',
           'fonts/Unbounded-OFL.txt',
