@@ -1,14 +1,12 @@
 <p align="center">
-  <video src="assets/readme/hero-social-v11/hero-promo.mp4" width="960" poster="assets/readme/hero-social-v11/hero-dark.jpg" autoplay loop muted playsinline controls>
-    Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов.
-  </video>
+  <img src="assets/readme/hero-social-v11/hero-dark.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
 </p>
 
 <p align="center">
   <a href="https://aistudio.yandex.ru/"><img src="https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat" alt="Тематика: Yandex AI Studio"></a>
-  <a href="#банк-вопросов"><img src="https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-6841AB?style=flat" alt="Quiz: 180 вопросов"></a>
-  <a href="docs/DEVELOPMENT.md#стек-и-устройство"><img src="https://img.shields.io/badge/TypeScript-strict-6841AB?style=flat" alt="TypeScript: строгая проверка типов"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-6841AB?style=flat" alt="Лицензия MIT"></a>
+  <a href="#банк-вопросов"><img src="https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-D3E38C?style=flat" alt="Quiz: 180 вопросов"></a>
+  <a href="docs/DEVELOPMENT.md#стек-и-устройство"><img src="https://img.shields.io/badge/TypeScript-strict-93D7D0?style=flat" alt="TypeScript: строгая проверка типов"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-C5A8F2?style=flat" alt="Лицензия MIT"></a>
 </p>
 
 # <img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="absmiddle" alt=""> Тренажёр компетенций ИИ
