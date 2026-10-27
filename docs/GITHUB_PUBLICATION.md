@@ -51,7 +51,7 @@ GitHub не требует обязательного набора community-ф�
 
 ## Social preview репозитория
 
-Утверждённая обложка находится в [`docs/design-lab/social-preview/github-social-preview.jpg`](design-lab/social-preview/github-social-preview.jpg). Это отдельная настройка репозитория, она не меняет сайт и README. Файл имеет формат JPEG, размер 1280 × 640 px и вес 283 421 байт.
+Утверждённая обложка находится в [`docs/design-lab/social-preview/github-social-preview.jpg`](design-lab/social-preview/github-social-preview.jpg). Та же картинка публикуется с сайтом как `social-preview.jpg` и указана в мета-тегах `index.html`, чтобы превью появлялось при отправке ссылки на сайт. Загрузка в настройки репозитория остаётся отдельной и сама по себе обложку GitHub не включает. Файл имеет формат JPEG, размер 1280 × 640 px и вес 283 421 байт.
 
 GitHub принимает PNG, JPG и GIF размером меньше 1 MB. Рекомендуемый минимум: 640 × 320 px, а размер 1280 × 640 px даёт лучшее отображение. Итоговый JPEG соответствует этим требованиям. Источник: [официальная документация GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview).
 

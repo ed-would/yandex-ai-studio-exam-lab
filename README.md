@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="assets/readme/hero-social-v11/hero-dark.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
+  <video src="assets/readme/hero-social-v11/hero-promo.mp4" width="960" poster="assets/readme/hero-social-v11/hero-dark.jpg" autoplay loop muted playsinline controls>
+    Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов.
+  </video>
 </p>
 
 <p align="center">
