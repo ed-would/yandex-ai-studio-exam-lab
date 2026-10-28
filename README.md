@@ -1,4 +1,4 @@
-https://github.com/user-attachments/assets/1df46f56-3296-4fee-8c50-79d1bba8372f
+https://github.com/user-attachments/assets/f5dd47a9-ea78-47de-b87d-2f32bba8035b
 
 <p align="center">
   <img src="assets/readme/hero-social-v11/hero-dark.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» на платформе Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
