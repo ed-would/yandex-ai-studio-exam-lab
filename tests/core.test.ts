@@ -1129,7 +1129,6 @@ test('responsive-изображения имеют реальные размер
     ).flat(),
   );
   const used = new Set(Object.values(manifest).flatMap(({ variants }) => variants.map(([, file]) => file)));
-  used.add('brand/ai-studio-white.svg');
   assert.deepEqual(files, used);
 });
 test('таймер даёт 72 секунды и сохраняет сроки при переходах между вопросами', () => {

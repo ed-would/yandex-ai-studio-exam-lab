@@ -1,0 +1,43 @@
+{
+  "created": "2026-10-29",
+  "purpose": "README hero",
+  "method": "Built-in ImageGen, reference-guided recreation; flattened raster typography",
+  "attribution": {
+    "text": "от Yandex AI Studio",
+    "regular": "от",
+    "bold": "Yandex AI Studio",
+    "single_line": true,
+    "platform_logo": false
+  },
+  "reference": {
+    "file": "docs/design-lab/archive/2026-10-29-banners/assets/readme/hero-social-v11/hero-dark.jpg",
+    "bytes": 240058,
+    "sha256": "33430bc700baa8cbbde029f357693c8209d95d065f220bec541da89a6e23ac41"
+  },
+  "raw": {
+    "file": "docs/design-lab/readme-hero/generated.png",
+    "bytes": 1672495,
+    "sha256": "5aae0df4a1382eaf36e2c40c709f3c13bed98af5082fe22f9b521b45e02620a3",
+    "width": 1820,
+    "height": 864
+  },
+  "prompt": {
+    "file": "docs/design-lab/readme-hero/prompt.txt",
+    "bytes": 1904,
+    "sha256": "195cf8d0d99ff6f1115ff0c81e75512028bc0a0737b08bb37217a39f0362e93d"
+  },
+  "export": {
+    "file": "assets/readme/hero.jpg",
+    "bytes": 241102,
+    "sha256": "1225c47f13769a7e6f93956d10680ce85742f8e7b62c415f1662211289cb23df",
+    "width": 1600,
+    "height": 760,
+    "format": "JPEG",
+    "encoder": "macOS sips",
+    "jpeg_quality": 92
+  },
+  "editability": "Flattened raw pixels and prompt retained; no editable text layers. Original editable social composition retained in the archive.",
+  "replacement": "Regenerate using prompt.txt and the archived reference, keep raw output as generated.png, encode to JPEG with sips at the recorded export dimensions and quality.",
+  "rights": "Recreated from the existing project banners at the user’s request. Project license: LICENSE. Existing source material and its provenance are preserved in the archive.",
+  "upload_status": "Local asset replacement only; GitHub repository Settings not modified."
+}

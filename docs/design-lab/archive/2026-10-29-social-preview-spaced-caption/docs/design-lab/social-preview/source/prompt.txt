@@ -1,0 +1,12 @@
+Use case: text-localization.
+Recreate the provided finished banner at high quality using this image as the single edit target. Preserve the original composition, dark textured background, exact lilac/lime/turquoise palette, sculptural 3D quiz card, question mark, checkmark tile, orbit ribbon, lighting, project flower mark, all other text, proportions and layout. Make only the attribution change below. Reader-facing language is Russian, explicitly chosen by the user and supported by the existing README. Do not invent any wording, slogans, badges, logos or new decorative elements. No em/en dash separators. No red annotation arrows or borders.
+Asset type: separate social sharing preview. Final aspect ratio exactly 2:1, ideally output exactly 1280x640 or proportionally higher resolution. Fill the whole canvas with the banner; no white margins.
+Keep all exact existing words:
+"Тренажёр"
+"компетенций"
+"ИИ"
+"Подготовка к экзамену"
+"«Основы работы с ИИ»".
+The only change is the attribution at the bottom right. Remove all words "на платформе" and the entire white Yandex AI Studio symbol logo. Replace that whole group with ONLY this text in a single line:
+"от Yandex AI Studio"
+The Cyrillic lowercase "от" must be regular weight; the Latin name "Yandex AI Studio" must be bold sans-serif. Both must share ONE baseline and have a normal space between them. Plain typography only: NO round Y glyph, NO swirl glyph, NO brand icon, NO separate logo artwork. Use the existing off-white text color and a comfortably readable type size around 27-30 px at 1280 px width, right aligned with the existing right safe margin and sitting in the bottom band beside the exam title. Keep clear spacing from the exam title. Keep all other design elements faithful.

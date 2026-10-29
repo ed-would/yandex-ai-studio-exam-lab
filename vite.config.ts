@@ -37,7 +37,6 @@ export default defineConfig({
           'fonts/unbounded-cyrillic-variable.woff2',
           'fonts/unbounded-latin-variable.woff2',
           'fonts/Unbounded-OFL.txt',
-          'images/brand/ai-studio-white.svg',
           ...Object.values(imageVariants).flatMap(({ variants }) => variants.map(([, file]) => `images/${file}`)),
         ]);
         for (const file of files) {

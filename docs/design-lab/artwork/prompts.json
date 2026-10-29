@@ -127,9 +127,5 @@
       "png_bytes": 1286852,
       "webp_bytes": 733588
     }
-  ],
-  "supplied_brand_asset": {
-    "file": "public/images/brand/ai-studio-white.svg",
-    "usage": "Exact supplied logo identifies the exam platform. Trainer is an independent project."
-  }
+  ]
 }

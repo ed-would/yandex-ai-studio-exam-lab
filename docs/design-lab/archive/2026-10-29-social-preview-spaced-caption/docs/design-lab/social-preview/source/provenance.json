@@ -1,0 +1,52 @@
+{
+  "created": "2026-10-29",
+  "purpose": "Website social preview",
+  "method": "Built-in ImageGen, reference-guided recreation; flattened raster typography",
+  "attribution": {
+    "text": "от Yandex AI Studio",
+    "regular": "от",
+    "bold": "Yandex AI Studio",
+    "single_line": true,
+    "platform_logo": false
+  },
+  "reference": {
+    "file": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/github-social-preview.jpg",
+    "bytes": 283421,
+    "sha256": "2f93beb33c5b7f4d84d9fcc355f0ec3584de56c83692a47af8d7ebb4a19a3f1e"
+  },
+  "raw": {
+    "file": "docs/design-lab/social-preview/source/generated.png",
+    "bytes": 1840594,
+    "sha256": "296431b6490776247aceb400d3cc8b5157cbf2184576fb0fcd1d0173a015089d",
+    "width": 1774,
+    "height": 887
+  },
+  "prompt": {
+    "file": "docs/design-lab/social-preview/source/prompt.txt",
+    "bytes": 1827,
+    "sha256": "0a396b4f3dc8dcf1cc36675baed31fd6cc6b16984b54cac19699466c34176e34"
+  },
+  "export": {
+    "file": "public/social-preview.jpg",
+    "bytes": 199299,
+    "sha256": "093aa54cfce3af500671ef4f8abacb931fc2eef868896b6b6ffaaecac5c4e16a",
+    "width": 1280,
+    "height": 640,
+    "format": "JPEG",
+    "encoder": "macOS sips",
+    "jpeg_quality": 92
+  },
+  "editability": "Flattened raw pixels and prompt retained; no editable text layers. Original editable social composition retained in the archive.",
+  "replacement": "Regenerate using prompt.txt and the archived reference, keep raw output as generated.png, then export once to public/social-preview.jpg at the recorded dimensions and quality.",
+  "rights": "Recreated from the existing project banners at the user’s request. Project license: LICENSE. Existing source material and its provenance are preserved in the archive.",
+  "upload_status": "Local asset replacement only; GitHub repository Settings not modified.",
+  "platform_requirements": {
+    "checked": "2026-10-29",
+    "source": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview",
+    "target_dimensions": [
+      1280,
+      640
+    ],
+    "max_bytes_conservative": 1000000
+  }
+}

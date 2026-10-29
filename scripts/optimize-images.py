@@ -108,7 +108,6 @@ for relative in sources:
         (IMAGES / relative).write_bytes(source.read_bytes())
 if not selected_sources:
     used = {file for entry in manifest.values() for _, file in entry["variants"]}
-    used.add("brand/ai-studio-white.svg")
     for folder in ["brand", "artwork"]:
         for image in (IMAGES / folder).iterdir():
             relative = image.relative_to(IMAGES).as_posix()

@@ -112,14 +112,15 @@ export function Icon({ name = 'spark', size = 20, className = '' }: IconProps) {
 
 export function ExternalLinkLabel({ text = '', size = 15 }: { text?: string; size?: number }) {
   const label = String(text ?? '').trimEnd();
+  const trailingBrand = /(Yandex(?:[ \u00a0\u202f]+)AI(?:[ \u00a0\u202f]+)Studio|StartExam)$/u.exec(label);
   const match = /^(.*\s)(\S+)$/u.exec(label);
-  const prefix = match?.[1] || '';
-  const lastWord = match?.[2] || label;
+  const prefix = trailingBrand ? label.slice(0, trailingBrand.index) : match?.[1] || '';
+  const lastWord = trailingBrand?.[0] || match?.[2] || label;
   return (
     <span class="external-link-label">
-      {prefix}
+      <BrandText text={prefix} />
       <span class="external-link-tail">
-        {lastWord}
+        <BrandText text={lastWord} />
         <Icon name="external" size={size} />
       </span>
     </span>
@@ -221,11 +222,15 @@ const assetUrl = (path: string) =>
 const responsiveSources = (path: string) =>
   imageVariantMap[path]?.variants.map(([width, file]) => `${assetUrl(file)} ${width}w`).join(', ');
 
-export function PlatformMark() {
+const BRAND_PART = /^(?:Yandex(?:[ \u00a0\u202f]+)AI(?:[ \u00a0\u202f]+)Studio|StartExam)$/u;
+const BRAND_SPLIT = /(Yandex(?:[ \u00a0\u202f]+)AI(?:[ \u00a0\u202f]+)Studio|StartExam)/gu;
+export function BrandText({ text = '' }: { text?: string }) {
   return (
-    <span class="platform-mark">
-      <img src={assetUrl('brand/ai-studio-white.svg')} alt="Yandex AI Studio" width="347" height="58" />
-    </span>
+    <>
+      {String(text)
+        .split(BRAND_SPLIT)
+        .map((part, index) => (BRAND_PART.test(part) ? <strong key={`${part}-${index}`}>{part}</strong> : part))}
+    </>
   );
 }
 

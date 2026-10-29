@@ -11,7 +11,7 @@ import type {
   ChoiceResponse,
   MatchResponse,
 } from '../types.ts';
-import { h, Icon, SourceLinks } from './ui.tsx';
+import { h, BrandText, Icon, SourceLinks } from './ui.tsx';
 import { ProgressBar } from './progress-bar.tsx';
 
 export const typeNames: Record<'single' | 'multi' | 'match', string> = {
@@ -485,7 +485,9 @@ export function Feedback({
         </div>
         <span class="feedback-points">{correct ? '+1' : '0'}</span>
       </div>
-      <p class="main-explanation">{question.explanation}</p>
+      <p class="main-explanation">
+        <BrandText text={question.explanation} />
+      </p>
       <div class={`takeaway feedback-sources theme-${question.level}`}>
         <div class="feedback-sources-header">
           <span class="feedback-sources-icon">

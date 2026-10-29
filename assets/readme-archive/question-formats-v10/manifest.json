@@ -13,20 +13,22 @@
     {
       "theme": "dark",
       "layout": "desktop",
-      "readme": "assets/readme/question-formats-v10/question-formats-desktop-dark.jpg",
+      "readme": "assets/readme/question-formats-desktop-dark.jpg",
       "publishedIn": [
         "d492c44"
       ],
-      "sha256": "01f5f3a9e826a3692f9afb48e9dba4cdc168b576151a5afbf4129bbdadd7bbde"
+      "sha256": "01f5f3a9e826a3692f9afb48e9dba4cdc168b576151a5afbf4129bbdadd7bbde",
+      "historicalPath": "assets/readme/question-formats-v10/question-formats-desktop-dark.jpg"
     },
     {
       "theme": "light",
       "layout": "desktop",
-      "readme": "assets/readme/question-formats-v10/question-formats-desktop-light.jpg",
+      "readme": "assets/readme/question-formats-desktop-light.jpg",
       "publishedIn": [
         "d492c44"
       ],
-      "sha256": "8911d3e0373744a20a2667ae3b64e98e701d55f12695d4bfaf4f4e94dd79248c"
+      "sha256": "8911d3e0373744a20a2667ae3b64e98e701d55f12695d4bfaf4f4e94dd79248c",
+      "historicalPath": "assets/readme/question-formats-v10/question-formats-desktop-light.jpg"
     }
   ]
 }

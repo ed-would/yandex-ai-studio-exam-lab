@@ -1,38 +1,60 @@
 {
-  "created": "2026-10-11",
-  "purpose": "GitHub repository social preview",
-  "method": "ImageGen artwork with editable HTML typography and original project brand marks",
+  "created": "2026-10-29",
+  "purpose": "Website social preview",
+  "method": "Built-in ImageGen, reference-guided typography edit; flattened raster with one continuous left-aligned exam-and-brand line",
+  "attribution": {
+    "text": "от Yandex AI Studio",
+    "regular": "от",
+    "bold": "Yandex AI Studio",
+    "single_line": true,
+    "platform_logo": false
+  },
+  "reference": {
+    "file": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/public/social-preview.jpg",
+    "bytes": 199299,
+    "sha256": "093aa54cfce3af500671ef4f8abacb931fc2eef868896b6b6ffaaecac5c4e16a"
+  },
+  "raw": {
+    "file": "docs/design-lab/social-preview/source/generated.png",
+    "bytes": 1819610,
+    "sha256": "dc83d52b0ebfd03285128cbe4d59ead191a0fb0c0775c1582793d097c44c6b4a",
+    "width": 1774,
+    "height": 887
+  },
+  "prompt": {
+    "file": "docs/design-lab/social-preview/source/prompt.txt",
+    "bytes": 2379,
+    "sha256": "fdc4e11c4c14a07c18352047739d8b22e0bb90257fa58b0499ac7c7f3d662b7f"
+  },
   "export": {
-    "file": "../github-social-preview.jpg",
-    "format": "JPEG",
+    "file": "public/social-preview.jpg",
+    "bytes": 197799,
+    "sha256": "6c38cdf35c68ee36abd9d58fb94ef3a740b9571906b5623c9ddc41fc4349d207",
     "width": 1280,
     "height": 640,
-    "bytes": 283421,
-    "sha256": "2f93beb33c5b7f4d84d9fcc355f0ec3584de56c83692a47af8d7ebb4a19a3f1e",
-    "jpeg_quality": 98,
-    "renderer": "Playwright MCP / Chromium",
-    "viewport_css_pixels": [
+    "format": "JPEG",
+    "encoder": "macOS sips",
+    "jpeg_quality": 92
+  },
+  "editability": "Flattened raw pixels and prompt retained; no editable text layers. Original editable social composition retained in the archive.",
+  "replacement": "Regenerate using prompt.txt and the archived reference, keep raw output as generated.png, then export once to public/social-preview.jpg at the recorded dimensions and quality.",
+  "rights": "Recreated from the existing project banners at the user’s request. Project license: LICENSE. Existing source material and its provenance are preserved in the archive.",
+  "upload_status": "Local asset replacement only; GitHub repository Settings not modified.",
+  "platform_requirements": {
+    "checked": "2026-10-29",
+    "source": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview",
+    "target_dimensions": [
       1280,
       640
-    ]
+    ],
+    "max_bytes_conservative": 1000000
   },
-  "composition": "layout.html",
-  "generation_prompts": "generation-prompts.md",
-  "artwork": [
-    {
-      "file": "artwork-generated.png",
-      "sha256": "a896ecdb20aeab0c968e04f1b20996d97dbab17095c14d4058c0591d9b35eb30"
-    },
-    {
-      "file": "floor-reference.png",
-      "sha256": "5262a5f6a4beb16678fdc555b4a499a6ccc34a03b59e0e2497e38e94c55c2321"
-    }
-  ],
-  "project_references": [
-    "public/fonts/unbounded-cyrillic-variable.woff2",
-    "public/fonts/unbounded-latin-variable.woff2",
-    "public/images/brand/trainer-abstract-256-optimized.webp",
-    "public/images/brand/ai-studio-white.svg"
-  ],
-  "notes": "Rendered from the unchanged editable composition at GitHub recommended dimensions. Original HTML and SVG marks rasterized afresh at the target dimensions. Source artwork PNGs retain their material texture."
+  "caption": {
+    "text": "«Основы работы с ИИ» от Yandex AI Studio",
+    "single_line": true,
+    "alignment": "left",
+    "gap": "normal word space",
+    "regular": "от",
+    "bold": "Yandex AI Studio"
+  }
 }

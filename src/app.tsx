@@ -36,7 +36,6 @@ import {
   ExternalLinkLabel,
   Modal,
   Wordmark,
-  PlatformMark,
   SectionBackdrop,
   ThemeToggle,
 } from './components/ui.tsx';
@@ -825,8 +824,9 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
               <div class="footer-intro">
                 <span class="footer-title">{APP_NAME}</span>
                 <p>
-                  Независимый учебный проект для подготовки к экзамену «Основы работы с ИИ» на платформе Yandex AI
-                  Studio. Вопросы авторские; три уровня и учебная цель {TRAINING_TARGET}% относятся к тренажёру.
+                  Независимый учебный проект для подготовки к экзамену «Основы работы с ИИ» от{' '}
+                  <strong>Yandex AI Studio</strong> на платформе <strong>StartExam</strong>. Вопросы авторские; три
+                  уровня и учебная цель {TRAINING_TARGET}% относятся к тренажёру.
                 </p>
               </div>
               <div class="footer-exam-weights">
@@ -844,7 +844,6 @@ export function App({ questions, storage: suppliedStorage, storageName, tabStora
               </div>
               <div class="footer-meta">
                 <div class="footer-platform">
-                  <PlatformMark />
                   <span class="footer-count">3 теста · 180 вопросов</span>
                 </div>
                 <a class="button secondary" href={PROGRAM_URL} target="_blank" rel="noopener noreferrer">
