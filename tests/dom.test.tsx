@@ -26,7 +26,7 @@ Object.assign(globalThis, {
 window.HTMLElement.prototype.scrollIntoView = () => {};
 const { render } = await import('preact');
 const { act } = await import('preact/test-utils');
-const { formatPercent, h, Fragment } = await import('../src/components/ui.tsx');
+const { formatPercent, h, Fragment, BrandText, ExternalLinkLabel } = await import('../src/components/ui.tsx');
 // JSX factory bindings are emitted by the classic JSX transform.
 void h;
 void Fragment;
@@ -2268,4 +2268,53 @@ test('таймер отложенного завершения сохраняе�
     assert.ok(get('.results-page'));
     await unmount();
   }
+});
+
+test('бренд отображается текстом и выделяется во всех ключевых блоках', async () => {
+  await mount();
+  const homeBrand = get('.exam-brand');
+  assert.equal(readText(homeBrand), 'Подготовка к экзамену от Yandex AI Studio на платформе StartExam');
+  assert.deepEqual(
+    [...homeBrand.querySelectorAll('strong')].map((node) => readText(node)),
+    ['Yandex AI Studio', 'StartExam'],
+  );
+  assert.equal(homeBrand.querySelector('img'), null);
+  assert.equal(get('.footer-platform').querySelector('img'), null);
+  assert.equal(get('.footer-platform').querySelector('strong'), null);
+  assert.equal(readText(get('.footer-platform')), '3 теста · 180 вопросов');
+
+  const footer = get('.footer-intro p');
+  assert.match(readText(footer), /от Yandex AI Studio на платформе StartExam/);
+  assert.deepEqual(
+    [...footer.querySelectorAll('strong')].map((node) => readText(node)),
+    ['Yandex AI Studio', 'StartExam'],
+  );
+
+  await go('#/study');
+  const intro = get('.official-platform p');
+  assert.equal(readText(intro), 'Yandex AI Studio – Курсы и документация из перечня организатора экзамена.');
+  assert.equal(readText(intro.querySelector('strong') as Element), 'Yandex AI Studio –');
+  const probe = document.createElement('div');
+  await act(() => render(<BrandText text="<em>Yandex AI Studio</em>" />, probe));
+  assert.equal(probe.textContent, '<em>Yandex AI Studio</em>');
+  assert.equal(readText(probe.querySelector('strong') as Element), 'Yandex AI Studio');
+  assert.equal(probe.querySelector('em'), null);
+
+  const linkProbe = document.createElement('div');
+  for (const [text, brand] of [
+    ['Документация Yandex AI Studio', 'Yandex AI Studio'],
+    ['Экзамен на платформе StartExam', 'StartExam'],
+  ]) {
+    await act(() => render(<ExternalLinkLabel text={text} />, linkProbe));
+    assert.equal(readText(linkProbe), text);
+    assert.equal(readText(linkProbe.querySelector('.external-link-tail strong') as Element), brand);
+  }
+  await act(() => render(<ExternalLinkLabel text="Yandex AI Studio: условия использования" />, linkProbe));
+  assert.equal(readText(linkProbe.querySelector('strong') as Element), 'Yandex AI Studio');
+  assert.equal(readText(linkProbe.querySelector('.external-link-tail') as Element), 'использования');
+  assert.ok(linkProbe.querySelector('.external-link-tail .icon'));
+  await act(() => {
+    render(null, probe);
+    render(null, linkProbe);
+  });
 });

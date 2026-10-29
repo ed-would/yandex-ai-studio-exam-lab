@@ -1,0 +1,14 @@
+Use case: text-localization.
+Recreate the provided finished banner at high quality using this image as the single edit target. Preserve the original composition, dark textured background, exact lilac/lime/turquoise palette, sculptural 3D quiz card, question mark, checkmark tile, orbit ribbon, lighting, project flower mark, all other text, proportions and layout. Make only the attribution change below. Reader-facing language is Russian, explicitly chosen by the user and supported by the existing README. Do not invent any wording, slogans, badges, logos or new decorative elements. No em/en dash separators. No red annotation arrows or borders.
+Asset type: README hero banner. Final wide aspect ratio 1600:760, ideally output exactly 1600x760 or proportionally higher resolution. Fill the entire canvas with the banner; no margins.
+Keep all exact existing words:
+"Тренажёр компетенций ИИ"
+"Подготовка к экзамену"
+"Основы"
+"работы с ИИ"
+"180 вопросов"
+"3 уровня"
+"6 доменов".
+Replace the entire old two-line attribution block in the lower left, containing "на платформе" and the white Yandex AI Studio symbol logo, with ONLY the single horizontal line:
+"от Yandex AI Studio"
+Use Cyrillic lowercase "от" in regular weight, followed by a normal word space and Latin "Yandex AI Studio" in bold. The brand name must be entirely textual, a clean sans-serif in bold; NO round Y glyph, NO swirl glyph, NO pictogram, NO Yandex AI Studio logo asset. Put both text runs on the SAME baseline and keep them in ONE line. Set the line at a readable size around 36-42 px on the 1600 px wide banner, aligned to the existing left text edge and vertically balanced in the space below "работы с ИИ" and above the stats strip. The new line should feel like a deliberate typographic byline. Keep everything else faithful.

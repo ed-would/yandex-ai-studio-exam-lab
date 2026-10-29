@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-29",
+  "reason": "Original banners and sources before replacing platform logo with text attribution",
+  "files": [
+    {
+      "original_path": "assets/readme/hero-social-v11/hero-dark.jpg",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/assets/readme/hero-social-v11/hero-dark.jpg",
+      "sha256": "33430bc700baa8cbbde029f357693c8209d95d065f220bec541da89a6e23ac41",
+      "bytes": 240058
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/github-social-preview.jpg",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/github-social-preview.jpg",
+      "sha256": "2f93beb33c5b7f4d84d9fcc355f0ec3584de56c83692a47af8d7ebb4a19a3f1e",
+      "bytes": 283421
+    },
+    {
+      "original_path": "public/social-preview.jpg",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/github-social-preview.jpg",
+      "sha256": "2f93beb33c5b7f4d84d9fcc355f0ec3584de56c83692a47af8d7ebb4a19a3f1e",
+      "bytes": 283421,
+      "shared_with_original_path": "docs/design-lab/social-preview/github-social-preview.jpg"
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/README.md",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/README.md",
+      "sha256": "77fbc5e9450e1d22e2417d284fe2fc26f32a9d5a75fd2eb988096303f98a1258",
+      "bytes": 756
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/artwork-generated.png",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/source/artwork-generated.png",
+      "sha256": "a896ecdb20aeab0c968e04f1b20996d97dbab17095c14d4058c0591d9b35eb30",
+      "bytes": 1754819
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/floor-reference.png",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/source/floor-reference.png",
+      "sha256": "5262a5f6a4beb16678fdc555b4a499a6ccc34a03b59e0e2497e38e94c55c2321",
+      "bytes": 1796044
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/generation-prompts.md",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/source/generation-prompts.md",
+      "sha256": "00764347e152f2fe0f7eb8169a9b70212381a253f24a56a04067e1c75fe43ea7",
+      "bytes": 5291
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/layout.html",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/source/layout.html",
+      "sha256": "5089ad41ea94c353f89d49a8c3893e98d98e386ea43b88c6b9d8ab097529ba24",
+      "bytes": 4401
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/provenance.json",
+      "archived_path": "docs/design-lab/archive/2026-10-29-banners/docs/design-lab/social-preview/source/provenance.json",
+      "sha256": "6ec49e5db0ef44f5c18ec27981e09d08dc27022428be926bb039cea9942c09bc",
+      "bytes": 1359
+    }
+  ],
+  "deduplication": {
+    "date": "2026-10-29",
+    "reason": "User requested one current website preview and one archived copy of the previous version; identical original paths share the retained archived file."
+  }
+}

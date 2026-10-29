@@ -14,22 +14,24 @@
     {
       "theme": "dark",
       "layout": "desktop",
-      "readme": "assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.jpg",
+      "readme": "assets/readme/learning-cycle-desktop-dark.jpg",
       "publishedIn": [
         "4c3b47b",
         "d492c44"
       ],
-      "sha256": "f3b3f537b667007b1b3b0701ce9f4e64d36c306662438d82d17999d0a227bc0f"
+      "sha256": "f3b3f537b667007b1b3b0701ce9f4e64d36c306662438d82d17999d0a227bc0f",
+      "historicalPath": "assets/readme/learning-cycle-v7/learning-cycle-desktop-dark.jpg"
     },
     {
       "theme": "light",
       "layout": "desktop",
-      "readme": "assets/readme/learning-cycle-v7/learning-cycle-desktop-light.jpg",
+      "readme": "assets/readme/learning-cycle-desktop-light.jpg",
       "publishedIn": [
         "4c3b47b",
         "d492c44"
       ],
-      "sha256": "d804f74bd44877f9bedea5fe9b9b315067437ddf73359e4f9d055fa32858190c"
+      "sha256": "d804f74bd44877f9bedea5fe9b9b315067437ddf73359e4f9d055fa32858190c",
+      "historicalPath": "assets/readme/learning-cycle-v7/learning-cycle-desktop-light.jpg"
     }
   ]
 }

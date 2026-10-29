@@ -1,0 +1,39 @@
+{
+  "created": "2026-10-29",
+  "purpose": "Archive of the social preview before tightening the bottom caption",
+  "caption_before": "от Yandex AI Studio aligned separately from the exam title",
+  "files": [
+    {
+      "original_path": "public/social-preview.jpg",
+      "archived_path": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/public/social-preview.jpg",
+      "bytes": 199299,
+      "sha256": "093aa54cfce3af500671ef4f8abacb931fc2eef868896b6b6ffaaecac5c4e16a"
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/README.md",
+      "archived_path": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/docs/design-lab/social-preview/README.md",
+      "bytes": 1933,
+      "sha256": "33c6b45c676b8c606ca6bc7a918b86a86766b7511a5ae014542b4660a7d35202"
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/generated.png",
+      "archived_path": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/docs/design-lab/social-preview/source/generated.png",
+      "bytes": 1840594,
+      "sha256": "296431b6490776247aceb400d3cc8b5157cbf2184576fb0fcd1d0173a015089d",
+      "width": 1774,
+      "height": 887
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/prompt.txt",
+      "archived_path": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/docs/design-lab/social-preview/source/prompt.txt",
+      "bytes": 1827,
+      "sha256": "0a396b4f3dc8dcf1cc36675baed31fd6cc6b16984b54cac19699466c34176e34"
+    },
+    {
+      "original_path": "docs/design-lab/social-preview/source/provenance.json",
+      "archived_path": "docs/design-lab/archive/2026-10-29-social-preview-spaced-caption/docs/design-lab/social-preview/source/provenance.json",
+      "bytes": 2211,
+      "sha256": "15e2457afe022041578f0414f03aef99d834541e9217fad8c56a55ccf6d167ba"
+    }
+  ]
+}

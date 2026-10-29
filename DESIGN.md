@@ -20,8 +20,6 @@ colors:
   text-muted-dark: "#b9b0c5"
   line-light: "#e4e0e9"
   line-dark: "#494152"
-  brand-logo-ink-light: "#25212b"
-  brand-logo-ink-dark: "#e4f1eb"
   primary: "#6841ab"
   primary-dark: "#f2edf8"
   ui-accent-light: "#6841ab"
@@ -223,15 +221,6 @@ rounded:
   pill: 9999px
   full: 9999px
 components:
-  platform-mark:
-    backgroundColor: transparent
-    textColor: "{colors.brand-logo-ink-light}"
-    rounded: "{rounded.none}"
-    padding: 0px
-  platform-mark-footer:
-    backgroundColor: transparent
-    rounded: "{rounded.none}"
-    padding: 0px
   button-primary-light:
     backgroundColor: "{colors.ui-action-bg-light}"
     textColor: "{colors.ui-action-ink-light}"
@@ -314,7 +303,7 @@ Yandex AI Studio Exam Lab – независимый русскоязычный 
 - цвет уровня теста и его контекстных карточек;
 - лиловый учебный контекст для карты материалов и блока знаний на главной.
 
-Логотип Yandex AI Studio показывается без плашки на всех страницах. В светлой теме белый SVG затемняется до ink; в тёмной теме отображается светлым, как в подвале. Фон и радиус у логотипа отсутствуют.
+Графические логотипы AI Studio не используются. Названия Yandex AI Studio и StartExam набираются жирным текстом там, где упоминаются; в подвале нет отдельной замены логотипа.
 
 Лиловый учебный контекст – намеренное исключение: он связывает материалы и блоки «знания» с экспертной визуальной линией, но не делает все общие controls лиловыми. Это исключение действует только в перечисленных ниже контейнерах и не меняет правило для брендового цвета или остальных level palettes.
 
@@ -332,7 +321,7 @@ Browser chrome повторяет фон страницы: `#ffffff` light и `#
 
 ### Бренд Yandex AI Studio
 
-`public/images/brand/ai-studio-white.svg` используется без фоновой заливки. `.platform-mark` затемняет SVG в светлой теме и показывает его белым в тёмной теме; не добавляй под логотип фон, рамку или скругление.
+Графический логотип AI Studio удалён. Названия Yandex AI Studio и StartExam выделяются жирным текстом без отдельной графики.
 
 ### Общий интерфейсный акцент
 
@@ -458,9 +447,9 @@ Sticky header использует полупрозрачную glass surface и
 
 `.theme-toggle` – круглый control 44px с surface background, border и SVG солнца/луны. Его обычное, hover, active и focus-visible состояния используют solid `#6841ab` в светлой теме и dark neutral/gradient role в тёмной, а не lilac learning exception. Переключение темы доступно с клавиатуры, имеет `aria-pressed` и не меняет структуру страницы.
 
-### Логотипная плашка
+### Текстовый брендинг
 
-`.platform-mark` содержит `public/images/brand/ai-studio-white.svg` без фоновой заливки, рамки, скругления и внутренних отступов. В светлой теме SVG затемняется; в тёмной показывается светлым. Правило едино для hero, official-reading и footer.
+Названия Yandex AI Studio и StartExam выводятся жирным текстом в hero, материалах и подвале. Не добавляй графические логотипы или отдельную замену логотипа в подвале.
 
 ### Кнопки и ссылки
 
@@ -538,7 +527,7 @@ Weight tiles показывают реальные веса доменов эк�
 
 ## Do's and Don'ts
 
-- Показывай логотип Yandex AI Studio без фоновой плашки: тёмный в светлой теме и светлый в тёмной.
+- Выделяй названия **Yandex AI Studio** и **StartExam** жирным текстом. Не добавляй графический логотип или отдельную подпись вместо него в подвале.
 - Сохраняй три палитры за соответствующими уровнями и их содержанием. Не переноси teal уровня 2 в глобальную шапку, «Выбрать тест», «Карту подготовки», навигацию материалов или общий status dot.
 - Для общих ссылок, active nav, progress и primary actions используй solid expert purple `#6841ab` в светлой теме и `--ui-gradient`/`--ui-action-gradient` в тёмной; theme toggle, filters, selects, icons и focus следуют той же theme-specific role. Light `--ui-text-fill` равен `currentColor`, dark – `transparent`; light gradients равны `none`. Fallback light `#25212b`, `#e8e2f0`, `#f0edf4`, `#6841ab`, `#e4e0e9`, fallback dark `#f2edf8`, `#302b3a`, `#24212d`, `#d3e38c`, `#494152`. Не создавай новый одиночный level color для общего элемента.
 - Для CTA внутри `.site-footer` используй только scoped `footer-action-*` gray-green tokens из `src/styles.css` и `src/theme.css`. Это локальное footer-only исключение с собственными fill, ink, border, hover и active states; не смешивай его с composite UI gradient.
@@ -556,4 +545,4 @@ Weight tiles показывают реальные веса доменов эк�
 
 Нормативный каскад намеренно разделён. `src/styles.css` содержит общий layout, typography, components, размещение artwork и финальные visual overrides, включая lilac home knowledge/how context и scoped footer action states. `src/theme.css` содержит dark-theme, contextual level overrides, lilac Materials exception и тёмные footer action states. `public/theme-controls.css` – единственный runtime source composite UI gradients, neutral fallbacks, UI action states и semantic status tokens; он также задаёт поведение theme toggle. Не дублируй UI colors в компонентах. `public/accordion.css` отвечает за общую механику раскрытия. Markup и accessibility behavior компонентов находятся в `src/components/ui.js`, `src/components/pages.js`, `src/components/exam-page.js`, `src/components/questions.js`, `src/components/results-page.js` и `src/components/select-field.js`.
 
-При изменении цвета ищи и declaration token, и final selector override: authoritative является последнее совпавшее правило каскада. В том же изменении обновляй этот документ, если меняются роль или значение token, font, breakpoint, radius или component contract. Запускай `npm run check`, затем проверяй обе темы и затронутый route на desktop и mobile widths. Канонический brand asset – `public/images/brand/ai-studio-white.svg`; канонический локальный font/license source – `public/fonts/Unbounded-OFL.txt`. Для экспортного результата сверяй `src/core/report.js`: это самостоятельный HTML с system-ui 16px/1.65, width 900px и radius 20px, который использует solid light link color и dark gradient с neutral fallback как self-contained exception, не наследует level или lilac palette и при печати отключает gradients, становится белым и использует 11pt.
+При изменении цвета ищи и declaration token, и final selector override: authoritative является последнее совпавшее правило каскада. В том же изменении обновляй этот документ, если меняются роль или значение token, font, breakpoint, radius или component contract. Запускай `npm run check`, затем проверяй обе темы и затронутый route на desktop и mobile widths. Названия Yandex AI Studio и StartExam остаются текстовыми и жирными; отдельный графический логотип не является частью системы. Канонический локальный font/license source – `public/fonts/Unbounded-OFL.txt`. Для экспортного результата сверяй `src/core/report.js`: это самостоятельный HTML с system-ui 16px/1.65, width 900px и radius 20px, который использует solid light link color и dark gradient с neutral fallback как self-contained exception, не наследует level или lilac palette и при печати отключает gradients, становится белым и использует 11pt.

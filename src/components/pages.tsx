@@ -7,7 +7,6 @@ import {
   Fragment,
   Art,
   SectionBackdrop,
-  PlatformMark,
   EmptyState,
   Icon,
   ExternalLinkLabel,
@@ -53,8 +52,9 @@ export function Home({ state, questions, onStart, onRestart, timed, onTimedChang
         <section class="hero">
           <div class="hero-copy">
             <div class="exam-brand">
-              <span>Подготовка к экзамену на платформе</span>
-              <PlatformMark />
+              <span>
+                Подготовка к экзамену от <strong>Yandex AI Studio</strong> на платформе <strong>StartExam</strong>
+              </span>
             </div>
             <h1>
               Основы
@@ -758,8 +758,9 @@ export function Study({ questions, initialDomain = 1 }: StudyProps) {
             <div>
               <h2>Рекомендованные материалы</h2>
               <div class="official-platform">
-                <PlatformMark />
-                <p>Курсы и документация из перечня организатора экзамена.</p>
+                <p>
+                  <strong>Yandex AI Studio –</strong> Курсы и документация из перечня организатора экзамена.
+                </p>
               </div>
             </div>
             <a class="text-button" href={PROGRAM_URL} target="_blank" rel="noopener noreferrer">
