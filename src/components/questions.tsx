@@ -395,7 +395,7 @@ export function ExplanationDetails({ question, response }: { question: Question;
               <div>
                 <div class="pair-title">
                   <strong>
-                    {index + 1}. {item.text}:
+                    {index + 1}. {item.text.replace(/\.\s*$/, '')}:
                   </strong>{' '}
                   <span class="pair-definition">{definition}</span>
                 </div>
