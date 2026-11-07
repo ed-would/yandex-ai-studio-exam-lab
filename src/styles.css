@@ -1532,6 +1532,9 @@ details[open] > summary > .icon:last-child {
 .feedback .rationale-meta.wrong {
   color: var(--error-text);
 }
+.rationale-missed {
+  color: var(--error-text);
+}
 .option-explanation p,
 .pair-explanation p {
   font-size: 11px;

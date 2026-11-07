@@ -45,6 +45,7 @@ export function ChoiceQuestion({
           const selected = response.includes(option.id);
           const correct = question.correct.includes(option.id);
           const wrong = locked && selected && !correct;
+          const missed = locked && multi && correct && !selected;
           const classes = [
             'choice',
             selected ? 'selected' : '',
@@ -89,8 +90,8 @@ export function ChoiceQuestion({
               <span class="choice-letter">{LETTERS[index]}</span>
               <span class="choice-text">{option.text}</span>
               {label && (
-                <span class={`choice-status ${wrong ? 'wrong' : 'correct'}`}>
-                  <Icon name={wrong ? 'close' : 'check'} size={14} />
+                <span class={`choice-status ${wrong || missed ? 'wrong' : 'correct'}`}>
+                  <Icon name={wrong || missed ? 'close' : 'check'} size={14} />
                   {label}
                 </span>
               )}
@@ -420,7 +421,8 @@ export function ExplanationDetails({ question, response }: { question: Question;
               <strong>{option.text}</strong>
               <span class={`rationale-meta ${correct ? 'correct' : 'wrong'}`}>
                 {correct ? 'Верный вариант' : 'Неверный вариант'}
-                {selected ? ' · твой выбор' : correct ? ' · не выбран' : ''}
+                {selected ? ' · твой выбор' : correct ? ' · ' : ''}
+                {!selected && correct && <span class="rationale-missed">не выбран</span>}
               </span>
               <p>{option.explanation}</p>
             </div>
