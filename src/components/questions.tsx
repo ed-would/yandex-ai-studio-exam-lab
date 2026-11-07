@@ -395,8 +395,11 @@ export function ExplanationDetails({ question, response }: { question: Question;
               <div>
                 <div class="pair-title">
                   <strong>
-                    {index + 1}. {item.text.replace(/\.\s*$/, '')}:
-                  </strong>{' '}
+                    {index + 1}. {item.text.replace(/\.\s*$/, '')}
+                  </strong>
+                  <span class="pair-arrow" aria-hidden="true">
+                    →
+                  </span>
                   <span class="pair-definition">{definition}</span>
                 </div>
                 {!right && <p class="your-answer">Твой ответ: {selected?.text || 'нет ответа.'}</p>}

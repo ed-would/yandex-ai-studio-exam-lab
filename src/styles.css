@@ -1554,7 +1554,10 @@ details[open] > summary > .icon:last-child {
 }
 .pair-arrow {
   color: #68636f;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 650;
+  margin-inline: 0.35em;
+  -webkit-text-stroke: 0.4px currentColor;
 }
 .pair-explanation .your-answer {
   font-size: 11px;
