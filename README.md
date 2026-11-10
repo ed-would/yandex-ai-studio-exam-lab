@@ -4,14 +4,14 @@ https://github.com/user-attachments/assets/a5a14b01-6aab-4aee-acf6-0685515ffab2
   <img src="assets/readme/hero.jpg" width="960" alt="Тренажёр компетенций ИИ: подготовка к экзамену «Основы работы с ИИ» от Yandex AI Studio. 180 вопросов, 3 уровня, 6 доменов. Вопрос, варианты ответа и галочка в лаймовой, бирюзовой и сиреневой палитрах">
 </p>
 
+<h1 align="center"><sup><img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="middle" alt=""></sup> Тренажёр компетенций ИИ</h1>
+
 <p align="center">
   <a href="https://aistudio.yandex.ru/"><img src="https://img.shields.io/badge/Yandex-AI%20Studio-004C59?style=flat" alt="Тематика: Yandex AI Studio"></a>
   <a href="#банк-вопросов"><img src="https://img.shields.io/badge/Quiz-180%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-D3E38C?style=flat" alt="Quiz: 180 вопросов"></a>
   <a href="docs/DEVELOPMENT.md#стек-и-устройство"><img src="https://img.shields.io/badge/TypeScript-strict-93D7D0?style=flat" alt="TypeScript: строгая проверка типов"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-C5A8F2?style=flat" alt="Лицензия MIT"></a>
 </p>
-
-# <sup><img src="public/images/brand/trainer-abstract-64-optimized.webp" width="24" height="24" align="middle" alt=""></sup> Тренажёр компетенций ИИ
 
 **Практика перед экзаменом «Основы работы с ИИ» на платформе Yandex AI Studio.** Выберите уровень, ответьте на вопрос и разберите, почему ответ верен или ошибочен. Тренажёр сохраняет попытки, показывает темы для повторения и позволяет забрать свой прогресс с собой.
 
