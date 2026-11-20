@@ -54,7 +54,7 @@
   "devDependencies": {
     "@types/node": "26.6.5",
     "braces": "file:vendor/braces/braces-3.0.3-patch.2.tgz",
-    "happy-dom": "20.14.6",
+    "happy-dom": "21.0.4",
     "lefthook": "2.1.10",
     "oxfmt": "0.72.0",
     "oxlint": "1.87.0",
